@@ -8,18 +8,18 @@ class M_login extends CI_Model{
 	}
 	function getData($userid,$password){
 		$query_select = "SELECT
-	a.*,
-CASE b.fc_sex
-	WHEN 'L' THEN CONCAT('mr.',b.fv_sname,' ',b.fv_lname,'.')
-	WHEN 'P' THEN CONCAT('mrs.',b.fv_sname,' ',b.fv_lname,'.')
-END as greeting
-FROM
-	tm_user a
-left outer join tm_karyawan b ON b.fc_nik = a.fc_nik
-WHERE
-	a.fc_userid = '".$userid."'
-AND a.fc_password = SUBSTR(MD5(CONCAT(SUBSTR(MD5('".$password."'), 1, 16),(SELECT fv_value FROM t_setup WHERE fc_param = 'KEY_SA'))),1,15) COLLATE utf8_general_ci
-AND a.fc_hold = 'N'";
+				a.*,
+			CASE b.fc_sex
+				WHEN 'L' THEN CONCAT('mr.',b.fv_sname,' ',b.fv_lname,'.')
+				WHEN 'P' THEN CONCAT('mrs.',b.fv_sname,' ',b.fv_lname,'.')
+			END as greeting
+			FROM
+				tm_user a
+			left outer join tm_karyawan b ON b.fc_nik = a.fc_nik
+			WHERE
+				a.fc_userid = '".$userid."'
+			AND a.fc_password = SUBSTR(MD5(CONCAT(SUBSTR(MD5('".$password."'), 1, 16),(SELECT fv_value FROM t_setup WHERE fc_param = 'KEY_SA'))),1,15) COLLATE utf8_general_ci
+			AND a.fc_hold = 'N'";
 		$query = $this->db->query($query_select);
 		return $query->row();
 	}

@@ -5,7 +5,6 @@ class Ukuran extends CI_Controller
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->library('session');
 		$this->load->model('M_model');
 	}
 	private $table = "tm_size";

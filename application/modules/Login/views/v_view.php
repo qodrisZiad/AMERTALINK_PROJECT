@@ -6,22 +6,21 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?php echo $title; ?></title>
-    <link rel="shortcut icon" href="<?php echo base_url() ?>assets/images/<?php echo $icon_web;?>">
+    <title><?= $subtitle .' - '. SITE_TITLE; ?></title>
+    <link rel="shortcut icon" href="<?= site_url() .' assets/'. SITE_FAVICON; ?>">
     <!-- Bootstrap -->
-    <link href="<?php echo site_url()?>vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?= site_url(); ?>vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
-    <link href="<?php echo site_url()?>vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="<?= site_url(); ?>vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <!-- NProgress -->
-    <link href="<?php echo site_url()?>vendors/nprogress/nprogress.css" rel="stylesheet">
+    <link href="<?= site_url(); ?>vendors/nprogress/nprogress.css" rel="stylesheet">
     <!-- Animate.css -->
-    <link href="<?php echo site_url()?>vendors/animate.css/animate.min.css" rel="stylesheet">
+    <link href="<?= site_url(); ?>vendors/animate.css/animate.min.css" rel="stylesheet">
 
     <!-- Custom Theme Style -->
-    <link href="<?php echo site_url()?>build/css/custom.min.css" rel="stylesheet">
-    <script src="<?php echo site_url()?>assets/js/jquery-1.11.2.min.js"></script>
-    <script src="<?php echo site_url()?>vendors/bootstrap/dist/js/bootstrap.min.js"></script>
-    <link rel="shortcut icon" href="<?php echo site_url()?>assets/favicon.png">
+    <link href="<?= site_url(); ?>build/css/custom.min.css" rel="stylesheet">
+    <script src="<?= site_url(); ?>assets/js/jquery-1.11.2.min.js"></script>
+    <script src="<?= site_url(); ?>vendors/bootstrap/dist/js/bootstrap.min.js"></script>
   </head>
 
   <body class="login">
@@ -33,8 +32,7 @@
         <div class="animate form login_form">
           <section class="login_content">
             <form id="formAksi" method="post" action="#">
-              <h1>Login Form
-              </h1> 
+              <h1>Login Form</h1> 
               <div style="display: none;" id="hasil_login" class="alert alert-success alert-dismissible fade in" rele="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="close">x</button>
                 <strong>Login Sukses.</strong>Silahkan anda tunggu beberapa saat! 
@@ -53,8 +51,8 @@
 
               <div class="separator"> 
                 <div>
-                  <h1><?php echo $title; ?></h1>
-                  <p><?php echo $footer; ?></p>
+                  <h1><?= SITE_TITLE; ?></h1>
+                  <p><?= SITE_FOOTER; ?></p>
                 </div>
               </div>
             </form>
@@ -80,13 +78,14 @@
                   $('#hasil_login').addClass('alert-success');
                   $('#hasil_login').text('berhasil login.Silahkan tunggu beberapa saat'); 
                   $('#formAksi').trigger('reset');
-                  setTimeout(function(){window.location="<?php echo site_url()?>Home";},delay);
+                  setTimeout(function(){window.location="<?= site_url(); ?>Home";},delay);
                 }else{
                   $('#hasil_login').fadeIn('slow');
                   $('#hasil_login').removeClass('alert-danger');
                   $('#hasil_login').removeClass('alert-success');
                   $('#hasil_login').addClass('alert-danger');
-                  $('#hasil_login').text("Gagal login.Periksa kembali")
+                  $('#hasil_login').text("Gagal login.Periksa kembali");
+                  $('input[name=userid]').focus();
                 }
               }
             });

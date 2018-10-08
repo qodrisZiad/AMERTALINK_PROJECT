@@ -5,7 +5,6 @@ class Subkategori extends CI_Controller
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->library('session');
 		$this->load->model('M_model');
 	}
 	private $table = "tm_kategori";
@@ -18,12 +17,10 @@ class Subkategori extends CI_Controller
 		}
         $hakakses_user = getAkses($this->uri->segment(1));
 		$data = array(
-			'title'     =>'Master SubKategori',
-			'footer'    => '&copy All Rights Reserved.',
-			'icon_web'  => 'favicon.png',
+			'subtitle'  =>'Master SubKategori',			
 			'greeting'  => $this->session->userdata('greeting'),
 			'nik'       => $this->session->userdata('userid'),
-			'bread'     => 'SubKategori',
+			'bread'     => 'Sub-Kategori',
 			'sub_bread' => '/ Master SubKategori',
 			'input'		=> $hakakses_user[0],
 			'update'	=> $hakakses_user[1],

@@ -3,16 +3,14 @@ error_reporting(0);
 class Login extends CI_Controller{
 	function __construct(){
 		parent::__construct();
-		$this->load->library('session');
 		$this->load->model('m_login');
 	}
 	public function index($error = null){
 		if(!empty($this->session->userdata('userid'))){
 			redirect(site_url('Home'));
 		}
-		$data = array('title' => 'AMERTALINK STORE',
-			'footer' => '©2018 All Rights Reserved.',
-			'icon_web'=>'favicon.png',
+		$data = array(
+			'subtitle' => 'Login Page',
 			'error' => $error
 		);
 		$this->load->view('v_view',$data);

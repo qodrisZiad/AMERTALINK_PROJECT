@@ -2,7 +2,7 @@
     </div> 
 		 <footer>
           <div class="pull-right">
-            <?php echo $footer;?>
+            <?= SITE_FOOTER;?>
           </div>
           <div class="clearfix"></div>
         </footer>
