@@ -52,4 +52,5 @@ class M_model extends CI_Model
     function posts_search_count($tabel,$field1,$field2,$search)
     {   $query = $this->db->like($field1,$search)->or_like($field2,$search)->get($tabel);
         return $query->num_rows();  }
+
 }
