@@ -7,10 +7,10 @@ class Subsubkategori extends CI_Controller
 		parent::__construct();
 		$this->load->model('M_model');
 	}
-	private $table = "tm_kategori";
-	private $primary_key = "fc_subkat";
-	private $secondary_key = "fv_subkat";
-	private $kolom = array("fc_subkat","fv_kat","fv_subkat","fc_status");
+	private $table = "tm_subsubkategori";
+	private $primary_key = "fc_kdsubsubkat";
+	private $secondary_key = "fv_subsubkat";
+	private $kolom = array("fc_kdkat","fc_kdsubkat","fc_kdsubsubkat","fv_kat","fv_subkat","fv_subsubkat","fc_status");
 	public function index(){
 		if(empty($this->session->userdata('userid'))){
 			redirect('Login');
@@ -37,19 +37,21 @@ class Subsubkategori extends CI_Controller
 	public function Simpan(){
 		$aksi = $this->input->post('aksi');
 		$message = "";  
-			if (!empty($_FILES['a3']['name'])) {
-				upload('a3');
+			if (!empty($_FILES['a4']['name'])) {
+				upload('a4');
 				$data = array(
-					'fc_kat'    => $this->input->post('a1'), 
-					'fv_subkat'    => $this->input->post('a2'), 
-					'fv_pict' => $_FILES['a3']['name'],
-					'fc_status' => $this->input->post('a4')
+					'fc_kdkat'    => $this->input->post('a1'), 
+					'fc_kdsubkat'    => $this->input->post('a2'), 
+					'fv_subsubkat'    => $this->input->post('a3'), 
+					'fv_pict' => $_FILES['a4']['name'],
+					'fc_status' => $this->input->post('a5')
 				);
 			}else{
 				$data = array(
-					'fc_kat'    => $this->input->post('a1'), 
-					'fv_subkat'    => $this->input->post('a2'), 
-					'fc_status' => $this->input->post('a4')
+					'fc_kdkat'    => $this->input->post('a1'), 
+					'fc_kdsubkat'    => $this->input->post('a2'), 
+					'fv_subsubkat'    => $this->input->post('a3'), 
+					'fc_status' => $this->input->post('a5')
 				);
 			}
 			if ($aksi == 'tambah') {
@@ -119,12 +121,26 @@ class Subsubkategori extends CI_Controller
                     ); 
         echo json_encode($json_data); 
 	} 
-	private function getKategori(){
+	public function getKategori(){
 		$jabatan = $this->M_model->getKategori();
 		$arr_data = array();
+			$arr_data[""] = "Pilih Kategori";
 	 	 foreach ($jabatan as $hasil) {
 	 	 	$arr_data[$hasil->fc_kat] = $hasil->fv_kat; 
 	 	 }
 		return $arr_data;
+	}
+	public function getSubkategories(){
+		if (!empty($this->uri->segment(3))) {
+			$where = array('fc_kat' => $this->uri->segment(3),'fc_status' => '1');
+		}else{
+			$where = array('fc_status' => '1');
+		}
+		$subkategori = $this->M_model->getSubkategori($where);
+		$data = "";
+	 	 foreach ($subkategori as $hasil) { 
+	 	 	$data .= "<option value='".$hasil->fc_subkat."'>".$hasil->fv_subkat."</option>";  
+	 	 }
+		echo $data;
 	}
 }

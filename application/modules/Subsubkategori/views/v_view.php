@@ -21,12 +21,13 @@
                      	<?php 
                      	$data = array(
                      		'aksi' => array('name' => 'aksi','type' => 'hidden'),
+                     		'kode_sub' => array('name' => 'kode_sub','type' => 'hidden'),
                      		'kode' => array('name'=>'kode','type' => 'hidden'),
                      		'a1' => array('name'=>'a1','label' => 'Kategori','type' => 'option','class' => 'form-control','option' => $kategori,'col' => 'col-sm-3'),
-                     		'a2' => array('name'=>'a2','label' => 'Sub Kategori','type' => 'option','class' => 'form-control','option' => $kategori,'col' => 'col-sm-3'),
+                     		'a2' => array('name'=>'a2','label' => 'Sub Kategori','type' => 'option','class' => 'form-control','option' => "",'col' => 'col-sm-3'),
                      		'a3' => array('name'=>'a3','label' => 'Sub Sub Kategori','type' => 'text','class' => 'form-control','col' => 'col-sm-4'), 
-                     		'a3' => array('name'=>'a3','label' => 'Foto','type' => 'file','class' => 'form-control','col' => 'col-sm-4'), 
-                     		'a4' => array('name'=>'a4','label' => 'Status','type' => 'option','class' => 'form-control','option'=>array('1' => 'Aktif','0'=>'Non Aktif'),'col' => 'col-sm-2'), 
+                     		'a4' => array('name'=>'a4','label' => 'Foto','type' => 'file','class' => 'form-control','col' => 'col-sm-4'), 
+                     		'a5' => array('name'=>'a5','label' => 'Status','type' => 'option','class' => 'form-control','option'=>array('1' => 'Aktif','0'=>'Non Aktif'),'col' => 'col-sm-2'), 
                      	);
                      	buat_form($data);  
                      	?>
@@ -34,7 +35,7 @@
                     </form> 
 					<div id="laporan"> 
 						<?php 
-							$kolom = array("No.","Kategori","Sub Kategori","Status","Aksi");
+							$kolom = array("No.","Kategori","Sub Kategori","Sub Sub Kategori","Status","Aksi");
 							buat_table($kolom,"datatable");   
 						?>
 					</div>
@@ -68,6 +69,7 @@
 			        		{'data' : 'no',width:20}, 
 			        		{'data' : 'fv_kat'},
 			        		{'data' : 'fv_subkat'},
+			        		{'data' : 'fv_subsubkat'},
 			        		{'mRender': function ( data, type, row ) {
 	                       		if (row['fc_status'] == '1') {
 	                       			return "Aktif";
@@ -77,7 +79,7 @@
 	                    		},width:130
                 			}
 			        		<?php if($delete=='Y' || $update =='Y'){ ?>,{'mRender': function ( data, type, row ) {
-	                       		return "<?php if($update == 'Y'){?><button class='btn btn-danger' onclick=hapus('"+row['fc_subkat']+"')><i class='fa fa-close'></i></button><?php } ?>&nbsp;<?php if($delete =='Y'){ ?><button class='btn btn-info' onclick=edit('"+row['fc_subkat']+"')><i class='fa fa-pencil'></i></button><?php } ?>";
+	                       		return "<?php if($update == 'Y'){?><button class='btn btn-danger' onclick=hapus('"+row['fc_kdsubsubkat']+"')><i class='fa fa-close'></i></button><?php } ?>&nbsp;<?php if($delete =='Y'){ ?><button class='btn btn-info' onclick=edit('"+row['fc_kdsubsubkat']+"')><i class='fa fa-pencil'></i></button><?php } ?>";
 	                    		},width:130
                 			} <?php  }else{ ?>
                 				,{'mRender': function ( data, type, row ) {
@@ -97,7 +99,7 @@
 					$('#formAksi').slideDown('slow');
 					$('#close_form').fadeIn('slow');
 					$('#add_form').fadeOut('slow');
-					$('#aksi').val('tambah'); 
+					$('#aksi').val('tambah');  
 				}
 				function tutup(){
 					$('#pict_detail_img').hide();
@@ -129,9 +131,11 @@
 			            	tambah(); 
 			              	$('#aksi').val('update');
 							$('#kode').val(kode);    
-			                $('#a1').val(responseText.fc_kat);           
-			                $('#a2').val(responseText.fv_subkat);           
-			                $('#a4').val(responseText.fc_status);           
+							$('#kode_sub').val(responseText.fc_kdsubkat);    
+			                $('#a1').val(responseText.fc_kdkat);           
+			                $("select#a1").change();
+			                $('#a3').val(responseText.fv_subsubkat);           
+			                $('#a5').val(responseText.fc_status);           
 			                $('#pict_detail_img').show();
 			                document.getElementById('pict_detail_img').src="./assets/foto/"+responseText.fv_pict;
 			            }
@@ -158,16 +162,25 @@
 			            processData:false,
 			            success: function(data){ 
 			            if (data.includes("Berhasil") == true && $('#aksi').val()=='tambah') {
-			            	document.getElementById('formAksi').reset();
+			            	document.getElementById('formAksi').reset(); 
 			            } 
 			            	display_message(data);
 			            }           
 			        });
 			        return false;  
 				}); 
-				$(document).on('change','#a3',function(e){
+				$(document).on('change','#a4',function(e){
 					$('#pict_detail_img').show();
-					PreviewImage('pict_detail_img','a3');
+					PreviewImage('pict_detail_img','a4');
+				});
+				$(document).on('change','#a1',function(e){
+					$.get(link+"/getSubkategories/"+$("#a1").val(), $(this).serialize())
+		            .done(function(data) { 
+		            	$("select#a2").html(data); 
+		            	if ($("#aksi").val() == "update") {
+		            		$("#a2").val($("[name='kode_sub']").val());
+		            	}
+		            });
 				});
 				function PreviewImage(hasil,dari) {
 					var oFReader = new FileReader();
