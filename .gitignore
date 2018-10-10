@@ -22,3 +22,4 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 application/modules/Kategori/models/M_model.php
+application/modules/Template/views/v_header.php

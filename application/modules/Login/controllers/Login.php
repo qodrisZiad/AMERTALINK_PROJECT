@@ -5,10 +5,8 @@ class Login extends CI_Controller{
 		parent::__construct();
 		$this->load->model('m_login');
 	}
-	public function index($error = null){
-		if(!empty($this->session->userdata('userid'))){
-			redirect(site_url('Home'));
-		}
+	public function index($error = null){		
+		is_logged();
 		$data = array(
 			'subtitle' => 'Login Page',
 			'error' => $error

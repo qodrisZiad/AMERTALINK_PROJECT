@@ -1,16 +1,16 @@
 <?php defined('BASEPATH') or exit('maaf akses anda ditutup.'); 
-error_reporting(0);
-class Subkategori extends CI_Controller
+
+class Akses extends CI_Controller
 {
 	function __construct()
 	{
 		parent::__construct();
 		$this->load->model('M_model');
 	}
-	private $table = "tm_kategori";
-	private $primary_key = "fc_subkat";
-	private $secondary_key = "fv_subkat";
-	private $kolom = array("fc_subkat","fv_kat","fv_subkat","fc_status");
+	private $table = "t_hakakses";
+	private $primary_key = "fc_id";
+	private $secondary_key = "fv_menu";
+	private $kolom = array("fc_userid","fv_menu","fc_input","fc_update","fc_delete","fc_view");
 	public function index(){
 		is_logged();
         $hakakses_user = getAkses($this->uri->segment(1));
@@ -20,11 +20,11 @@ class Subkategori extends CI_Controller
 			'nik'       => $this->session->userdata('userid'),
 			'bread'     => 'Sub-Kategori',
 			'sub_bread' => '/ Master SubKategori',
+			'listuser'	=> $this->getListUser(),
 			'input'		=> $hakakses_user[0],
 			'update'	=> $hakakses_user[1],
 			'delete'	=> $hakakses_user[2],
-			'view'		=> $hakakses_user[3],
-			'kategori'  => $this->getKategori() 
+			'view'		=> $hakakses_user[3] 
 		);
 		loadView('v_view', $data, 0);
 	}
@@ -76,35 +76,10 @@ class Subkategori extends CI_Controller
 		}
 	}
 	public function data(){ 
-		$tabel = $this->table;  
-		$limit = $this->input->post('length');
-        $start = $this->input->post('start');
-        $order = $kolom[$this->input->post('order')[0]['column']];
-        $dir = $this->input->post('order')[0]['dir']; 
-        $totalData = $this->M_model->allposts_count($tabel); 
-        $totalFiltered = $totalData;  
-        if(empty($this->input->post('search')['value']))
-        {            
-            $posts = $this->M_model->allposts($tabel,$limit,$start,$order,$dir);
-        }
-        else {
-            $search = $this->input->post('search')['value'];  
-            $posts =  $this->M_model->posts_search($tabel,$this->primary_key,$this->secondary_key,$limit,$start,$search,$order,$dir); 
-            $totalFiltered = $this->M_model->posts_search_count($tabel,$this->primary_key,$this->secondary_key,$search);
-        } 
-        $data = array();
-        if(!empty($posts))
-        {	$no = 1;
-            foreach ($posts as $post)
-            { 	
-                $nestedData['no'] = $no++;
-                for ($i=0; $i < count($this->kolom) ; $i++) {
-                	$hasil = $this->kolom[$i]; 
-                	$nestedData[$this->kolom[$i]] = $post->$hasil;
-                }  
-                $data[] = $nestedData; 
-            }
-        } 
+		$tabel = $this->table; 		
+        $totalData = $this->M_model->getDataMenu(1); 
+		$totalFiltered = $totalData;  
+		$data = $this->M_model->getDataMenu(0);        
         $json_data = array(
                     "draw"            => intval($this->input->post('draw')),  
                     "recordsTotal"    => intval($totalData),  
@@ -113,12 +88,12 @@ class Subkategori extends CI_Controller
                     ); 
         echo json_encode($json_data); 
 	} 
-	private function getKategori(){
-		$jabatan = $this->M_model->getKategori();
-		$arr_data = array();
-	 	 foreach ($jabatan as $hasil) {
-	 	 	$arr_data[$hasil->fc_kat] = $hasil->fv_kat; 
+	private function getListUser(){
+		$users = $this->M_model->getDataUser();
+		$list = '';
+	 	 foreach ($users as $user) {
+	 	 	$list .= '<option value="'.$user->fc_userid.'">'.$user->fc_userid.'</option>';
 	 	 }
-		return $arr_data;
+		return $list;
 	}
 }
