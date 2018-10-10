@@ -7,7 +7,7 @@
                     <ul class="nav navbar-right panel_toolbox">
                       <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li> 
                       <li><a><i class=""></i></a></li>
-                      <?php if($input=='Y'){?><li id="add_form"><a><i class="fa fa-plus" onclick="tambah()"></i></a></li><?php }?>
+                      <?php if($input=='1'){?><li id="add_form"><a><i class="fa fa-plus" onclick="tambah()"></i></a></li><?php }?>
                       <li id="close_form" style="display: none"><a><i class="fa fa-close" onclick="tutup()"></i></a></li>
                     </ul>
                     <div class="clearfix"></div>
@@ -35,22 +35,22 @@
                           <label class="control-label">Select Authorization :</label>
                               <div class="checkbox">
                                 <label>
-                                  <input type="checkbox" name="b2a" value="Y"> Input
+                                  <input type="checkbox" name="b2a" value="1"> Input
                                 </label>
                               </div>
                               <div class="checkbox">
                                 <label>
-                                  <input type="checkbox" name="b2b" value="Y"> Update
+                                  <input type="checkbox" name="b2b" value="1"> Update
                                 </label>
                               </div>
                               <div class="checkbox">
                                 <label>
-                                  <input type="checkbox" name="b2c" value="Y"> Delete
+                                  <input type="checkbox" name="b2c" value="1"> Delete
                                 </label>
                               </div>
                               <div class="checkbox">
                                 <label>
-                                  <input type="checkbox" name="b2d" value="Y"> View Report
+                                  <input type="checkbox" name="b2d" value="1"> View Report
                                 </label>
                               </div>
                         </div>
@@ -73,7 +73,7 @@
                     <ul class="nav navbar-right panel_toolbox">
                       <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li> 
                       <li><a><i class=""></i></a></li>
-                      <?php if($input=='Y'){?><li id="add_form"><a><i class="fa fa-plus" onclick="tambah()"></i></a></li><?php }?>
+                      <?php if($input=='1'){?><li id="add_form"><a><i class="fa fa-plus" onclick="tambah()"></i></a></li><?php }?>
                       <li id="close_form" style="display: none"><a><i class="fa fa-close" onclick="tutup()"></i></a></li>
                     </ul>
                     <div class="clearfix"></div>
@@ -82,12 +82,11 @@
                   	<div id="alert_trans" class="alert alert-success alert-dismissible fade in" role="alert" style="display: none;">
                     	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
                     	Transaksi berhasil 
-					  </div>
-					  <?php 
-							$kolom = array("Menu","Input","Update","Delete","View","Aksi");
-							buat_table($kolom,"datatable2");   
-						?>
-					
+										</div>										
+										<?php 
+											$kolom = array("Menu","Input","Update","Delete","View","Aksi");
+											buat_table($kolom,"datatable2");   
+										?>										
                   </div>
                 </div>
 			  </div> 
@@ -118,52 +117,52 @@
 			        	'columns'	:[			        		
 			        		{'data' : 'fv_menu',width:100},
 			        		{'mRender': function ( data, type, row ) {
-									if (row['fc_input'] == 'Y') {
-										return "<input type='checkbox' checked='true' disabled>";
-									}else{
-										return "<input type='checkbox' checked='false' disabled>";
-									}
-	                    		},width:20
-                			},
-							{'mRender': function ( data, type, row ) {
-									if (row['fc_update'] == 'Y') {
-										return "<input type='checkbox' checked='true' disabled>";
-									}else{
-										return "<input type='checkbox' checked='false' disabled>";
-									}
-	                    		},width:20
-                			},
-							{'mRender': function ( data, type, row ) {
-									if (row['fc_delete'] == 'Y') {
-										return "<input type='checkbox' checked='true' disabled>";
-									}else{
-										return "<input type='checkbox' checked='false' disabled>";
-									}
-	                    		},width:20
-                			},
-							{'mRender': function ( data, type, row ) {
-									if (row['fc_view'] == 'Y') {
-										return "<input type='checkbox' checked='true' disabled>";
-									}else{
-										return "<input type='checkbox' checked='false' disabled>";
-									}
-	                    		},width:20
-                			}
-			        		<?php if($delete=='Y' || $update =='Y'){ ?>,{'mRender': function ( data, type, row ) {
-	                       		return "<?php if($delete =='Y'){ ?><button class='btn btn-info' onclick=edit('"+row['fc_subkat']+"')><i class='fa fa-pencil'></i></button><?php } ?>";
-	                    		},width:130
-                			} <?php  }else{ ?>
-                				,{'mRender': function ( data, type, row ) {
-	                       		return "Akses ditutup";
-	                    		},width:130
-                			}	
-                			<?php } ?>
-			        	]  
-			        }); 
+											if (row['fc_input'] == '1') {
+												return "<input type='checkbox' checked='true' disabled>";
+											}else{
+												return "<input type='checkbox' checked='false' disabled>";
+											}
+	                  },width:10
+                	},
+									{'mRender': function ( data, type, row ) {
+											if (row['fc_update'] == '1') {
+												return "<input type='checkbox' checked='true' disabled>";
+											}else{
+												return "<input type='checkbox' checked='false' disabled>";
+											}
+															},width:10
+													},
+									{'mRender': function ( data, type, row ) {
+											if (row['fc_delete'] == '1') {
+												return "<input type='checkbox' checked='true' disabled>";
+											}else{
+												return "<input type='checkbox' checked='false' disabled>";
+											}
+															},width:10
+													},
+									{'mRender': function ( data, type, row ) {
+											if (row['fc_view'] == '1') {
+												return "<input type='checkbox' checked='true' disabled>";
+											}else{
+												return "<input type='checkbox' checked='false' disabled>";
+											}
+															},width:10
+													}
+											<?php if($delete=='1' || $update =='1'){ ?>,{'mRender': function ( data, type, row ) {
+																return "<?php if($delete =='1'){ ?><button class='btn btn-danger' onclick=hapus('"+row['fc_idmenu']+"')><i class='fa fa-close'></i></button><?php } ?>";
+															},width:10
+													} <?php  }else{ ?>
+														,{'mRender': function ( data, type, row ) {
+																return "Akses ditutup";
+															},width:10
+													}	
+													<?php } ?>
+										]  
+									}); 
             	}
-            	function reload_table(){
-			    	table.ajax.reload(null,false);
-			    }
+				function reload_table(){
+					table.ajax.reload(null,false);
+				}
 				function tambah(){
 					document.getElementById('formAksi').reset();
 					$('#laporan').slideUp('slow');

@@ -7,7 +7,7 @@
                     <ul class="nav navbar-right panel_toolbox">
                       <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li> 
                       <li><a><i class=""></i></a></li>
-                      <?php if($input=='Y'){?><li id="add_form"><a><i class="fa fa-plus" onclick="tambah()"></i></a></li><?php }?>
+                      <?php if($input=='1'){?><li id="add_form"><a><i class="fa fa-plus" onclick="tambah()"></i></a></li><?php }?>
                       <li id="close_form" style="display: none"><a><i class="fa fa-close" onclick="tutup()"></i></a></li>
                     </ul>
                     <div class="clearfix"></div>
@@ -87,8 +87,8 @@
 			        	},//pasangkan hasil dari ajax ke datatablesnya
 			        	'columns'	:[
 			        		{'data' : 'no',width:20}, 
-			        		<?php if($delete=='Y' || $update =='Y'){ ?>{'mRender': function ( data, type, row ) {
-	                       		return "<div class='x_content'><div class='btn-group'><button data-toggle='dropdown' class='btn btn-primary dropdown-toggle btn-sm' type='button' aria-expanded='false'>Aksi<span class='caret'></span></button><ul role='menu' class='dropdown-menu'><?php if($update == 'Y'){?><li><a href='#' onclick=edit('"+row['fc_kdprop']+"')>Ubah</a></li> <?php } ?> <?php if($delete =='Y'){ ?><li><a href='#' onclick=hapus('"+row['fc_kdprop']+"')>Hapus</a></li> <?php } ?> <li class='divider'></li>  <li><a href='#' onclick=setDetail('"+row['fc_kdprop']+"')>Set Detail</a></li></ul></div></div>";
+			        		<?php if($delete=='1' || $update =='1'){ ?>{'mRender': function ( data, type, row ) {
+	                       		return "<div class='x_content'><div class='btn-group'><button data-toggle='dropdown' class='btn btn-primary dropdown-toggle btn-sm' type='button' aria-expanded='false'>Aksi<span class='caret'></span></button><ul role='menu' class='dropdown-menu'><?php if($update == '1'){?><li><a href='#' onclick=edit('"+row['fc_kdprop']+"')>Ubah</a></li> <?php } ?> <?php if($delete =='1'){ ?><li><a href='#' onclick=hapus('"+row['fc_kdprop']+"')>Hapus</a></li> <?php } ?> <li class='divider'></li>  <li><a href='#' onclick=setDetail('"+row['fc_kdprop']+"')>Set Detail</a></li></ul></div></div>";
 	                    		},width:120
                 			} <?php  }else{ ?>
                 				,{'mRender': function ( data, type, row ) {
@@ -125,8 +125,8 @@
 			        	},//pasangkan hasil dari ajax ke datatablesnya
 			        	'columns'	:[
 			        		{'data' : 'no',width:20}, 
-			        		<?php if($delete=='Y' || $update =='Y'){ ?>{'mRender': function ( data, type, row ) {
-	                       		return "<div class='x_content'><div class='btn-group'><button data-toggle='dropdown' class='btn btn-primary dropdown-toggle btn-sm' type='button' aria-expanded='false'>Aksi<span class='caret'></span></button><ul role='menu' class='dropdown-menu'><?php if($update == 'Y'){?><li><a href='#' onclick=editDetail('"+row['fc_kdsubprop']+"')>Ubah</a></li> <?php } ?> <?php if($delete =='Y'){ ?><li><a href='#' onclick=hapusDetail('"+row['fc_kdsubprop']+"')>Hapus</a></li> <?php } ?> </ul></div></div>";
+			        		<?php if($delete=='1' || $update =='1'){ ?>{'mRender': function ( data, type, row ) {
+	                       		return "<div class='x_content'><div class='btn-group'><button data-toggle='dropdown' class='btn btn-primary dropdown-toggle btn-sm' type='button' aria-expanded='false'>Aksi<span class='caret'></span></button><ul role='menu' class='dropdown-menu'><?php if($update == '1'){?><li><a href='#' onclick=editDetail('"+row['fc_kdsubprop']+"')>Ubah</a></li> <?php } ?> <?php if($delete =='1'){ ?><li><a href='#' onclick=hapusDetail('"+row['fc_kdsubprop']+"')>Hapus</a></li> <?php } ?> </ul></div></div>";
 	                    		},width:120
                 			} <?php  }else{ ?>
                 				,{'mRender': function ( data, type, row ) {

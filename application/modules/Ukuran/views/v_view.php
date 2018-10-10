@@ -7,7 +7,7 @@
                     <ul class="nav navbar-right panel_toolbox">
                       <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li> 
                       <li><a><i class=""></i></a></li>
-                      <?php if($input=='Y'){?><li id="add_form"><a><i class="fa fa-plus" onclick="tambah()"></i></a></li><?php }?>
+                      <?php if($input=='1'){?><li id="add_form"><a><i class="fa fa-plus" onclick="tambah()"></i></a></li><?php }?>
                       <li id="close_form" style="display: none"><a><i class="fa fa-close" onclick="tutup()"></i></a></li>
                     </ul>
                     <div class="clearfix"></div>
@@ -70,8 +70,8 @@
 	                       		}
 	                    		},width:130
                 			}
-			        		<?php if($delete=='Y' || $update =='Y'){ ?>,{'mRender': function ( data, type, row ) {
-	                       		return "<?php if($update == 'Y'){?><button class='btn btn-danger' onclick=hapus('"+row['fc_size']+"')><i class='fa fa-close'></i></button><?php } ?>&nbsp;<?php if($delete =='Y'){ ?><button class='btn btn-info' onclick=edit('"+row['fc_size']+"')><i class='fa fa-pencil'></i></button><?php } ?>";
+			        		<?php if($delete=='1' || $update =='1'){ ?>,{'mRender': function ( data, type, row ) {
+	                       		return "<?php if($update == '1'){?><button class='btn btn-danger' onclick=hapus('"+row['fc_size']+"')><i class='fa fa-close'></i></button><?php } ?>&nbsp;<?php if($delete =='1'){ ?><button class='btn btn-info' onclick=edit('"+row['fc_size']+"')><i class='fa fa-pencil'></i></button><?php } ?>";
 	                    		},width:130
                 			} <?php  }else{ ?>
                 				,{'mRender': function ( data, type, row ) {
