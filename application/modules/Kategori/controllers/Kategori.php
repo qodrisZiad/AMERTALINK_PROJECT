@@ -12,9 +12,7 @@ class Kategori extends CI_Controller
 	private $secondary_key = "fv_kat";
 	private $kolom = array("fc_kat","fv_kat","fc_status");
 	public function index(){
-		if(empty($this->session->userdata('userid'))){
-			redirect('Login');
-		}
+		is_logged();
         $hakakses_user = getAkses($this->uri->segment(1));
 		$data = array(
 			'subtitle'  =>'Master Kategori',
@@ -26,12 +24,8 @@ class Kategori extends CI_Controller
 			'update'	=> $hakakses_user[1],
 			'delete'	=> $hakakses_user[2],
 			'view'		=> $hakakses_user[3]
-		);
-		$this->load->view('Template/v_header',$data);
-		$this->load->view('Template/v_datatable');
-		$this->load->view('Template/v_sidemenu',$data);
-		$this->load->view('v_view',$data);
-		$this->load->view('Template/v_footer',$data);
+		);		
+		loadView('v_view', $data, 0);
 	}
 	public function Simpan(){
 		$aksi = $this->input->post('aksi');

@@ -170,3 +170,35 @@
 		}
 		return $hasil;
 	}
+	/*
+	 * mengecek login atau belum
+	 */
+	function is_logged(){
+		$ci =& get_instance();
+		if($ci->session->userdata('userid') == ''){	
+			// jika tidak ada session dan membuka halaman selain Login akan diarahkan ke  Login		
+			if($ci->uri->segment(1) != 'Login'){
+				redirect('Login');
+			} 						
+		} else {
+			// jika masih ada session dan membuka halaman login akan diarahkan ke home
+			if($ci->uri->segment(1) == 'Login'){
+				redirect('Home');
+			} 
+		}
+	}
+	/*
+	 * mempersingkat script load view
+	 * @page = lokasi halaman yang mau di load
+	 * @data = data yang mau dilewatkan ke view
+	 * @opt  = opsional, untuk menampilkan datatable, atau yang lain
+	 */
+	function loadView($page='v_view', $data=null, $opt){
+		$ci =& get_instance();
+		$ci->load->view('Template/v_header',$data);
+		if($opt==0){ $ci->load->view('Template/v_datatable',$data); } 
+		// else { }
+		$ci->load->view('Template/v_sidemenu',$data);
+		$ci->load->view( $page , $data );
+		$ci->load->view('Template/v_footer',$data);
+	}

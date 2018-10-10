@@ -5,20 +5,15 @@ class Home extends CI_Controller
 	{
 		parent::__construct();
 	}
-	function index(){
-		if(empty($this->session->userdata('userid'))){
-			redirect('Login');
-		}
+	function index(){		
+		is_logged();
 		$data = array(
 			'subtitle'  =>'Home Page',
 			'greeting'  => $this->session->userdata('greeting'),
 			'userid'    => $this->session->userdata('userid'),
 			'bread'     => 'HOME',
 			'sub_bread' =>' /homepage'
-		);
-		$this->load->view('Template/v_header',$data);
-		$this->load->view('Template/v_sidemenu',$data);
-		$this->load->view('v_view',$data);
-		$this->load->view('Template/v_footer',$data);
+		);		
+		loadView('v_view', $data, 1);
 	}
 }

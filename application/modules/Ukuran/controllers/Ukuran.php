@@ -12,9 +12,7 @@ class Ukuran extends CI_Controller
 	private $secondary_key = "fv_size";
 	private $kolom = array("fc_size","fv_size","fc_status");
 	public function index(){
-		if(empty($this->session->userdata('userid'))){
-			redirect('Login');
-		}
+		is_logged();
         $hakakses_user = getAkses($this->uri->segment(1));
 		$data = array(
 			'title'     =>'Master Ukuran',
@@ -29,11 +27,7 @@ class Ukuran extends CI_Controller
 			'delete'	=> $hakakses_user[2],
 			'view'		=> $hakakses_user[3]
 		);
-		$this->load->view('Template/v_header',$data);
-		$this->load->view('Template/v_datatable');
-		$this->load->view('Template/v_sidemenu',$data);
-		$this->load->view('v_view',$data);
-		$this->load->view('Template/v_footer',$data);
+		loadView('v_view', $data, 0);
 	}
 	public function Simpan(){
 		$aksi = $this->input->post('aksi');
