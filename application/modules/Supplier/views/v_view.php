@@ -3,7 +3,7 @@
               <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                   <div class="x_title">
-                    <h2>Master Sub Sub Kategori</h2>
+                    <h2>Master Supplier</h2>
                     <ul class="nav navbar-right panel_toolbox">
                       <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li> 
                       <li><a><i class=""></i></a></li>
@@ -17,25 +17,26 @@
                     	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
                     	Transaksi berhasil 
                   	</div>
-                     <form class="form-horizontal form-label-left" id="formAksi" style="display: none;" method="post" enctype="multipart/form-data">
+                     <form class="form-horizontal form-label-left" id="formAksi" style="display: none;" method="post">
                      	<?php 
                      	$data = array(
-                     		'aksi' => array('name' => 'aksi','type' => 'hidden'),
-                     		'kode_sub' => array('name' => 'kode_sub','type' => 'hidden'),
-                     		'kode' => array('name'=>'kode','type' => 'hidden'),
-                     		'a1' => array('name'=>'a1','label' => 'Kategori','type' => 'option','class' => 'form-control','option' => $kategori,'col' => 'col-sm-3'),
-                     		'a2' => array('name'=>'a2','label' => 'Sub Kategori','type' => 'option','class' => 'form-control','option' => "",'col' => 'col-sm-3'),
-                     		'a3' => array('name'=>'a3','label' => 'Sub Sub Kategori','type' => 'text','class' => 'form-control','col' => 'col-sm-4'), 
-                     		'a4' => array('name'=>'a4','label' => 'Foto','type' => 'file','class' => 'form-control','col' => 'col-sm-4'), 
-                     		'a5' => array('name'=>'a5','label' => 'Status','type' => 'option','class' => 'form-control','option'=>array('1' => 'Aktif','0'=>'Non Aktif'),'col' => 'col-sm-2'), 
+                     		'aksi' => array('name' => 'aksi','type' => 'hidden'), 
+                     		'a1' => array('name'=>'a1','label' => 'Kode Supplier','type' => 'text','class' => 'form-control','col' => 'col-sm-4','readonly' => 'true'), 
+                     		'a2' => array('name'=>'a2','label' => 'Supplier','type' => 'text','class' => 'form-control','col' => 'col-sm-4'), 
+                     		'a3' => array('name'=>'a3','label' => 'Alamat','type' => 'text','class' => 'form-control','col' => 'col-sm-6'), 
+                     		'a4' => array('name'=>'a4','label' => 'Telp 1','type' => 'text','class' => 'form-control','col' => 'col-sm-4'), 
+                     		'a5' => array('name'=>'a5','label' => 'Telp 2','type' => 'text','class' => 'form-control','col' => 'col-sm-4'), 
+                     		'a6' => array('name'=>'a6','label' => 'Owner','type' => 'text','class' => 'form-control','col' => 'col-sm-4'), 
+                     		'a7' => array('name'=>'a7','label' => 'Tanggal Kunjungan','type' => 'date','class' => 'form-control','col' => 'col-sm-4'), 
+                     		'a8' => array('name'=>'a8','label' => 'Tanggal Join','type' => 'date','class' => 'form-control','col' => 'col-sm-4'), 
+                     		'a9' => array('name'=>'a9','label' => 'Aktif','type' => 'option','class' => 'form-control','option' => array('1'=>'Aktif','0'=>'Non Aktif'),'col' => 'col-sm-2')
                      	);
                      	buat_form($data);  
                      	?>
-                     	<img src="" id="pict_detail_img" width="400px" style="display: none;">
                     </form> 
 					<div id="laporan"> 
 						<?php 
-							$kolom = array("No.","Kategori","Sub Kategori","Sub Sub Kategori","Status","Aksi");
+							$kolom = array("No.","Aksi","Kode","Supplier","Alamat","Telp","Owner","Tgl Join","Tgl Kunjungan","Hutang","Terakhir Transaksi","User Input","Status");
 							buat_table($kolom,"datatable");   
 						?>
 					</div>
@@ -49,14 +50,14 @@
             	var link = "<?php echo site_url().$this->uri->segment(1);?>"; 
             	var table;
             	$(document).ready(function(){
-            		datatable(); 
+            		datatable();
             	});
             	function datatable(){
             		table = $('#datatable').DataTable({
 			        	'processing': true, //ini untuk menampilkan processing
 			        	'serverSide': true, //iini untuk serversidenya
-			        	'deferRender' : true,
 			        	'order'		: [], //ini jika menginginkan diorder
+			        	'destroy'	: true,
 			        	'language'  : {
 			        		'searchPlaceholder': "Cari"
 			        	},
@@ -67,42 +68,55 @@
 			        	},//pasangkan hasil dari ajax ke datatablesnya
 			        	'columns'	:[
 			        		{'data' : 'no',width:20}, 
-			        		{'data' : 'fv_kat'},
-			        		{'data' : 'fv_subkat'},
-			        		{'data' : 'fv_subsubkat'},
+			        		<?php if($delete=='1' || $update =='1'){ ?>{'mRender': function ( data, type, row ) {
+	                       		return "<div class='x_content'><div class='btn-group'><button data-toggle='dropdown' class='btn btn-primary dropdown-toggle btn-sm' type='button' aria-expanded='false'>Aksi<span class='caret'></span></button><ul role='menu' class='dropdown-menu'><?php if($update =='1'){?><li><a href='#' onclick=edit('"+row['fc_kdsupplier']+"')>Ubah</a></li> <?php } ?> <?php if($delete =='1'){ ?><li><a href='#' onclick=hapus('"+row['fc_kdsupplier']+"')>Hapus</a></li> <?php } ?> <li class='divider'></li></ul></div></div>";
+	                    		},width:120
+                			} <?php  }else{ ?>
+                				,{'mRender': function ( data, type, row ) {
+		                       		return "Akses ditutup";
+		                    		},width:130
+                				}	
+                			<?php } ?>,
+			        		{'data' : 'fc_kdsupplier'},
+			        		{'data' : 'fv_supplier'},
+			        		{'data' : 'fv_addr'}, 
 			        		{'mRender': function ( data, type, row ) {
+		                       		return row['fc_telp']+" / "+row['fc_telp2'];
+		                    		},width:130
+                			}, 
+                			{'data' : 'fv_owner'},
+                			{'data' : 'fd_join'},
+                			{'data' : 'fd_kunjungan'},
+                			{'mRender': function ( data, type, row ) {
+		                       		return "Rp."+rupiah(row['fn_hutang']);
+		                    		},width:130
+                			},
+                			{'data' : 'fd_last_trans'},
+                			{'data' : 'fc_userid'},  
+                			{'mRender': function ( data, type, row ) {
 	                       		if (row['fc_status'] == '1') {
 	                       			return "Aktif";
 	                       		}else{
 	                       			return "Non Aktif";
 	                       		}
 	                    		},width:130
-                			}
-			        		<?php if($delete=='1' || $update =='1'){ ?>,{'mRender': function ( data, type, row ) {
-	                       		return "<?php if($update =='1'){?><button class='btn btn-danger' onclick=hapus('"+row['fc_kdsubsubkat']+"')><i class='fa fa-close'></i></button><?php } ?>&nbsp;<?php if($delete =='1'){ ?><button class='btn btn-info' onclick=edit('"+row['fc_kdsubsubkat']+"')><i class='fa fa-pencil'></i></button><?php } ?>";
-	                    		},width:130
-                			} <?php  }else{ ?>
-                				,{'mRender': function ( data, type, row ) {
-	                       		return "Akses ditutup";
-	                    		},width:130
-                			}	
-                			<?php } ?>
-			        	]  
+                			},  
+			        	]   
 			        }); 
             	}
             	function reload_table(){
 			    	table.ajax.reload(null,false);
 			    }
 				function tambah(){
-					document.getElementById('formAksi').reset();
 					$('#laporan').slideUp('slow');
 					$('#formAksi').slideDown('slow');
 					$('#close_form').fadeIn('slow');
 					$('#add_form').fadeOut('slow');
-					$('#aksi').val('tambah');  
+					document.getElementById('formAksi').reset();
+					$('#aksi').val('tambah');
+					$('#a1').val('<?php echo getNomor("SUPL"); ?>');
 				}
 				function tutup(){
-					$('#pict_detail_img').hide();
 					$('#formAksi').slideUp('slow');
 					$('#laporan').slideDown('slow');
 					$('#close_form').fadeOut('slow');
@@ -129,15 +143,16 @@
 			            url: link+"/Edit/"+kode,
 			            success:function(responseText){ 
 			            	tambah(); 
-			              	$('#aksi').val('update');
-							$('#kode').val(kode);    
-							$('#kode_sub').val(responseText.fc_kdsubkat);    
-			                $('#a1').val(responseText.fc_kdkat);           
-			                $("select#a1").change();
-			                $('#a3').val(responseText.fv_subsubkat);           
-			                $('#a5').val(responseText.fc_status);           
-			                $('#pict_detail_img').show();
-			                document.getElementById('pict_detail_img').src="./assets/foto/"+responseText.fv_pict;
+			              	$('#aksi').val('update');   
+			                $('input[name="a1"]').val(responseText.fc_kdsupplier);           
+			                $('input[name="a2"]').val(responseText.fv_supplier);           
+			                $('input[name="a3"]').val(responseText.fv_addr);           
+			                $('input[name="a4"]').val(responseText.fc_telp);
+			                $('input[name="a5"]').val(responseText.fc_telp2);
+			                $('input[name="a6"]').val(responseText.fv_owner);
+			                $('input[name="a7"]').val(responseText.fd_kunjungan);
+			                $('input[name="a8"]').val(responseText.fd_join);
+			                $('#a9').val(responseText.fc_status);
 			            }
 			        });
 				}
@@ -162,35 +177,23 @@
 			            processData:false,
 			            success: function(data){ 
 			            if (data.includes("Berhasil") == true && $('#aksi').val()=='tambah') {
-			            	document.getElementById('formAksi').reset(); 
+			            	document.getElementById('formAksi').reset();
 			            } 
 			            	display_message(data);
 			            }           
 			        });
 			        return false;  
 				}); 
-				$(document).on('change','#a4',function(e){
-					$('#pict_detail_img').show();
-					PreviewImage('pict_detail_img','a4');
-				});
-				$(document).on('change','#a1',function(e){
-					$.get(link+"/getSubkategories/"+$("#a1").val(), $(this).serialize())
-		            .done(function(data) { 
-		            	$("select#a2").html(data); 
-		            	if ($("#aksi").val() == "update") {
-		            		$("#a2").val($("[name='kode_sub']").val());
-		            	}
-		            });
-				});
-				function PreviewImage(hasil,dari) {
-					var oFReader = new FileReader();
-					oFReader.readAsDataURL(document.getElementById(dari).files[0]);
-					oFReader.onload = function (oFREvent)
-					 {
-					 	$('#'+hasil).fadeOut('fast');
-					 	$('#'+hasil).fadeIn('fast');
-					    document.getElementById(hasil).src = oFREvent.target.result;
-					    
-					};
-				};
+				function rupiah(bilangan){
+					var	number_string = bilangan.toString(),
+					sisa 	= number_string.length % 3,
+					rupiah 	= number_string.substr(0, sisa),
+					ribuan 	= number_string.substr(sisa).match(/\d{3}/g);
+						
+					if (ribuan) {
+						separator = sisa ? '.' : '';
+						rupiah += separator + ribuan.join('.');
+					}
+					return rupiah;
+				}
             </script>   

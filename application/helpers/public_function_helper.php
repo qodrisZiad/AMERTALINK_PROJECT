@@ -2,7 +2,7 @@
 	function getMenu(){
 		$ci=& get_instance();
     	$ci->load->database();
-		$where = array('a.fc_userid'=>$ci->session->userdata('userid'),'b.fc_hold'=>'N',"IFNULL(b.fc_parent,'-')"=>'-');
+		$where = array('a.fc_userid'=>$ci->session->userdata('userid'),'b.fc_hold'=>'0',"IFNULL(b.fc_parent,'-')"=>'-');
 		$query = $ci->db->select("a.*,IFNULL(b.fc_parent,'-') as parent,b.fv_menu,b.fc_link,b.fv_class1 as fv_class")
 				 ->from('t_hakakses a')
 				 ->join('t_menu b','b.fc_id=a.fc_idmenu')
@@ -13,7 +13,7 @@
 	function getSubmenu(){ 
 		$ci=& get_instance();
     	$ci->load->database();
-		$where = array('a.fc_userid'=>$ci->session->userdata('userid'),'b.fc_hold'=>'N',"IFNULL(b.fc_parent,'-') != "=>'-');
+		$where = array('a.fc_userid'=>$ci->session->userdata('userid'),'b.fc_hold'=>'0',"IFNULL(b.fc_parent,'-') != "=>'-');
 		$query = $ci->db->select("a.*,IFNULL(b.fc_parent,'-') as parent,b.fv_menu,b.fc_link,b.fv_class1 as fv_class")
 				 ->from('t_hakakses a')
 				 ->join('t_menu b','b.fc_id=a.fc_idmenu')

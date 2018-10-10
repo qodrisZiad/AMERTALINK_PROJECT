@@ -1,7 +1,7 @@
 <?php defined('BASEPATH') or exit('maaf akses anda kita tutup');
 class M_model extends CI_Model
 {
-	private $table = "tm_kategori";
+	private $table = "tm_supplier";
 	function tambah($data){
 		$this->db->insert($this->table,$data);
 		return $this->db->affected_rows();
