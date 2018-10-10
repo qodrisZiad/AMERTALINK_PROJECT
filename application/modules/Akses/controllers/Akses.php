@@ -8,18 +8,18 @@ class Akses extends CI_Controller
 		$this->load->model('M_model');
 	}
 	private $table = "t_hakakses";
-	private $primary_key = "fc_id";
+	private $primary_key = "fc_idmenu";
 	private $secondary_key = "fv_menu";
-	private $kolom = array("fc_userid","fv_menu","fc_input","fc_update","fc_delete","fc_view");
+	private $kolom = array("fc_userid","fv_menu","fc_idmenu","fc_input","fc_update","fc_delete","fc_view");
 	public function index(){
 		is_logged();
         $hakakses_user = getAkses($this->uri->segment(1));
 		$data = array(
-			'subtitle'  =>'Master SubKategori',			
+			'subtitle'  =>'Hak Akses',			
 			'greeting'  => $this->session->userdata('greeting'),
 			'nik'       => $this->session->userdata('userid'),
-			'bread'     => 'Sub-Kategori',
-			'sub_bread' => '/ Master SubKategori',
+			'bread'     => 'Hak Akses',
+			'sub_bread' => '/ Mengatur Akses Tiap Pengguna',
 			'listuser'	=> $this->getListUser(),
 			'input'		=> $hakakses_user[0],
 			'update'	=> $hakakses_user[1],
@@ -30,28 +30,23 @@ class Akses extends CI_Controller
 	}
 	public function Simpan(){
 		$aksi = $this->input->post('aksi');
+		$menu = $this->input->post('b1');
 		$message = "";  
-			if (!empty($_FILES['a3']['name'])) {
-				upload('a3');
-				$data = array(
-					'fc_kat'    => $this->input->post('a1'), 
-					'fv_subkat'    => $this->input->post('a2'), 
-					'fv_pict' => $_FILES['a3']['name'],
-					'fc_status' => $this->input->post('a4')
+		if (count($menu) > 0){
+			foreach ($menu as $key => $value) {
+				$data_input = array(
+					'fc_userid'	=> $this->input->post('b0'),
+					'fc_idmenu'	=> $value,
+					'fc_input'	=>( ($this->input->post('b2a') != '')? $this->input->post('b2a') : '0' ),
+					'fc_update'	=>( ($this->input->post('b2b') != '')? $this->input->post('b2b') : '0' ),
+					'fc_delete'	=>( ($this->input->post('b2c') != '')? $this->input->post('b2c') : '0' ),
+					'fc_view'	=>( ($this->input->post('b2d') != '')? $this->input->post('b2d') : '0' ),
+					'fc_userinput'	=> $this->session->userdata('userid'),
+					'fd_input'	=> date("Y-m-d")
 				);
-			}else{
-				$data = array(
-					'fc_kat'    => $this->input->post('a1'), 
-					'fv_subkat'    => $this->input->post('a2'), 
-					'fc_status' => $this->input->post('a4')
-				);
+				$proses = $this->M_model->tambah($data_input);
 			}
-			if ($aksi == 'tambah') {
-				$proses = $this->M_model->tambah($data);
-			}else if($aksi =='update'){
-				$where = array($this->primary_key => $this->input->post('kode'));
-				$proses = $this->M_model->update($data,$where);
-			}
+		}
 			if ($proses > 0) {
 				$message = 'Berhasil menyimpan data';
 			}else{
@@ -59,34 +54,31 @@ class Akses extends CI_Controller
 			} 
 		echo json_encode($message);
 	}
-	public function Edit(){
-		$kode = $this->uri->segment(3);
-		$data = array($this->primary_key => $kode);
-		$edit = $this->M_model->getData($data);
-		echo json_encode($edit);
-	} 
+	
 	public function Hapus(){
 		$kode = $this->uri->segment(3);
-		$data = array($this->primary_key => $kode);
+		$data = array('fc_idmenu' => $kode, 'fc_userid' => $this->session->userdata('userid'));
 		$hapus = $this->M_model->hapus($data);
 		if ($hapus > 0) {
-			echo "Berhasil menghapus data";
+			echo "Berhasil menghapus data ".$kode;
 		}else{
-			echo "Gagal menghapus data";
+			echo "Gagal menghapus data ".$kode;
 		}
 	}
+
 	public function data(){ 
 		$tabel = $this->table; 		
         $totalData = $this->M_model->getDataMenu(1); 
 		$totalFiltered = $totalData;  
-		$data = $this->M_model->getDataMenu(0);        
+		$data = $this->M_model->getDataMenu(2);        
         $json_data = array(
                     "draw"            => intval($this->input->post('draw')),  
                     "recordsTotal"    => intval($totalData),  
                     "recordsFiltered" => intval($totalFiltered), 
                     "data"            => $data   
                     ); 
-        echo json_encode($json_data); 
+		echo json_encode($json_data); 
+		//echo json_encode($data);
 	} 
 	private function getListUser(){
 		$users = $this->M_model->getDataUser();
@@ -95,5 +87,14 @@ class Akses extends CI_Controller
 	 	 	$list .= '<option value="'.$user->fc_userid.'">'.$user->fc_userid.'</option>';
 	 	 }
 		return $list;
+	}
+	public function listmenu(){
+		$hasil = '';
+		$user = $this->input->get('b0');
+		$list = $this->M_model->getListMenu($user);
+		foreach ($list as $value) {
+			$hasil .= "<option value='".$value->fc_id."'>$value->fv_menu</option> \n";
+		}
+		if($user=='') { echo ''; } else { echo $hasil; }
 	}
 }

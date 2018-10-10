@@ -32,14 +32,31 @@ class M_model extends CI_Model
 				   ->join("t_menu b","b.fc_id=a.fc_idmenu")
 				   ->where('ifnull(b.fc_parent,"")!=', '')
 				   ->where('a.fc_userid', $this->session->userdata('userid'))       			
-       			->get();
+				   ->get();
         if($query->num_rows()>0)
         { 
 			if ($opt==0) { return $query->result(); } else 
-			if ($opt==1) { return $query->num_rows(); }
+			if ($opt==1) { return $query->num_rows(); } else
+			if ($opt==2) { return $query->result_array(); }
 			
 		}
         else{return null;}
+	}
+
+	function getListMenu($user){
+		// $query = $this->db->select('a.fc_id, a.fv_menu')
+		// 			->from('t_menu a')
+		// 			->where_not_in('a.fc_id', 'SELECT x.fc_idmenu FROM t_hakakses x WHERE x.fc_userid = \''.$user.'\'')
+		// 			->get();\
+		$query = $this->db->query("SELECT a.fc_id, a.fv_menu
+				FROM t_menu a
+				WHERE a.fc_id NOT IN ( SELECT x.fc_idmenu FROM t_hakakses x WHERE x.fc_userid = '$user' )");
+		
+		if($query->num_rows()>0){
+			return $query->result();
+		} else {
+			return null;
+		}
 	}
 // ---------------------------------------------------------------------
 	//update data
@@ -87,5 +104,6 @@ class M_model extends CI_Model
 		       			->like($field1,$search)
 		       			->or_like($field2,$search)
 		       			->get();
-        return $query->num_rows();  }
+		return $query->num_rows();  
+	}
 }
