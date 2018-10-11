@@ -1,0 +1,1 @@
+- belum bisa update nomor ketika sudah simpan (supplier,warehouse,produk)

@@ -15,7 +15,7 @@ class Satuan extends CI_Controller
 		is_logged();
         $hakakses_user = getAkses($this->uri->segment(1));
 		$data = array(
-			'title'     =>'Master Satuan',
+			'subtitle'     =>'Master Satuan',
 			'footer'    => '&copy All Rights Reserved.',
 			'icon_web'  => 'favicon.png',
 			'greeting'  => $this->session->userdata('greeting'),

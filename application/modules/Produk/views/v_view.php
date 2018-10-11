@@ -37,7 +37,7 @@
                     </form> 
 					<div id="laporan"> 
 						<?php 
-							$kolom = array("No.","Aksi","SKU","Kategori","Nama Stock","Keterangan","Minimal Stock","Status","User Input","Status");
+							$kolom = array("No.","Aksi","SKU","Kategori","Nama Stock","Keterangan","Minimal Stock","Status","User Input");
 							buat_table($kolom,"datatable");   
 						?>
 					</div>
@@ -51,7 +51,7 @@
             	var link = "<?php echo site_url().$this->uri->segment(1);?>"; 
             	var table;
             	$(document).ready(function(){
-            		//datatable();
+            		datatable();
             	});
             	function datatable(){
             		table = $('#datatable').DataTable({
@@ -68,9 +68,9 @@
 			        		'type'	: 'POST' 
 			        	},//pasangkan hasil dari ajax ke datatablesnya
 			        	'columns'	:[
-			        		{'data' : 'no',width:20}, 
-			        		<?php if($delete=='1' || $update =='1'){ ?>{'mRender': function ( data, type, row ) {
-	                       		return "<div class='x_content'><div class='btn-group'><button data-toggle='dropdown' class='btn btn-primary dropdown-toggle btn-sm' type='button' aria-expanded='false'>Aksi<span class='caret'></span></button><ul role='menu' class='dropdown-menu'><?php if($update =='1'){?><li><a href='#' onclick=edit('"+row['fc_kdsupplier']+"')>Ubah</a></li> <?php } ?> <?php if($delete =='1'){ ?><li><a href='#' onclick=hapus('"+row['fc_kdsupplier']+"')>Hapus</a></li> <?php } ?> <li class='divider'></li></ul></div></div>";
+			        		{'data' : 'no',width:20} 
+			        		<?php if($delete=='1' || $update =='1'){ ?>,{'mRender': function ( data, type, row ) {
+	                       		return "<div class='x_content'><div class='btn-group'><button data-toggle='dropdown' class='btn btn-primary dropdown-toggle btn-sm' type='button' aria-expanded='false'>Aksi<span class='caret'></span></button><ul role='menu' class='dropdown-menu'><?php if($update =='1'){?><li><a href='#' onclick=edit('"+row['fc_stock']+"')>Ubah</a></li> <?php } ?> <?php if($delete =='1'){ ?><li><a href='#' onclick=hapus('"+row['fc_stock']+"')>Hapus</a></li> <?php } ?> <li class='divider'></li><li><a href='#'>Set Properti</a></li><li><a href='#'>Set Variant</a></li><li><a href='#'>Set Foto</a></li><li><a href='#'>Set Uom</a></li></ul></div></div>";
 	                    		},width:120
                 			} <?php  }else{ ?>
                 				,{'mRender': function ( data, type, row ) {
@@ -78,22 +78,11 @@
 		                    		},width:130
                 				}	
                 			<?php } ?>,
-			        		{'data' : 'fc_kdsupplier'},
-			        		{'data' : 'fv_supplier'},
-			        		{'data' : 'fv_addr'}, 
-			        		{'mRender': function ( data, type, row ) {
-		                       		return row['fc_telp']+" / "+row['fc_telp2'];
-		                    		},width:130
-                			}, 
-                			{'data' : 'fv_owner'},
-                			{'data' : 'fd_join'},
-                			{'data' : 'fd_kunjungan'},
-                			{'mRender': function ( data, type, row ) {
-		                       		return "Rp."+rupiah(row['fn_hutang']);
-		                    		},width:130
-                			},
-                			{'data' : 'fd_last_trans'},
-                			{'data' : 'fc_userid'},  
+			        		{'data' : 'fc_stock'},
+			        		{'data' : 'kategori'},
+			        		{'data' : 'fv_stock'}, 
+			        		{'data' : 'fv_ket'}, 
+			        		{'data' : 'fn_min'},  
                 			{'mRender': function ( data, type, row ) {
 	                       		if (row['fc_status'] == '1') {
 	                       			return "Aktif";
@@ -102,6 +91,7 @@
 	                       		}
 	                    		},width:130
                 			},  
+                			{'data' : 'fc_userid'}  
 			        	]   
 			        }); 
             	}
