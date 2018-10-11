@@ -40,11 +40,12 @@
 		  		$readonly = "";
 		  	}
 		  	if ($input['type'] =="text" || $input['type']=='number' || $input['type']=='date') {
-		  		$val = "";
+				$val = "";
+				if($input['type'] == 'text') {
+					($input['defaultValue'] != '') ? $val = $input['defaultValue'] : $val = "";
+				} else
 		  		if ($input['type'] == 'date') {
 		  			$val = date('Y-m-d');
-		  		}else{
-		  			$val = "";
 		  		}
 		  		$type = '<input type="'.$input['type'].'" class="'.$input['class'].'" id="'.$input['name'].'" name="'.$input['name'].'" '.$readonly.' value="'.$val.'">';
 		  	}else

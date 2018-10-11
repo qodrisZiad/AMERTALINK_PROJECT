@@ -21,7 +21,7 @@
                      	<?php 
                      	$data = array(
                      		'aksi' => array('name' => 'aksi','type' => 'hidden'), 
-                     		'a1' => array('name'=>'a1','label' => 'Kode Supplier','type' => 'text','class' => 'form-control','col' => 'col-sm-4','readonly' => 'true'), 
+                     		'a1' => array('name'=>'a1','label' => 'Kode Supplier','type' => 'text','class' => 'form-control','col' => 'col-sm-4','readonly' => 'true', 'defaultValue' => getNomor("SUPL")), 
                      		'a2' => array('name'=>'a2','label' => 'Supplier','type' => 'text','class' => 'form-control','col' => 'col-sm-4'), 
                      		'a3' => array('name'=>'a3','label' => 'Alamat','type' => 'text','class' => 'form-control','col' => 'col-sm-6'), 
                      		'a4' => array('name'=>'a4','label' => 'Telp 1','type' => 'text','class' => 'form-control','col' => 'col-sm-4'), 
@@ -114,7 +114,6 @@
 					$('#add_form').fadeOut('slow');
 					document.getElementById('formAksi').reset();
 					$('#aksi').val('tambah');
-					$('#a1').val('<?php echo getNomor("SUPL"); ?>');
 				}
 				function tutup(){
 					$('#formAksi').slideUp('slow');
@@ -171,15 +170,17 @@
 					$.ajax({
 			            url: link+"/Simpan",
 			            type: "POST",
+						dataType: "JSON",
 			            data:  new FormData(this),
 			            contentType: false,
 			            cache: false,
 			            processData:false,
 			            success: function(data){ 
-			            if (data.includes("Berhasil") == true && $('#aksi').val()=='tambah') {
-			            	document.getElementById('formAksi').reset();
-			            } 
-			            	display_message(data);
+							if (data.proses != 0 && $('#aksi').val()=='tambah') {
+								document.getElementById('formAksi').reset();
+							}
+							$('#a1').val(data.nextNomor); 
+			            	display_message(data.message);
 			            }           
 			        });
 			        return false;  

@@ -31,7 +31,7 @@ class Supplier extends CI_Controller
 	}
 	public function Simpan(){
 		$aksi = $this->input->post('aksi');
-		$message = ""; 
+		$hasil = array('message'=>'', 'proses' => 0, 'nextNomor' => 0);
 			$data = array(
 				'fc_kdsupplier' => $this->input->post('a1'),
 				'fv_supplier'	 => $this->input->post('a2'),
@@ -45,17 +45,21 @@ class Supplier extends CI_Controller
 				'fc_userid'	 => $this->session->userdata('userid')
 			);
 			if ($aksi == 'tambah') {
-				$proses = $this->M_model->tambah($data);
+				$hasil['proses'] = $this->M_model->tambah($data);
 			}else if($aksi =='update'){
 				$where = array($this->primary_key => $this->input->post('a1'));
-				$proses = $this->M_model->update($data,$where);
+				$hasil['proses'] = $this->M_model->update($data,$where);
 			}
-			if ($proses > 0) {
-				$message = 'Berhasil menyimpan data';
+			if ($hasil['proses'] > 0) {
+				if ($aksi == 'tambah') {
+					updateNomor("SUPL");
+					$hasil['nextNomor'] = getNomor("SUPL");
+				}
+				$hasil['message'] = 'Berhasil menyimpan data';
 			}else{
-				$message = 'Gagal menyimpan data'; 
+				$hasil['message'] = 'Gagal menyimpan data'; 
 			} 
-		echo json_encode($message);
+		echo json_encode($hasil);
 	}
 	public function Edit(){
 		$kode = $this->uri->segment(3);

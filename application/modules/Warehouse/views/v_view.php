@@ -21,7 +21,7 @@
                      	<?php 
                      	$data = array(
                      		'aksi' => array('name' => 'aksi','type' => 'hidden'),
-                     		'a1' => array('name'=>'a1','label' => 'Kode Gudang','type' => 'text','class' => 'form-control','col' => 'col-sm-4','readonly' => 'true'), 
+                     		'a1' => array('name'=>'a1','label' => 'Kode Gudang','type' => 'text','class' => 'form-control','col' => 'col-sm-4','readonly' => 'true', 'defaultValue' => getNomor("WH") ), 
                      		'a2' => array('name'=>'a2','label' => 'Cabang','type' => 'option','class' => 'form-control','option' => $cabang,'col' => 'col-sm-2'),
                      		'a3' => array('name'=>'a3','label' => 'Gudang','type' => 'text','class' => 'form-control','col' => 'col-sm-4'), 
                      		'a4' => array('name'=>'a4','label' => 'Alamat','type' => 'text','class' => 'form-control','col' => 'col-sm-6'), 
@@ -100,8 +100,7 @@
 					$('#close_form').fadeIn('slow');
 					$('#add_form').fadeOut('slow');
 					$('#aksi').val('tambah');
-					document.getElementById('formAksi').reset();
-					$('#a1').val('<?= getNomor("WH"); ?>');
+					document.getElementById('formAksi').reset();					
 				}
 				function tutup(){
 					$('#formAksi').slideUp('slow');
@@ -156,16 +155,17 @@
 					$.ajax({
 			            url: link+"/Simpan",
 			            type: "POST",
+						dataType:"JSON",
 			            data:  new FormData(this),
 			            contentType: false,
 			            cache: false,
 			            processData:false,
 			            success: function(data){ 
-			            if (data.includes("Berhasil") == true && $('#aksi').val()=='tambah') {
-			            	document.getElementById('formAksi').reset();														
-			            } 
-			            	display_message(data);							
+							if (data.proses != 0 && $('#aksi').val()=='tambah') {
+								document.getElementById('formAksi').reset();														
+							} 
 							$('#a1').val(data.nextNomor);
+			            	display_message(data.message);							
 			            }  						         
 			        });
 			        return false;  
