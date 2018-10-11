@@ -15,9 +15,7 @@ class Ukuran extends CI_Controller
 		is_logged();
         $hakakses_user = getAkses($this->uri->segment(1));
 		$data = array(
-			'title'     =>'Master Ukuran',
-			'footer'    => '&copy All Rights Reserved.',
-			'icon_web'  => 'favicon.png',
+			'subtitle'     =>'Master Ukuran',
 			'greeting'  => $this->session->userdata('greeting'),
 			'nik'       => $this->session->userdata('userid'),
 			'bread'     => 'Ukuran',

@@ -15,9 +15,7 @@ class Warehouse extends CI_Controller
 		is_logged();
         $hakakses_user = getAkses($this->uri->segment(1));
 		$data = array(
-			'title'     =>'Master Gudang',
-			'footer'    => '&copy All Rights Reserved.',
-			'icon_web'  => 'favicon.png',
+			'subtitle'     =>'Master Gudang',
 			'greeting'  => $this->session->userdata('greeting'),
 			'nik'       => $this->session->userdata('userid'),
 			'bread'     => 'Gudang',
@@ -32,31 +30,32 @@ class Warehouse extends CI_Controller
 	}
 	public function Simpan(){
 		$aksi = $this->input->post('aksi');
-		$message = ""; 
+		$hasil = array ('message' => '', 'nextNomor' => 0, 'proses' => 0); 
 			$data = array(
-				'fc_wh' => $this->input->post('a1'),
-				'fc_branch' => $this->input->post('a2'),
-				'fv_wh'	 => $this->input->post('a3'),
+				'fc_wh' 	 => $this->input->post('a1'),
+				'fc_branch'  => $this->input->post('a2'),
+				'fv_wh'	 	 => $this->input->post('a3'),
 				'fv_alamat'	 => $this->input->post('a4'),
 				'fv_leader'	 => $this->input->post('a5'),
 				'fc_telp'	 => $this->input->post('a6'),
 				'fc_status'	 => $this->input->post('a7')
 			);
 			if ($aksi == 'tambah') {
-				$proses = $this->M_model->tambah($data);
+				$hasil['proses'] = $this->M_model->tambah($data);
 			}else if($aksi =='update'){
 				$where = array($this->primary_key => $this->input->post('a1'));
-				$proses = $this->M_model->update($data,$where);
+				$hasil['proses'] = $this->M_model->update($data,$where);
 			}
-			if ($proses > 0) {
+			if ($hasil['proses'] > 0) {
 				if ($aksi == 'tambah') {
 					updateNomor("WH");
+					$hasil['nextNomor'] = getNomor("WH");
 				}
-				$message = 'Berhasil menyimpan data';
+				$hasil['message'] = 'Berhasil menyimpan data';
 			}else{
-				$message = 'Gagal menyimpan data'; 
+				$hasil['message'] = 'Gagal menyimpan data'; 
 			} 
-		echo json_encode($message);
+		echo json_encode($hasil);
 	}
 	public function Edit(){
 		$kode = $this->uri->segment(3);

@@ -7,21 +7,21 @@ class Supplier extends CI_Controller
 		parent::__construct();
 		$this->load->model('M_model');
 	}
-	private $table = "tm_supplier";
-	private $primary_key = "fc_kdsupplier";
+	private $table = "tm_user";
+	private $primary_key = "fc_id";
 	private $secondary_key = "fv_supplier";
-	private $kolom = array("fc_kdsupplier","fv_supplier","fv_addr","fc_telp","fc_telp2","fv_owner","fd_join","fd_kunjungan","fn_hutang","fd_last_trans","fc_userid","fc_status");
+	private $kolom = array("fc_nik","fc_userid","","fc_telp","fc_telp2","fv_owner","fd_join","fd_kunjungan","fn_hutang","fd_last_trans","fc_userid","fc_status");
 	public function index(){
 		if(empty($this->session->userdata('userid'))){
 			redirect('Login');
 		}
         $hakakses_user = getAkses($this->uri->segment(1));
 		$data = array(
-			'subtitle'     =>'Master Supplier',
+			'subtitle'  =>'Master Pengguna',
 			'greeting'  => $this->session->userdata('greeting'),
 			'nik'       => $this->session->userdata('userid'),
-			'bread'     => 'Supplier',
-			'sub_bread' => '/ Master Supplier',
+			'bread'     => 'Pengguna',
+			'sub_bread' => '/ Daftar Pengguna',
 			'input'		=> $hakakses_user[0],
 			'update'	=> $hakakses_user[1],
 			'delete'	=> $hakakses_user[2],

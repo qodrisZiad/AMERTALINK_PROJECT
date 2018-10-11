@@ -15,9 +15,7 @@ class Rak extends CI_Controller
 		is_logged();
         $hakakses_user = getAkses($this->uri->segment(1));
 		$data = array(
-			'title'     =>'Master Rak',
-			'footer'    => '&copy All Rights Reserved.',
-			'icon_web'  => 'favicon.png',
+			'subtitle'     =>'Master Rak',
 			'greeting'  => $this->session->userdata('greeting'),
 			'nik'       => $this->session->userdata('userid'),
 			'bread'     => 'Rak',
