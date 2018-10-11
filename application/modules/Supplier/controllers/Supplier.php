@@ -17,7 +17,7 @@ class Supplier extends CI_Controller
 		}
         $hakakses_user = getAkses($this->uri->segment(1));
 		$data = array(
-			'title'     =>'Master Supplier',
+			'subtitle'     =>'Master Supplier',
 			'footer'    => '&copy All Rights Reserved.',
 			'icon_web'  => 'favicon.png',
 			'greeting'  => $this->session->userdata('greeting'),
@@ -29,11 +29,7 @@ class Supplier extends CI_Controller
 			'delete'	=> $hakakses_user[2],
 			'view'		=> $hakakses_user[3]
 		);
-		$this->load->view('Template/v_header',$data);
-		$this->load->view('Template/v_datatable');
-		$this->load->view('Template/v_sidemenu',$data);
-		$this->load->view('v_view',$data);
-		$this->load->view('Template/v_footer',$data);
+		loadview('v_view', $data, 0);
 	}
 	public function Simpan(){
 		$aksi = $this->input->post('aksi');

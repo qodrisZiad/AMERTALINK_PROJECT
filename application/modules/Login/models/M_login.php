@@ -2,7 +2,7 @@
 if(!defined('BASEPATH')) exit('Maaf akses anda kami tutup.');
 class M_login extends CI_Model{
 	function login($user,$pass){  
-		$query_select = "select * from tm_user where fc_userid='".$user."' and fc_password = SUBSTR(MD5(CONCAT(SUBSTR(MD5('".$pass."'),1,16),(select fv_value from t_setup where fc_param = 'KEY_SA'))),1,15) COLLATE utf8_general_ci and fc_hold='N'";
+		$query_select = "select * from tm_user where fc_userid='".$user."' and fc_password = SUBSTR(MD5(CONCAT(SUBSTR(MD5('".$pass."'),1,16),(select fv_value from t_setup where fc_param = 'KEY_SA'))),1,15) COLLATE utf8_general_ci and fc_hold='0'";
 		$query = $this->db->query($query_select);
 		return $query->num_rows();
 	}
