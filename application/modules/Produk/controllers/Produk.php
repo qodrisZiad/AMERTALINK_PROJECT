@@ -10,7 +10,7 @@ class Produk extends CI_Controller
 	private $table = "t_stock";
 	private $primary_key = "fc_stock";
 	private $secondary_key = "fv_stock";
-	private $kolom = array("fc_stock","fv_stock","fc_kategori","fv_ket","fn_min","fc_status","fc_userid","fd_input");
+	private $kolom = array("fc_stock","fv_stock","kategori","fv_ket","fn_min","fc_status","fc_userid","fd_input");
 	public function index(){
 		if(empty($this->session->userdata('userid'))){
 			redirect('Login');
@@ -82,7 +82,7 @@ class Produk extends CI_Controller
 		}
 	}
 	public function data(){ 
-		$tabel = $this->table;  
+		$tabel = "v_stock";  
 		$limit = $this->input->post('length');
         $start = $this->input->post('start');
         $order = $kolom[$this->input->post('order')[0]['column']];
