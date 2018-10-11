@@ -17,7 +17,7 @@ class Produk extends CI_Controller
 		}
         $hakakses_user = getAkses($this->uri->segment(1));
 		$data = array(
-			'title'     =>'Master Produk',
+			'subtitle'     =>'Master Produk',
 			'footer'    => '&copy All Rights Reserved.',
 			'icon_web'  => 'favicon.png',
 			'greeting'  => $this->session->userdata('greeting'),
