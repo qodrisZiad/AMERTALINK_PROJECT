@@ -178,12 +178,12 @@
 		if($ci->session->userdata('userid') == ''){	
 			// jika tidak ada session dan membuka halaman selain Login akan diarahkan ke  Login		
 			if($ci->uri->segment(1) != 'Login'){
-				redirect('Login');
+				redirect(site_url('Login'));
 			} 						
 		} else {
 			// jika masih ada session dan membuka halaman login akan diarahkan ke home
-			if($ci->uri->segment(1) == 'Login'){
-				redirect('Home');
+			if($ci->uri->segment(1) == '' || $ci->uri->segment(1) == 'Login'){
+				redirect(site_url('Home'));
 			} 
 		}
 	}
