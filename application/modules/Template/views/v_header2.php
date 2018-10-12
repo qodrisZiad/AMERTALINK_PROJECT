@@ -16,8 +16,8 @@
     <link href="<?php echo site_url()?>vendors/nprogress/nprogress.css" rel="stylesheet">
 
     <!-- Custom Theme Style -->
-    <script src="<?php echo site_url()?>assets/js/jquery-1.11.2.min.js"></script>
-    <script src="<?php echo site_url()?>vendors/bootstrap/dist/js/bootstrap.min.js"></script> 
+    <script src="<?php echo site_url()?>assets/js/jquery-1.11.2.min.js"></script> 
+    <script src="<?php echo site_url()?>vendors/bootstrap/dist/js/bootstrap.min.js"></script>  
     <link href="<?php echo site_url()?>build/css/custom.min.css" rel="stylesheet">
   </head>
   <body class="nav-md">

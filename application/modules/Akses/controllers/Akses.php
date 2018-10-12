@@ -48,6 +48,7 @@ class Akses extends CI_Controller
 			}
 		}
 			if ($proses > 0) {
+				resetMenuSession();
 				$message = 'Berhasil menyimpan data';
 			}else{
 				$message = 'Gagal menyimpan data'; 
@@ -61,6 +62,7 @@ class Akses extends CI_Controller
 		$hapus = $this->M_model->hapus($data);
 		if ($hapus > 0) {
 			echo "Berhasil menghapus data ".$kode;
+			resetMenuSession();
 		}else{
 			echo "Gagal menghapus data ".$kode;
 		}
@@ -80,12 +82,12 @@ class Akses extends CI_Controller
 		echo json_encode($json_data); 
 		//echo json_encode($data);
 	} 
-	private function getListUser(){
+	private function getListUser(){                    
 		$users = $this->M_model->getDataUser();
-		$list = '';
-	 	 foreach ($users as $user) {
-	 	 	$list .= '<option value="'.$user->fc_userid.'">'.$user->fc_userid.'</option>';
-	 	 }
+		$list = '';                   
+		foreach ($users as $user) {                    
+			$list .= '<option value="'.$user->fc_userid.'">'.$user->fc_userid.'</option>';
+		}
 		return $list;
 	}
 	public function listmenu(){

@@ -8,7 +8,7 @@
 				 ->join('t_menu b','b.fc_id=a.fc_idmenu')
 				 ->where($where)
 				 ->get();
-		return $query;
+		return $query;		
 	}
 	function getSubmenu(){ 
 		$ci=& get_instance();
@@ -20,7 +20,7 @@
 				 ->where($where)
 				 ->get();
 		return $query;
-	} 
+	} 	
 	function upload($data){
 		$ci=& get_instance();
 				$config['upload_path']          = './assets/foto/';
@@ -202,4 +202,18 @@
 		$ci->load->view('Template/v_sidemenu',$data);
 		$ci->load->view( $page , $data );
 		$ci->load->view('Template/v_footer',$data);
+	}
+	/*
+	 * fungsi ini harus panggil setelah proses userid dimasukan kesession
+	 */
+	function resetMenuSession($data = array('menu','submenu')){
+		$ci=& get_instance();
+		$ci->load->library('session');
+		$ci->session->unset_userdata($data);
+		$menu = getMenu(); $submenu = getSubmenu();
+		$data_menu = array(
+			'menu'		=> $menu->result(),
+			'submenu'	=> $submenu->result()
+		);
+		$ci->session->set_userdata($data_menu);		
 	}
