@@ -19,12 +19,13 @@ class Login extends CI_Controller{
 		$pass 	= $this->input->post('password');
 		$login  = $this->m_login->login($userid,$pass); 
 		if ($login == 1) {
-			$row = $this->m_login->getData($userid,$pass);
+			$row = $this->m_login->getData($userid,$pass);			
 			$data_user = array(
-				'userid' => $userid,
-				'greeting' => $row->greeting
+				'userid' 	=> $userid,
+				'greeting' 	=> $row->greeting,
 			);
 			$this->session->set_userdata($data_user);
+			resetMenuSession();
 			$hasil = 1;
 		}else{
 			$hasil = 0;

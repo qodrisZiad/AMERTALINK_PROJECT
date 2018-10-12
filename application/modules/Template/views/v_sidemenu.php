@@ -27,8 +27,9 @@
                 <h3>General</h3>
                 <ul class="nav side-menu">
                   <?php  
-                    $query_submenu = getSubmenu();
-                    foreach (getMenu()->result() as $hasil_menu) { ?> 
+                    $menu = $this->session->userdata('menu');
+                    $submenu = $this->session->userdata('submenu');
+                    foreach ($menu as $hasil_menu) { ?> 
                           <li>
                             <?php if($hasil_menu->fc_link == "#"){ ?>
                               <a>
@@ -37,7 +38,7 @@
                               } ?>
                               <i class="fa <?php echo $hasil_menu->fv_class; ?>"></i><?php echo $hasil_menu->fv_menu; ?><span id="a_<?php echo $hasil_menu->fc_idmenu; ?>"></span></a>
                             <ul class="nav child_menu">
-                              <?php foreach ($query_submenu->result() as $hasil_submenu) {
+                              <?php foreach ($submenu as $hasil_submenu) {
                                 if ($hasil_submenu->parent == $hasil_menu->fc_idmenu) {
                                   echo '<li><a href="'.base_url(). ucfirst($hasil_submenu->fc_link) .'">'.$hasil_submenu->fv_menu.'</a></li>
                                         <script type="text/javascript">
