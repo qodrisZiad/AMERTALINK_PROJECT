@@ -10,7 +10,7 @@ class Produk extends CI_Controller
 	private $table = "t_stock";
 	private $primary_key = "fc_stock";
 	private $secondary_key = "fv_stock";
-	private $kolom = array("fc_stock","fv_stock","kategori","fv_ket","fn_min","fc_status","fc_userid","fd_input");
+	private $kolom = array("fc_stock","fv_stock","kategori","fv_ket","fn_min","master_Properti","master_Variant","master_Uom","fc_status","fc_userid","fd_input");
 	public function index(){
 		if(empty($this->session->userdata('userid'))){
 			redirect('Login');
@@ -28,12 +28,19 @@ class Produk extends CI_Controller
 			'update'	=> $hakakses_user[1],
 			'delete'	=> $hakakses_user[2],
 			'view'		=> $hakakses_user[3],
-			'kategori'  => $this->getKategori()
+			'kategori'  => $this->getKategori(),
+			'Properti'  => $this->getProperti(),
+			'ukuran' 	=> $this->getUkuran(),
+			'warna'  	=> $this->getWarna(),
+			'Satuan'	=> $this->getSatuan()
 		);
 		$this->load->view('Template/v_header',$data);
 		$this->load->view('Template/v_datatable');
 		$this->load->view('Template/v_sidemenu',$data);
 		$this->load->view('v_view',$data);
+		$this->load->view('v_properti',$data);
+		$this->load->view('v_variant',$data);
+		$this->load->view('v_uom',$data);
 		$this->load->view('Template/v_footer',$data);
 	}
 	public function Simpan(){
@@ -50,31 +57,32 @@ class Produk extends CI_Controller
 				'fd_input' => date('Y-m-d')
 			);
 			if ($aksi == 'tambah') {
-				$proses = $this->M_model->tambah($data);
+				$hasil['proses'] = $this->M_model->tambah("t_stock",$data);
 			}else if($aksi =='update'){
 				$where = array($this->primary_key => $this->input->post('a1'));
-				$proses = $this->M_model->update($data,$where);
+				$hasil['proses'] = $this->M_model->update("t_stock",$data,$where);
 			}
-			if ($proses > 0) {
+			if ($hasil['proses'] > 0) {
 				if ($aksi == 'tambah') {
 					updateNomor("SKU");
+					$hasil['nextNomor'] = getNomor("SKU");
 				}
-				$message = 'Berhasil menyimpan data';
+				$hasil['message'] = 'Berhasil menyimpan data';
 			}else{
-				$message = 'Gagal menyimpan data'; 
-			} 
-		echo json_encode($message);
+				$hasil['message'] = 'Gagal menyimpan data'; 
+			}  
+		echo json_encode($hasil);
 	}
 	public function Edit(){
 		$kode = $this->uri->segment(3);
 		$data = array($this->primary_key => $kode);
-		$edit = $this->M_model->getData($data);
+		$edit = $this->M_model->getData("v_stock",$data);
 		echo json_encode($edit);
 	} 
 	public function Hapus(){
 		$kode = $this->uri->segment(3);
 		$data = array($this->primary_key => $kode);
-		$hapus = $this->M_model->hapus($data);
+		$hapus = $this->M_model->hapus("t_stock",$data);
 		if ($hapus > 0) {
 			echo "Berhasil menghapus data";
 		}else{
@@ -155,5 +163,301 @@ class Produk extends CI_Controller
 	 	 	$data .= "<option value='".$hasil->fc_kdsubsubkat."'>".$hasil->fv_subsubkat."</option>";  
 	 	 }
 		echo $data;
+	}
+	// INI UNTUK PROPERTI
+	public function getProperti(){
+		$properti = $this->M_model->getProperti();
+		$arr_data = array();
+			$arr_data[""] = "Pilih";
+	 	 foreach ($properti as $hasil) {
+	 	 	$arr_data[$hasil->fc_kdprop] = $hasil->fv_prop; 
+	 	 }
+		return $arr_data;
+	}
+	public function getSubProp(){
+		$where = array('fc_stock' => $this->uri->segment(3),'fc_kdprop' => $this->uri->segment(4));
+		$subkategori = $this->M_model->getSubProp($where);
+		$data = "";
+			$data .= "<option>Pilih</option>";
+	 	 foreach ($subkategori as $hasil) { 
+	 	 	$data .= "<option value='".$hasil->fc_kdsubprop."'>".$hasil->fv_subprop."</option>";  
+	 	 }
+		echo $data;
+	}
+	public function SimpanProp(){
+		$aksi = $this->input->post('aksi_prop');
+		$message = ""; 
+		$data = array(
+			'fc_stock'    => $this->input->post('sku_prop'),
+			'fc_kdprop'    => $this->input->post('b1'),
+			'fc_kdsubprop'    => $this->input->post('b2'),
+			'fc_userid'    => $this->session->userdata('userid'),
+			'fd_last_update'    => date("Y-m-d h:i:s")
+		);
+		if ($aksi == 'tambah') {
+			$where_check = array(
+				'fc_stock'     => $this->input->post('sku_prop'),
+				'fc_kdprop'    => $this->input->post('b1'),
+				'fc_kdsubprop' => $this->input->post('b2')
+			);
+			if($this->M_model->checkProp('t_stockprop',$where_check) > 0){
+				$proses = '0';
+			}else{
+				$proses = $this->M_model->tambah("t_stockprop",$data);
+			}
+		}else if($aksi =='update'){
+			$where = array("fc_id" => $this->input->post('a1'));
+			$proses = $this->M_model->update("t_stockprop",$data,$where);
+		}
+		if ($proses > 0) { 
+			$hasil = 'Berhasil menyimpan data';
+		}else{
+			$hasil = 'Gagal menyimpan data,Data sudah ada.'; 
+		}  
+		echo json_encode($hasil);
+	}
+	public function data_Prop(){ 
+		$kolomProp = array("fc_id","fc_stock","fc_kdprop","fc_kdsubprop","fc_userid","fd_last_update","fv_prop","fv_subprop");
+		$tabel = "v_stockProp";  
+		$where = array('fc_stock' => $this->uri->segment(3));
+		$limit = $this->input->post('length');
+        $start = $this->input->post('start');
+        $order = $kolomProp[$this->input->post('order')[0]['column']];
+        $dir = $this->input->post('order')[0]['dir']; 
+        $totalData = $this->M_model->allposts_countWhere($tabel,$where); 
+        $totalFiltered = $totalData;  
+        if(empty($this->input->post('search')['value']))
+        {            
+            $posts = $this->M_model->allpostsWhere($tabel,$limit,$start,$order,$dir,$where);
+        }
+        else {
+            $search = $this->input->post('search')['value'];  
+            $posts =  $this->M_model->posts_searchWhere($tabel,"fv_prop","fv_subprop",$limit,$start,$search,$order,$dir,$where); 
+            $totalFiltered = $this->M_model->posts_search_countWhere($tabel,"fv_prop","fv_subprop",$search,$where);
+        } 
+        $data = array();
+        if(!empty($posts))
+        {	$no = 1;
+            foreach ($posts as $post)
+            { 	
+                $nestedData['no'] = $no++;
+                for ($i=0; $i < count($kolomProp) ; $i++) {
+                	$hasil = $kolomProp[$i]; 
+                	$nestedData[$kolomProp[$i]] = $post->$hasil;
+                }  
+                $data[] = $nestedData; 
+            }
+        } 
+        $json_data = array(
+                    "draw"            => intval($this->input->post('draw')),  
+                    "recordsTotal"    => intval($totalData),  
+                    "recordsFiltered" => intval($totalFiltered), 
+                    "data"            => $data   
+                    ); 
+        echo json_encode($json_data); 
+	} 
+	public function HapusProp(){
+		$kode = $this->uri->segment(3);
+		$data = array("fc_id" => $kode);
+		$hapus = $this->M_model->hapus("t_stockprop",$data);
+		if ($hapus > 0) {
+			echo "Berhasil menghapus data";
+		}else{
+			echo "Gagal menghapus data";
+		}
+	}
+	//UNTUK VARIANTNYA
+	public function getUkuran(){
+		$ukuran = $this->M_model->getUkuran();
+		$arr_data = array();
+		$arr_data[""] = "Pilih";
+	 	foreach ($ukuran as $hasil) {
+	 	 	$arr_data[$hasil->fc_size] = $hasil->fv_size; 
+	 	}
+		return $arr_data;
+	}
+	public function getWarna(){
+		$size = $this->M_model->getWarna();
+		$arr_data = array();
+		$arr_data[""] = "Pilih";
+		foreach ($size as $hasil) {
+			$arr_data[$hasil->fc_warna] = $hasil->fv_warna; 
+		}
+		return $arr_data;
+	}
+	public function SimpanVariant(){
+		$aksi = $this->input->post('aksi_variant');
+		$message = ""; 
+		$data = array(
+			'fc_stock'    => $this->input->post('sku_variant'),
+			'fc_size'    => $this->input->post('c1'),
+			'fc_warna'    => $this->input->post('c2'),
+			'fc_userid'    => $this->session->userdata('userid')
+		);
+		if ($aksi == 'tambah') {
+			$where_check = array(
+				'fc_stock'     => $this->input->post('sku_variant'),
+				'fc_size'    => $this->input->post('c1'),
+				'fc_warna' => $this->input->post('c2')
+			);
+			if($this->M_model->checkProp('t_variant',$where_check) > 0){
+				$proses = '0';
+			}else{
+				$proses = $this->M_model->tambah("t_variant",$data);
+			}
+		}else if($aksi =='update'){
+			$where = array("fc_id" => $this->input->post('a1'));
+			$proses = $this->M_model->update("t_variant",$data,$where);
+		}
+		if ($proses > 0) { 
+			$hasil = 'Berhasil menyimpan data';
+		}else{
+			$hasil = 'Gagal menyimpan data,Data sudah ada.'; 
+		}  
+		echo json_encode($hasil);
+	}
+	public function data_Variant(){ 
+		$kolomVariant = array("fc_variant","fc_stock","fv_size","fv_warna","fc_userid");
+		$tabel = "v_variant";  
+		$where = array('fc_stock' => $this->uri->segment(3));
+		$limit = $this->input->post('length');
+        $start = $this->input->post('start');
+        $order = $kolomVariant[$this->input->post('order')[0]['column']];
+        $dir = $this->input->post('order')[0]['dir']; 
+        $totalData = $this->M_model->allposts_countWhere($tabel,$where); 
+        $totalFiltered = $totalData;  
+        if(empty($this->input->post('search')['value']))
+        {            
+            $posts = $this->M_model->allpostsWhere($tabel,$limit,$start,$order,$dir,$where);
+        }
+        else {
+            $search = $this->input->post('search')['value'];  
+            $posts =  $this->M_model->posts_searchWhere($tabel,"fv_size","fv_warna",$limit,$start,$search,$order,$dir,$where); 
+            $totalFiltered = $this->M_model->posts_search_countWhere($tabel,"fv_size","fv_warna",$search,$where);
+        } 
+        $data = array();
+        if(!empty($posts))
+        {	$no = 1;
+            foreach ($posts as $post)
+            { 	
+                $nestedData['no'] = $no++;
+                for ($i=0; $i < count($kolomVariant) ; $i++) {
+                	$hasil = $kolomVariant[$i]; 
+                	$nestedData[$kolomVariant[$i]] = $post->$hasil;
+                }  
+                $data[] = $nestedData; 
+            }
+        } 
+        $json_data = array(
+                    "draw"            => intval($this->input->post('draw')),  
+                    "recordsTotal"    => intval($totalData),  
+                    "recordsFiltered" => intval($totalFiltered), 
+                    "data"            => $data   
+                    ); 
+        echo json_encode($json_data); 
+	} 
+	public function HapusVariant(){
+		$kode = $this->uri->segment(3);
+		$data = array("fc_variant" => $kode);
+		$hapus = $this->M_model->hapus("t_variant",$data);
+		if ($hapus > 0) {
+			echo "Berhasil menghapus data";
+		}else{
+			echo "Gagal menghapus data";
+		}
+	}
+
+	//UNTUK UOMNYA
+	public function getSatuan(){
+		$ukuran = $this->M_model->getSatuan();
+		$arr_data = array();
+		$arr_data[""] = "Pilih";
+	 	foreach ($ukuran as $hasil) {
+	 	 	$arr_data[$hasil->fc_satuan] = $hasil->fv_satuan; 
+	 	}
+		return $arr_data;
+	}
+	public function data_Uom(){ 
+		$kolomVariant = array("fc_uom","fv_satuan","fn_uom","fc_default","fc_userid");
+		$tabel = "v_uom";  
+		$where = array('fc_stock' => $this->uri->segment(3));
+		$limit = $this->input->post('length');
+        $start = $this->input->post('start');
+        $order = $kolomVariant[$this->input->post('order')[0]['column']];
+        $dir = $this->input->post('order')[0]['dir']; 
+        $totalData = $this->M_model->allposts_countWhere($tabel,$where); 
+        $totalFiltered = $totalData;  
+        if(empty($this->input->post('search')['value']))
+        {            
+            $posts = $this->M_model->allpostsWhere($tabel,$limit,$start,$order,$dir,$where);
+        }
+        else {
+            $search = $this->input->post('search')['value'];  
+            $posts =  $this->M_model->posts_searchWhere($tabel,"fv_satuan","fv_satuan",$limit,$start,$search,$order,$dir,$where); 
+            $totalFiltered = $this->M_model->posts_search_countWhere($tabel,"fv_satuan","fv_satuan",$search,$where);
+        } 
+        $data = array();
+        if(!empty($posts))
+        {	$no = 1;
+            foreach ($posts as $post)
+            { 	
+                $nestedData['no'] = $no++;
+                for ($i=0; $i < count($kolomVariant) ; $i++) {
+                	$hasil = $kolomVariant[$i]; 
+                	$nestedData[$kolomVariant[$i]] = $post->$hasil;
+                }  
+                $data[] = $nestedData; 
+            }
+        } 
+        $json_data = array(
+                    "draw"            => intval($this->input->post('draw')),  
+                    "recordsTotal"    => intval($totalData),  
+                    "recordsFiltered" => intval($totalFiltered), 
+                    "data"            => $data   
+                    ); 
+        echo json_encode($json_data); 
+	}
+	public function SimpanUom(){
+		$aksi = $this->input->post('aksi_uom');
+		$message = ""; 
+		$data = array(
+			'fc_stock'    => $this->input->post('sku_uom'),
+			'fc_satuan'    => $this->input->post('d1'),
+			'fn_uom'    => $this->input->post('d2'),
+			'fc_userid'    => $this->session->userdata('userid')
+		);
+		if ($aksi == 'tambah') {
+			$where_check = array(
+				'fc_stock'     => $this->input->post('sku_uom'),
+				'fn_uom'    => $this->input->post('d1')
+			);
+			if($this->M_model->checkProp('t_uom',$where_check) > 0){
+				$proses = '0';
+			}else{
+				$proses = $this->M_model->tambah("t_uom",$data);
+			}
+		}else if($aksi =='update'){
+			$where = array("fc_uom" => $this->input->post('kode_uom'));
+			$proses = $this->M_model->update("t_uom",$data,$where);
+		}
+		if ($proses > 0) { 
+			if ($this->input->post('d2') == '1') {
+				$this->M_model->updateDefault($this->input->post('sku_uom'),$this->input->post('d1'),"1");
+			}
+			$hasil = 'Berhasil menyimpan data';
+		}else{
+			$hasil = 'Gagal menyimpan data,Data sudah ada.'; 
+		}  
+		echo json_encode($hasil);
+	} 
+	public function HapusUom(){
+		$kode = $this->uri->segment(3);
+		$data = array("fc_uom" => $kode);
+		$hapus = $this->M_model->hapus("t_uom",$data);
+		if ($hapus > 0) {
+			echo "Berhasil menghapus data";
+		}else{
+			echo "Gagal menghapus data";
+		}
 	}
 }

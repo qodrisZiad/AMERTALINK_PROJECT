@@ -1,29 +1,35 @@
 <?php defined('BASEPATH') or exit('maaf akses anda kita tutup');
 class M_model extends CI_Model
 {
-	private $table = "t_stock";
-	function tambah($data){
-		$this->db->insert($this->table,$data);
+	private $table = "v_stock";
+	function tambah($tabel,$data){
+		$this->db->insert($tabel,$data);
 		return $this->db->affected_rows();
 	}
 	//delete data
-	function hapus($where){
+	function hapus($tabel,$where){
 		$this->db->where($where);
-		$this->db->delete($this->table);
+		$this->db->delete($tabel);
 		return $this->db->affected_rows();
 	}
 // ---------------------------------------------------------------------
     //ambil data
-    function getData($where){
-        $query = $this->db->where($where)->get($this->table);
+    function getData($tabel,$where){
+        $query = $this->db->where($where)->get($tabel);
         if($query->num_rows()>0)
         { return $query->row();}
         else{return null;}
     } 
-     function getKategori(){
+    //update data
+	function update($tabel,$data,$where){
+		$query = $this->db->update($tabel,$data,$where);
+		return $this->db->affected_rows();
+	}
+
+    function getKategori(){
     	$query = $this->db->where(array('fc_status' => '1'))->get('tm_kategori');
     	return $query->result();
-    }
+    } 
 
     function getSubkategori($where){
     	$query = $this->db->where($where)->get('tm_subkategori');
@@ -33,12 +39,37 @@ class M_model extends CI_Model
     	$query = $this->db->where($where)->get('tm_subsubkategori');
     	return $query->result();
     } 
-// ---------------------------------------------------------------------
-	//update data
-	function update($data,$where){
-		$query = $this->db->update($this->table,$data,$where);
-		return $this->db->affected_rows();
-	}
+
+    function getProperti(){
+    	$query = $this->db->where(array('fc_status' => '1'))->get('tm_prop');
+    	return $query->result();
+    }
+
+    function getSubProp($where){
+    	extract($where);
+    	$query = $this->db->query("select * from td_prop WHERE fc_kdprop = '".$fc_kdprop."' and fc_kategori = (select fc_kategori from t_stock WHERE fc_stock='".$fc_stock."') and fc_status='1'");
+    	return $query->result();
+    }
+    function checkProp($tabel,$where_check){
+    	$query = $this->db->where($where_check)->get($tabel);
+    	return $query->num_rows();
+    } 
+    function getUkuran(){
+    	$query = $this->db->where(array('fc_status' => '1'))->get('tm_size');
+    	return $query->result();
+    }
+    function getWarna(){
+    	$query = $this->db->where(array('fc_status' => '1'))->get('tm_warna');
+    	return $query->result();
+    }
+    function getSatuan(){
+    	$query = $this->db->where(array('fc_status' => '1'))->get("tm_satuan");
+    	return $query->result();
+    }
+    function updateDefault($stock,$satuan,$sts){
+    	$query = $this->db->query("update t_uom set fc_default='".$sts."' where fc_stock = '".$stock."' and fc_satuan = '".$satuan."'");
+    }
+// --------------------------------------------------------------------- 
 	//ini khusus untuk datatablenya
     function allposts_count($tabel)
     {   
@@ -64,5 +95,36 @@ class M_model extends CI_Model
     } 
     function posts_search_count($tabel,$field1,$field2,$search)
     {   $query = $this->db->like($field1,$search)->or_like($field2,$search)->get($tabel);
+        return $query->num_rows();  }
+
+    //jika ada where nya
+        //ini khusus untuk datatablenya
+    function allposts_countWhere($tabel,$where)
+    {   
+        $query = $this->db->where($where)->get($tabel);
+        return $query->num_rows();  
+    } 
+    function allpostsWhere($tabel,$limit,$start,$col,$dir,$where)
+    {   
+       $query = $this->db->where($where)->limit($limit,$start)->order_by($col,$dir)->get($tabel);
+        if($query->num_rows()>0)
+        { return $query->result();}
+        else{return null;}
+    }
+    function posts_searchWhere($tabel,$field1,$field2,$limit,$start,$search,$col,$dir,$where)
+    {
+        $query = $this->db->where($where)
+        				 ->group_start()
+	         				->like($field1,$search)
+	                        ->or_like($field2,$search)
+                         ->group_end()
+                         ->limit($limit,$start)
+                         ->order_by($col,$dir)->get($tabel);
+        if($query->num_rows()>0)
+        { return $query->result(); }
+        else { return null; }
+    } 
+    function posts_search_countWhere($tabel,$field1,$field2,$search,$where)
+    {   $query = $this->db->where($where)->group_start()->like($field1,$search)->or_like($field2,$search)->group_end()->get($tabel);
         return $query->num_rows();  }
 }
