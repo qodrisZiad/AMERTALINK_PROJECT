@@ -15,9 +15,8 @@
                   <div class="x_content">
                   	<div id="alert_trans" class="alert alert-success alert-dismissible fade in" role="alert" style="display: none;">
                     	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    	
                   	</div>
-                  	 <!-----------------------------------INI UNTUK MASTER PRODUKNYA ---------------------------------------------------->
+                  	<!-----------------------------------INI UNTUK MASTER PRODUKNYA ---------------------------------------------------->
                     <form class="form-horizontal form-label-left" id="formAksi" style="display: none;" method="post">
                      	<?php 
                      	$data = array(
@@ -186,8 +185,9 @@
 						$.ajax({
 				            url: link+"/Simpan",
 				            type: "POST",
-				            data:  new FormData(this),
-				            contentType: false,
+				            dataType: "JSON",
+							data:  new FormData(this),
+				            contentType: false,							
 				            cache: false,
 				            processData:false,
 				            success: function(data){ 

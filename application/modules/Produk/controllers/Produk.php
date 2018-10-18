@@ -33,44 +33,37 @@ class Produk extends CI_Controller
 			'ukuran' 	=> $this->getUkuran(),
 			'warna'  	=> $this->getWarna(),
 			'Satuan'	=> $this->getSatuan()
-		);
-		$this->load->view('Template/v_header',$data);
-		$this->load->view('Template/v_datatable');
-		$this->load->view('Template/v_sidemenu',$data);
-		$this->load->view('v_view',$data);
-		$this->load->view('v_properti',$data);
-		$this->load->view('v_variant',$data);
-		$this->load->view('v_uom',$data);
-		$this->load->view('Template/v_footer',$data);
+		);		
+		loadView(array('v_view','v_properti','v_variant','v_uom'), $data, 0);
 	}
 	public function Simpan(){
 		$aksi = $this->input->post('aksi');
-		$message = ""; 
-			$data = array(
-				'fc_stock'    => $this->input->post('a1'),
-				'fv_stock'    => $this->input->post('a5'),
-				'fv_ket'      => $this->input->post('a6'),
-				'fc_kategori' => str_pad($this->input->post('a2'),2,"0",STR_PAD_LEFT).str_pad($this->input->post('a3'),2,"0",STR_PAD_LEFT).str_pad($this->input->post('a4'),2,"0",STR_PAD_LEFT),
-				'fn_min' => $this->input->post('a7'),
-				'fc_status' => $this->input->post('a8'),
-				'fc_userid' => $this->session->userdata('userid'),
-				'fd_input' => date('Y-m-d')
-			);
+		$hasil = array('message'=>'', 'proses' => 0, 'nextNomor' => 0);
+		$data = array(
+			'fc_stock'    => $this->input->post('a1'),
+			'fv_stock'    => $this->input->post('a5'),
+			'fv_ket'      => $this->input->post('a6'),
+			'fc_kategori' => str_pad($this->input->post('a2'),2,"0",STR_PAD_LEFT).str_pad($this->input->post('a3'),2,"0",STR_PAD_LEFT).str_pad($this->input->post('a4'),2,"0",STR_PAD_LEFT),
+			'fn_min' => $this->input->post('a7'),
+			'fc_status' => $this->input->post('a8'),
+			'fc_userid' => $this->session->userdata('userid'),
+			'fd_input' => date('Y-m-d')
+		);
+		if ($aksi == 'tambah') {
+			$hasil['proses'] = $this->M_model->tambah("t_stock",$data);
+		}else if($aksi =='update'){
+			$where = array($this->primary_key => $this->input->post('a1'));
+			$hasil['proses'] = $this->M_model->update("t_stock",$data,$where);
+		}
+		if ($hasil['proses'] > 0) {
 			if ($aksi == 'tambah') {
-				$hasil['proses'] = $this->M_model->tambah("t_stock",$data);
-			}else if($aksi =='update'){
-				$where = array($this->primary_key => $this->input->post('a1'));
-				$hasil['proses'] = $this->M_model->update("t_stock",$data,$where);
+				updateNomor("SKU");
+				$hasil['nextNomor'] = getNomor("SKU");
 			}
-			if ($hasil['proses'] > 0) {
-				if ($aksi == 'tambah') {
-					updateNomor("SKU");
-					$hasil['nextNomor'] = getNomor("SKU");
-				}
-				$hasil['message'] = 'Berhasil menyimpan data';
-			}else{
-				$hasil['message'] = 'Gagal menyimpan data'; 
-			}  
+			$hasil['message'] = 'Berhasil menyimpan data';
+		}else{
+			$hasil['message'] = 'Gagal menyimpan data'; 
+		}  
 		echo json_encode($hasil);
 	}
 	public function Edit(){
