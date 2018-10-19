@@ -24,7 +24,7 @@
                      		'aksi' => array('name' => 'aksi','type' => 'hidden'), 
                      		'kode_sub' => array('name'=>'kode_sub','type' => 'hidden'),
                      		'kode_sub_sub' => array('name'=>'kode_sub_sub','type' => 'hidden'),
-                     		'a1' => array('name'=>'a1','label' => 'SKU','type' => 'text','class' => 'form-control','col' => 'col-sm-4','readonly' => 'true', 'defaultValue' => getNomor("SKU")),
+                     		'a1' => array('name'=>'a1','label' => 'SKU','type' => 'text','class' => 'form-control','col' => 'col-sm-4','readonly' => 'true'),
                      		'a2' => array('name'=>'a2','label' => 'Kategori','type' => 'option','class' => 'form-control','option' => $kategori,'col' => 'col-sm-4'),
                      		'a3' => array('name'=>'a3','label' => 'Sub Kategori','type' => 'option','class' => 'form-control','option' => "",'col' => 'col-sm-4'),
                      		'a4' => array('name'=>'a4','label' => 'Sub Sub Kategori','type' => 'option','class' => 'form-control','option' => "",'col' => 'col-sm-4'), 
@@ -68,7 +68,7 @@
 				        	'columns'	:[
 				        		{'data' : 'no',width:20} 
 				        		<?php if($delete=='1' || $update =='1'){ ?>,{'mRender': function ( data, type, row ) {
-		                       		return "<div class='x_content'><div class='btn-group'><button data-toggle='dropdown' class='btn btn-primary dropdown-toggle btn-sm' type='button' aria-expanded='false'>Aksi<span class='caret'></span></button><ul role='menu' class='dropdown-menu'><?php if($update =='1'){?><li><a href='#' onclick=edit('"+row['fc_stock']+"')>Ubah</a></li> <?php } ?> <?php if($delete =='1'){ ?><li><a href='#' onclick=hapus('"+row['fc_stock']+"')>Hapus</a></li> <?php } ?> <li class='divider'></li><li><a href='#' onclick=setProperti('"+row['fc_stock']+"')>Set Properti</a></li><li><a href='#' onclick=setVariant('"+row['fc_stock']+"')>Set Variant</a></li><li><a href='#' onclick=setUom('"+row['fc_stock']+"')>Set Uom</a></li><li><a href='#'>Set Foto</a></li></ul></div></div>";
+		                       		return "<div class='x_content'><div class='btn-group'><button data-toggle='dropdown' class='btn btn-primary dropdown-toggle btn-sm' type='button' aria-expanded='false'>Aksi<span class='caret'></span></button><ul role='menu' class='dropdown-menu'><?php if($update =='1'){?><li><a href='#' onclick=edit('"+row['fc_stock']+"')>Ubah</a></li> <?php } ?> <?php if($delete =='1'){ ?><li><a href='#' onclick=hapus('"+row['fc_stock']+"')>Hapus</a></li> <?php } ?> <li class='divider'></li><li><a href='#' onclick=setProperti('"+row['fc_stock']+"')>Set Properti</a></li><li><a href='#' onclick=setVariant('"+row['fc_stock']+"')>Set Variant</a></li><li><a href='#' onclick=setUom('"+row['fc_stock']+"')>Set Uom</a></li><li><a href='#' onclick=setFoto('"+row['fc_stock']+"')>Set Foto</a></li></ul></div></div>";
 		                    		},width:50
 	                			} <?php  }else{ ?>
 	                				,{'mRender': function ( data, type, row ) {
@@ -126,6 +126,7 @@
 						document.getElementById('bread').innerHTML = 'Master Produk';
 						document.getElementById('formAksi').reset();
 						$('#aksi').val('tambah');
+						getNomor("SKU");
 					}
 					function tutup(){
 						document.getElementById('bread').innerHTML = 'Master Produk';
@@ -133,11 +134,13 @@
 						$('#Properti').slideUp('slow');
 						$('#Variant').slideUp('slow');
 						$('#Uom').slideUp('slow');
+						$("#gambar").slideUp("slow");
 						$('#laporan').slideDown('slow');
 						$('#close_form').fadeOut('slow');
 						$('#add_form').fadeIn('slow');
 						$('#aksi').val('');
 						reload_table();
+						document.getElementById('laporan_gambar').innerHTML = "";
 					}
 					function display_message(isi){
 						$('#alert_trans').slideDown('slow').fadeOut(3000);
@@ -157,7 +160,13 @@
 				            dataType:'JSON',
 				            url: link+"/Edit/"+kode,
 				            success:function(responseText){ 
-				            	tambah(); 
+				            	$('#laporan').slideUp('slow');
+								$('#formAksi').slideDown('slow');
+								$('#close_form').fadeIn('slow');
+								$('#add_form').fadeOut('slow');
+								document.getElementById('bread').innerHTML = 'Master Produk';
+								document.getElementById('formAksi').reset();
+								$('#aksi').val('tambah');
 				              	$('#aksi').val('update');   
 				                $('input[name="a1"]').val(responseText.fc_stock);           
 				                $('input[name="kode_sub"]').val(responseText.fc_subkat); 
@@ -193,7 +202,9 @@
 				            success: function(data){ 
 					            if (data.proses != 0 && $('#aksi').val()=='tambah') {
 									document.getElementById('formAksi').reset();
-									$('#a1').val(data.nextNomor); 
+									getNomor("SKU");
+								}else{
+									tutup();
 								}
 			            		display_message(data.message);    
 			            	}      
@@ -231,5 +242,11 @@
 			            	}
 			            });
 					});
+					function getNomor(document){ 
+						$.get(link+"/getNomor/"+document, $(this).serialize())
+				            .done(function(data) { 
+				            	$('#a1').val(data);
+				            });
+					}
 				// --------------- AKHIR MASTER PRODUK ----------------------------- 
             </script>   

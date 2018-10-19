@@ -21,10 +21,14 @@ class M_model extends CI_Model
         else{return null;}
     } 
     //update data
-	function update($tabel,$data,$where){
-		$query = $this->db->update($tabel,$data,$where);
-		return $this->db->affected_rows();
-	}
+    function update($tabel,$data,$where){
+        $query = $this->db->update($tabel,$data,$where);
+        return $this->db->affected_rows();
+    }
+    function getThumbnail($stockcode){
+        $query = $this->db->query("select a.*,b.fv_warna from t_thumbnail a LEFT JOIN tm_warna b ON b.fc_warna=a.fc_warna WHERE a.fc_stock='".$stockcode."'");
+        return $query->result();
+    } 
 
     function getKategori(){
     	$query = $this->db->where(array('fc_status' => '1'))->get('tm_kategori');
@@ -69,6 +73,11 @@ class M_model extends CI_Model
     function updateDefault($stock,$satuan,$sts){
     	$query = $this->db->query("update t_uom set fc_default='".$sts."' where fc_stock = '".$stock."' and fc_satuan = '".$satuan."'");
     }
+    
+    function getWarnaProduk($stockcode){
+    	$query = $this->db->query("select * from tm_warna WHERE fc_warna in(select fc_warna from t_variant WHERE fc_stock='".$stockcode."' and fc_warna not in(select fc_warna from t_thumbnail where fc_stock = '".$stockcode."') group by fc_warna)");
+    	return $query->result();
+    } 
 // --------------------------------------------------------------------- 
 	//ini khusus untuk datatablenya
     function allposts_count($tabel)

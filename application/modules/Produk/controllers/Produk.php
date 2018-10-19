@@ -41,6 +41,7 @@ class Produk extends CI_Controller
 		$this->load->view('v_properti',$data);
 		$this->load->view('v_variant',$data);
 		$this->load->view('v_uom',$data);
+		$this->load->view('v_img',$data);
 		$this->load->view('Template/v_footer',$data);
 	}
 	public function Simpan(){
@@ -164,6 +165,7 @@ class Produk extends CI_Controller
 	 	 }
 		echo $data;
 	}
+	public function getNomor(){echo getNomor($this->uri->segment(3));}
 	// INI UNTUK PROPERTI
 	public function getProperti(){
 		$properti = $this->M_model->getProperti();
@@ -366,7 +368,6 @@ class Produk extends CI_Controller
 			echo "Gagal menghapus data";
 		}
 	}
-
 	//UNTUK UOMNYA
 	public function getSatuan(){
 		$ukuran = $this->M_model->getSatuan();
@@ -459,5 +460,63 @@ class Produk extends CI_Controller
 		}else{
 			echo "Gagal menghapus data";
 		}
+	}
+
+	public function HapusImg(){
+		$kode = $this->uri->segment(3);
+		$foto = $this->uri->segment(4);
+		$data = array("fc_id" => $kode);
+		$hapus = $this->M_model->hapus("t_thumbnail",$data);
+		if ($hapus > 0) {
+			$dir = "./assets/foto/".$foto;
+			unlink($dir); 
+			echo "Berhasil menghapus data";
+		}else{
+			echo "Gagal menghapus data";
+		}
+	}
+	//untuk gambarnya
+	public function warnaProduk(){
+		$kode = $this->uri->segment(3);
+		$warna = $this->M_model->getWarnaProduk($kode);
+		$data = "";
+			$data .= "<option>Pilih</option>";
+	 	 foreach ($warna as $hasil) { 
+	 	 	$data .= "<option value='".$hasil->fc_warna."'>".$hasil->fv_warna."</option>";  
+	 	 }
+		echo $data;
+	}
+	public function getImage(){
+		$hasile = array();
+		$gambar = $this->M_model->getThumbnail($this->uri->segment(3));
+		foreach ($gambar as $key) {
+			$hasil['fc_id'] = $key->fc_id; 
+			$hasil['fv_img'] = $key->fv_img; 
+			$hasil['fv_warna'] = $key->fv_warna; 
+			array_push($hasile,$hasil);
+		}
+		echo json_encode($hasile);
+	}
+	public function SimpanImg(){
+		$aksi = $this->input->post('aksi_img');
+		$message = ""; 
+			if (!empty($_FILES['e2']['name'])) {
+				upload('e2');
+				$data = array(
+					'fc_stock'  => $this->input->post('sku_img'), 
+					'fc_warna'  => $this->input->post('e1'),
+					'fv_img'    => $_FILES['e2']['name'],
+					'fc_status' => "1"
+				);
+			}
+			if ($aksi == 'tambah') {
+				$proses = $this->M_model->tambah("t_thumbnail",$data);
+			}
+			if ($proses > 0) {
+				$message = 'Berhasil menyimpan data';
+			}else{
+				$message = 'Gagal menyimpan data'; 
+			} 
+		echo json_encode($message);
 	}
 }

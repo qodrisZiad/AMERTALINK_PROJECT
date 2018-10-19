@@ -15,11 +15,7 @@
 					$kolom_Prop = array("No.","Satuan","Nilai","Default","Userid","Aksi");
 					buat_table($kolom_Prop,"datatable_uom");   
 				?> 
-       		</div>
-          </div>
-        </div>
-      </div> 
-    </div> 
+       		</div> 
 
     <script type="text/javascript">
     	var table4;  
