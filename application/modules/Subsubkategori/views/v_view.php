@@ -79,7 +79,7 @@
 	                    		},width:130
                 			}
 			        		<?php if($delete=='1' || $update =='1'){ ?>,{'mRender': function ( data, type, row ) {
-	                       		return "<?php if($update == '1'){?><button class='btn btn-danger' onclick=hapus('"+row['fc_kdsubsubkat']+"')><i class='fa fa-close'></i></button><?php } ?>&nbsp;<?php if($delete =='1'){ ?><button class='btn btn-info' onclick=edit('"+row['fc_kdsubsubkat']+"')><i class='fa fa-pencil'></i></button><?php } ?>";
+	                       		return "<?php if($update == '1'){?><button class='btn btn-danger' onclick=hapus('"+row['fc_kdsubsubkat']+"','"+row['fv_pict']+"')><i class='fa fa-close'></i></button><?php } ?>&nbsp;<?php if($delete =='1'){ ?><button class='btn btn-info' onclick=edit('"+row['fc_kdsubsubkat']+"')><i class='fa fa-pencil'></i></button><?php } ?>";
 	                    		},width:130
                 			} <?php  }else{ ?>
                 				,{'mRender': function ( data, type, row ) {
@@ -141,9 +141,9 @@
 			            }
 			        });
 				}
-				function hapus(kode){
+				function hapus(kode,img){
 					if(confirm("Apakah anda Yakin?")){ 
-						$.get(link+"/Hapus/"+kode, $(this).serialize())
+						$.get(link+"/Hapus/"+kode+"/"+img, $(this).serialize())
 			            .done(function(data) { 
 			            	display_message(data);
 			            	reload_table();

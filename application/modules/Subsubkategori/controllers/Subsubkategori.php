@@ -10,7 +10,7 @@ class Subsubkategori extends CI_Controller
 	private $table = "tm_subsubkategori";
 	private $primary_key = "fc_kdsubsubkat";
 	private $secondary_key = "fv_subsubkat";
-	private $kolom = array("fc_kdkat","fc_kdsubkat","fc_kdsubsubkat","fv_kat","fv_subkat","fv_subsubkat","fc_status");
+	private $kolom = array("fc_kdkat","fc_kdsubkat","fc_kdsubsubkat","fv_kat","fv_subkat","fv_subsubkat","fv_pict","fc_status");
 	public function index(){
 		if(empty($this->session->userdata('userid'))){
 			redirect('Login');
@@ -75,9 +75,12 @@ class Subsubkategori extends CI_Controller
 	} 
 	public function Hapus(){
 		$kode = $this->uri->segment(3);
+		$foto = $this->uri->segment(4);
 		$data = array($this->primary_key => $kode);
 		$hapus = $this->M_model->hapus($data);
 		if ($hapus > 0) {
+			$dir = "./assets/foto/".$foto;
+			unlink($dir);
 			echo "Berhasil menghapus data";
 		}else{
 			echo "Gagal menghapus data";

@@ -22,7 +22,7 @@
                      	$data = array(
                      		'aksi' => array('name' => 'aksi','type' => 'hidden'),
                      		'kode' => array('name'=>'kode','type' => 'hidden'),
-                     		'a1' => array('name'=>'a1','label' => 'Kategori','type' => 'text','class' => 'form-control','col' => 'col-sm-4'), 
+                     		'a1' => array('name'=>'a1','label' => 'Banner','type' => 'text','class' => 'form-control','col' => 'col-sm-4'), 
                      		'a2' => array('name'=>'a2','label' => 'Gambar','type' => 'file','class' => 'form-control','col' => 'col-sm-4'), 
                      		'a3' => array('name'=>'a3','label' => 'Aktif','type' => 'option','class' => 'form-control','option' => array('1'=>'Aktif','0'=>'Non Aktif'),'col' => 'col-sm-2')
                      	);
@@ -31,7 +31,7 @@
                     </form> 
 					<div id="laporan"> 
 						<?php 
-							$kolom = array("No.","Kategori","Status","Aksi");
+							$kolom = array("No.","Banner","Status","Aksi");
 							buat_table($kolom,"datatable");   
 						?>
 					</div>
@@ -62,7 +62,7 @@
 			        	},//pasangkan hasil dari ajax ke datatablesnya
 			        	'columns'	:[
 			        		{'data' : 'no',width:20}, 
-			        		{'data' : 'fv_kat'},
+			        		{'data' : 'fv_banner'},
 			        		{'mRender': function ( data, type, row ) {
 	                       		if (row['fc_status'] == '1') {
 	                       			return "Aktif";
@@ -72,7 +72,7 @@
 	                    		},width:130
                 			}
 			        		<?php if($delete=='1' || $update =='1'){ ?>,{'mRender': function ( data, type, row ) {
-	                       		return "<?php if($update == '1'){?><button class='btn btn-danger' onclick=hapus('"+row['fc_kat']+"','"+row['fv_pict']+"')><i class='fa fa-close'></i></button><?php } ?>&nbsp;<?php if($delete =='1'){ ?><button class='btn btn-info' onclick=edit('"+row['fc_kat']+"')><i class='fa fa-pencil'></i></button><?php } ?>";
+	                       		return "<?php if($update == '1'){?><button class='btn btn-danger' onclick=hapus('"+row['fc_banner']+"','"+row['fv_img']+"')><i class='fa fa-close'></i></button><?php } ?>&nbsp;<?php if($delete =='1'){ ?><button class='btn btn-info' onclick=edit('"+row['fc_banner']+"')><i class='fa fa-pencil'></i></button><?php } ?>";
 	                    		},width:130
                 			} <?php  }else{ ?>
                 				,{'mRender': function ( data, type, row ) {
@@ -123,9 +123,9 @@
 			            	tambah(); 
 			              	$('#aksi').val('update');
 							$('#kode').val(kode);    
-			                $('input[name="a1"]').val(responseText.fv_kat);
+			                $('input[name="a1"]').val(responseText.fv_banner);
 			                $('#pict_detail_img').show();
-			                document.getElementById('pict_detail_img').src = "./assets/foto/"+responseText.fv_pict;
+			                document.getElementById('pict_detail_img').src = "./assets/foto/"+responseText.fv_img;
 			                $('#a3').val(responseText.fc_status);           
 			            }
 			        });

@@ -1,25 +1,25 @@
 <?php defined('BASEPATH') or exit('maaf akses anda ditutup.'); 
 error_reporting(0);
-class Kategori extends CI_Controller
+class Banner extends CI_Controller
 {
 	function __construct()
 	{
 		parent::__construct();
 		$this->load->model('M_model');
 	}
-	private $table = "tm_kategori";
-	private $primary_key = "fc_kat";
-	private $secondary_key = "fv_kat";
-	private $kolom = array("fc_kat","fv_kat","fc_status","fv_pict");
+	private $table = "t_banner";
+	private $primary_key = "fc_banner";
+	private $secondary_key = "fv_banner";
+	private $kolom = array("fc_banner","fv_banner","fv_img","fc_status");
 	public function index(){
 		is_logged();
         $hakakses_user = getAkses($this->uri->segment(1));
 		$data = array(
-			'subtitle'  =>'Master Kategori',
+			'subtitle'  =>'Master Banner',
 			'greeting'  => $this->session->userdata('greeting'),
 			'nik'       => $this->session->userdata('userid'),
-			'bread'     => 'Kategori',
-			'sub_bread' => '/ Master Kategori',
+			'bread'     => 'Banner',
+			'sub_bread' => '/ Master Banner',
 			'input'		=> $hakakses_user[0],
 			'update'	=> $hakakses_user[1],
 			'delete'	=> $hakakses_user[2],
@@ -33,13 +33,13 @@ class Kategori extends CI_Controller
 			if (!empty($_FILES['a2']['name'])) {
 				upload('a2');
 				$data = array(
-					'fv_kat'    => $this->input->post('a1'),
-					'fv_pict'   => $_FILES['a2']['name'],
+					'fv_banner'    => $this->input->post('a1'),
+					'fv_img'   => $_FILES['a2']['name'],
 					'fc_status' => $this->input->post('a3')
 				);
 			}else{
 				$data = array(
-					'fv_kat'    => $this->input->post('a1'), 
+					'fv_banner'    => $this->input->post('a1'), 
 					'fc_status' => $this->input->post('a3')
 				);
 			} 
