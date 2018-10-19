@@ -265,7 +265,8 @@
 			            if (data.includes("Berhasil") == true && $('#aksi').val()=='tambah') {
 			            	document.getElementById('formAksi').reset();
 			            } 
-			            	display_message(data);
+			            	$('#b4').val('');
+							display_message(data);
 			            	datatable2();
 			            }           
 			        });

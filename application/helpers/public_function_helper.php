@@ -194,13 +194,18 @@
 	 * @data = data yang mau dilewatkan ke view
 	 * @opt  = opsional, untuk menampilkan datatable, atau yang lain
 	 */
-	function loadView($page='v_view', $data=null, $opt){
+	function loadView($pages='v_view', $data=null, $opt){
 		$ci =& get_instance();
 		$ci->load->view('Template/v_header',$data);
 		if($opt==0){ $ci->load->view('Template/v_datatable',$data); } 
-		// else { }
 		$ci->load->view('Template/v_sidemenu',$data);
-		$ci->load->view( $page , $data );
+		if(is_array($pages)){
+			foreach ($pages as $page) {
+				$ci->load->view( $page , $data );		
+			}
+		} else {
+			$ci->load->view( $pages , $data );
+		}		
 		$ci->load->view('Template/v_footer',$data);
 	}
 	/*
