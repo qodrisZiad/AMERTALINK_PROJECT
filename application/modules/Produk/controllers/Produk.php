@@ -32,8 +32,7 @@ class Produk extends CI_Controller
 			'Properti'  => $this->getProperti(),
 			'ukuran' 	=> $this->getUkuran(),
 			'warna'  	=> $this->getWarna(),
-			'Satuan'	=> $this->getSatuan()
-<<<<<<< HEAD
+			'Satuan'	=> $this->getSatuan() 
 		);
 		$this->load->view('Template/v_header',$data);
 		$this->load->view('Template/v_datatable');
@@ -43,11 +42,8 @@ class Produk extends CI_Controller
 		$this->load->view('v_variant',$data);
 		$this->load->view('v_uom',$data);
 		$this->load->view('v_img',$data);
-		$this->load->view('Template/v_footer',$data);
-=======
-		);		
-		loadView(array('v_view','v_properti','v_variant','v_uom'), $data, 0);
->>>>>>> bc217cff7c760ef324bf1d2916e811e51e198905
+		$this->load->view('Template/v_footer',$data);  		
+		//loadView(array('v_view','v_properti','v_variant','v_uom','v_img'), $data, 0); 
 	}
 	public function Simpan(){
 		$aksi = $this->input->post('aksi');
