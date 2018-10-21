@@ -222,3 +222,12 @@
 		);
 		$ci->session->set_userdata($data_menu);		
 	}
+	function encryptPass($pass){
+		$ci =& get_instance();
+		$ci->load->database();
+		$query = $ci->db->select("SUBSTR(MD5(CONCAT(SUBSTR(MD5('".$pass."'),1,16),(select fv_value from t_setup where fc_param = 'KEY_SA'))),1,15) COLLATE utf8_general_ci as data")->get();
+		foreach ($query->result() as $row) {
+			$hasil = $row->data;
+		}
+		return $hasil;
+	}
