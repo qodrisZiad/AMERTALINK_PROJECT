@@ -21,13 +21,42 @@
 				 ->get();
 		return $query;
 	} 	
-	function upload($data){
+	function upload($data, $name='', $resize=false, $debug=false){
+		$out = array('message' => '', 'is_upload' => 0, 'is_resize' => 0 );
 		$ci=& get_instance();
 				$config['upload_path']          = './assets/foto/';
-                $config['allowed_types']        = 'gif|jpg|png';
-                $config['max_size']             = 50000; 
-                $ci->load->library('upload', $config);
-                $ci->upload->do_upload($data);
+				$config['allowed_types']        = 'gif|jpg|png|jpeg|bmp';
+				//$config['remove_space']		= true;
+				$config['max_size']             = 9999; // 10mb
+		if( $name != '' ) {
+			$config['file_name']	= $name; 
+		}		
+		$ci->load->library('upload', $config);
+		if( $ci->upload->do_upload($data) ){
+			$out['is_upload'] = 1;
+			if($resize == true) {
+				$imagedata = $ci->upload->data();
+				list($width, $height) = getimagesize($imagedata['full_path']);
+				$config2['image_library'] = 'gd2';
+				$config2['source_image'] = $imagedata['full_path']; 
+				$config2['maintain_ratio'] = FALSE;
+				$config2['width'] = 900;
+				$config2['height'] = 900;
+				$ci->load->library('image_lib');
+				$ci->image_lib->initialize($config2);
+				if ($ci->image_lib->resize()) {
+					$out['is_resize'] = 1;
+				} else {
+					$out['message'] = $ci->image_lib->display_errors();
+				}
+				$ci->image_lib->clear();
+			}
+		} else {
+			$out['message'] = $ci->upload->display_errors();
+		}
+		if($debug == true) {
+			return json_encode($out);
+		}		
 	}
 	function buat_form($data){  
 		$inputan_data = "";

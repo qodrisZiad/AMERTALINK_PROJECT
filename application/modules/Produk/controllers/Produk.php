@@ -43,7 +43,7 @@ class Produk extends CI_Controller
 		$this->load->view('v_uom',$data);
 		$this->load->view('v_img',$data);
 		$this->load->view('Template/v_footer',$data);  		
-		//loadView(array('v_view','v_properti','v_variant','v_uom','v_img'), $data, 0); 
+		// loadView(array('v_view','v_properti','v_variant','v_uom','v_img'), $data, 0); 
 	}
 	public function Simpan(){
 		$aksi = $this->input->post('aksi');
@@ -502,13 +502,14 @@ class Produk extends CI_Controller
 		$aksi = $this->input->post('aksi_img');
 		$message = ""; 
 			if (!empty($_FILES['e2']['name'])) {
-				upload('e2');
+				$filename = str_replace(' ','_',$_FILES['e2']['name']);
 				$data = array(
 					'fc_stock'  => $this->input->post('sku_img'), 
 					'fc_warna'  => $this->input->post('e1'),
-					'fv_img'    => $_FILES['e2']['name'],
+					'fv_img'	=> $filename,
 					'fc_status' => "1"
 				);
+				upload('e2',$filename,true);
 			}
 			if ($aksi == 'tambah') {
 				$proses = $this->M_model->tambah("t_thumbnail",$data);
