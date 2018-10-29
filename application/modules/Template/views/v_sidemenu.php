@@ -78,7 +78,7 @@
                       <li><a href="javascript:;">  Profile</a>
                       </li>
                       <li>
-                        <a href="javascript:;">
+                        <a href="<?php echo base_url()?>Settings">
                           <span class="badge bg-red pull-right">50%</span>
                           <span>Settings</span>
                         </a>
@@ -86,7 +86,7 @@
                       <li>
                         <a href="javascript:;">Help</a>
                       </li>
-                      <li><a href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
+                      <li><a href="<?php echo base_url()?>Login/logout"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
                       </li>
                     </ul>
                   </li>

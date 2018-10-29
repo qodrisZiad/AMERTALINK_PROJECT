@@ -70,7 +70,7 @@
 		  	}
 		  	if ($input['type'] =="text" || $input['type']=='number' || $input['type']=='date') {
 				$val = "";
-				if($input['type'] == 'text') {
+				if($input['type'] == 'text' || $input['type']=='number') {
 					($input['defaultValue'] != '') ? $val = $input['defaultValue'] : $val = "";
 				} else
 		  		if ($input['type'] == 'date') {
