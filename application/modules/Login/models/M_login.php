@@ -19,7 +19,7 @@ class M_login extends CI_Model{
 			WHERE
 				a.fc_userid = '".$userid."'
 			AND a.fc_password = SUBSTR(MD5(CONCAT(SUBSTR(MD5('".$password."'), 1, 16),(SELECT fv_value FROM t_setup WHERE fc_param = 'KEY_SA'))),1,15) COLLATE utf8_general_ci
-			AND a.fc_hold = 'N'";
+			AND a.fc_hold = '0'";
 		$query = $this->db->query($query_select);
 		return $query->row();
 	}

@@ -22,10 +22,12 @@ class Login extends CI_Controller{
 			$row = $this->m_login->getData($userid,$pass);			
 			$data_user = array(
 				'userid' 	=> $userid,
-				'greeting' 	=> $row->greeting,
+				'nik' 		=> $row->fc_nik,
+				'branch' 	=> $row->fc_branch,
+				'greeting' 	=> $row->greeting
 			);
 			$this->session->set_userdata($data_user);
-			resetMenuSession();
+			resetMenuSession($row->fc_nik);
 			$hasil = 1;
 		}else{
 			$hasil = 0;
