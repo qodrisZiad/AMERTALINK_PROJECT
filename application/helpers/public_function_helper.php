@@ -20,6 +20,52 @@
 				 ->where($where)
 				 ->get();
 		return $query;
+	}
+	function getSupplier(){
+		$ci =& get_instance();
+		$ci->load->database();
+		$data = $ci->db->where(array("fc_status" => "1"))->get("tm_supplier");
+		$arr_data = array();
+			$arr_data[""] = "Pilih Supplier";
+			foreach ($data->result() as $supp) {
+				$arr_data[$supp->fc_kdsupplier] = $supp->fc_kdsupplier." | ".$supp->fv_supplier;
+			}
+			return $arr_data;
+	}
+	function getBranch(){
+		$ci =& get_instance();
+		$ci->load->database();
+		$data = $ci->db->where(array("fc_status" => "1"))->get("tm_branch");
+		$arr_data = array();
+			$arr_data[""] = "Pilih Cabang";
+			foreach ($data->result() as $branch) {
+				$arr_data[$branch->fc_branch] = $branch->fv_branch;
+			}
+			return $arr_data;
+	} 
+	function getWareHouse($branch){
+		$ci =& get_instance();
+		$ci->load->database();
+		$data = $ci->db->where(array("fc_branch" => $branch,"fc_status" => "1"))->get("tm_warehouse"); 
+		return $data->result();
+	}
+	function getSize($stockcode){
+		$ci =& get_instance();
+		$ci->load->database();
+		$data = $ci->db->where(array("fc_stock" => $stockcode))->group_by("fc_size")->get("v_variant"); 
+		return $data->result();
+	}
+	function getSatuan($stockcode){
+		$ci =& get_instance();
+		$ci->load->database();
+		$data = $ci->db->where(array("fc_stock" => $stockcode))->get("v_uom"); 
+		return $data->result();
+	}
+	function getStock($stockcode){
+		$ci =& get_instance();
+		$ci->load->database();
+		$data = $ci->db->where(array("fc_stock" => $stockcode))->get("v_stock"); 
+		return $data->row();
 	} 	
 	function upload($data, $name='', $resize=false, $debug=false){
 		$out = array('message' => '', 'is_upload' => 0, 'is_resize' => 0 );
@@ -63,11 +109,22 @@
 		  foreach ($data as $key => $value) {
 		  	$input =  $value; 
 		  	$readonly = "";
+		  	$input_grup = "";
+		  	$class_data = "";
 		  	if (!empty($input['readonly'])) {
 		  		$readonly = 'readonly';
 		  	}else{
 		  		$readonly = "";
 		  	}
+
+		  	if (!empty($input['input_search'])) {
+		  		$class_data = "input-group";
+		  		$input_grup = '<span class="input-group-btn"> <button type="button" id="btn_cari" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg"><i class="fa fa-search"></i></button></span>';
+		  	}else{
+		  		$class_data = "";
+		  		$input_grup = "";
+		  	}
+
 		  	if ($input['type'] =="text" || $input['type']=='number' || $input['type']=='date') {
 				$val = "";
 				if($input['type'] == 'text' || $input['type']=='number') {
@@ -76,7 +133,7 @@
 		  		if ($input['type'] == 'date') {
 		  			$val = date('Y-m-d');
 		  		}
-		  		$type = '<input type="'.$input['type'].'" class="'.$input['class'].'" id="'.$input['name'].'" name="'.$input['name'].'" '.$readonly.' value="'.$val.'">';
+		  		$type = '<input type="'.$input['type'].'" class="'.$input['class'].'" id="'.$input['name'].'" name="'.$input['name'].'" '.$readonly.' value="'.$val.'">'.$input_grup;
 		  	}else
 		  	if ($input['type'] =="file") {
 		  		$val = ""; 
@@ -103,7 +160,7 @@
 			  	$inputan_data .= '
 				<div class="form-group">
 		            <label class="control-label col-sm-2" for="'.$input['name'].'">'.$input['label'].'</label>
-		            <div class="'.$input['col'].'">
+		            <div class="'.$input['col'].' '.$class_data.'">
 		              	'.$type.'
 		            </div>
 		        </div>
