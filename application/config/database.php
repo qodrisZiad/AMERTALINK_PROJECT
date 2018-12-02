@@ -5,7 +5,7 @@
     'dsn' => '',
     'hostname' => 'amertalink.co.id',
     'username' => 'amerta2018_root',
-    'password' => 'tokobersama',
+    'password' => 'amerta2018',
     'database' => 'amerta2018_store',
     'dbdriver' => 'mysqli',
     'dbprefix' => '',

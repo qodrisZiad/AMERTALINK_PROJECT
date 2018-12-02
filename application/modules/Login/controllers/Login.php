@@ -27,7 +27,7 @@ class Login extends CI_Controller{
 				'greeting' 	=> $row->greeting
 			);
 			$this->session->set_userdata($data_user);
-			resetMenuSession($row->fc_nik);
+			resetMenuSession();
 			$hasil = 1;
 		}else{
 			$hasil = 0;

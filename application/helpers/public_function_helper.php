@@ -61,6 +61,12 @@
 		$data = $ci->db->where(array("fc_stock" => $stockcode))->get("v_uom"); 
 		return $data->result();
 	}
+	function getVariant($stockcode){
+		$ci =& get_instance();
+		$ci->load->database();
+		$data = $ci->db->where(array("fc_stock" => $stockcode))->get("v_variant"); 
+		return $data->result();
+	}
 	function getStock($stockcode){
 		$ci =& get_instance();
 		$ci->load->database();
