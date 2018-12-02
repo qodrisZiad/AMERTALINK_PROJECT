@@ -43,10 +43,26 @@
 			}
 			return $arr_data;
 	} 
-	function getWareHouse($branch){
+	function getWareHouse($branch, $out=0){
 		$ci =& get_instance();
 		$ci->load->database();
 		$data = $ci->db->where(array("fc_branch" => $branch,"fc_status" => "1"))->get("tm_warehouse"); 
+		if ($out==0){
+			return $data->result();
+		} else 
+		if ($out==1){
+			$arr_data = array();
+			$arr_data[""] = "Pilih Warehouse";
+			foreach ($data->result() as $wh) {
+				$arr_data[$wh->fc_wh] = $wh->fc_wh." | ".$wh->fv_wh;
+			}
+			return $arr_data;
+		}
+	}
+	function getWarna($stockcode, $size){
+		$ci =& get_instance();
+		$ci->load->database();
+		$data = $ci->db->where(array("fc_stock" => $stockcode,"fv_size" => $size))->group_by("fv_warna")->get("v_variant"); 
 		return $data->result();
 	}
 	function getSize($stockcode){

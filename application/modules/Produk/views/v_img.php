@@ -15,7 +15,7 @@
         </div>
       </div> 
     </div> 
-			    <div id="laporan_gambar"></div>
+	<div id="laporan_gambar"></div>
 	<script type="Text/Javascript">
 		function setFoto(kode){
 			$('[name="aksi_img"]').val("tambah");
