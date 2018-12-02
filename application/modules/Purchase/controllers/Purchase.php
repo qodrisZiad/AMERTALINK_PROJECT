@@ -10,7 +10,8 @@ class Purchase extends CI_Controller
 	private $table = "tm_warna";
 	private $primary_key = "fc_warna";
 	private $secondary_key = "fv_warna";
-	private $kolom = array("fc_warna","fv_warna","fc_hexacode","fc_status"); 
+	private $kolom = array("fc_stock","kategori","fv_stock","fn_onhand"); 
+	private $kolom_Detail = array("fc_id","fc_branch","fc_nopo","fc_stock","fv_stock","variant","fv_satuan","price","fn_qty","fn_uom","konversi","total"); 
 	public function index(){
 		is_logged();
         $hakakses_user = getAkses($this->uri->segment(1));
@@ -26,52 +27,53 @@ class Purchase extends CI_Controller
 			'delete'	=> $hakakses_user[2],
 			'view'		=> $hakakses_user[3]
 		);
-		loadView('v_view', $data, 0);
+		loadView('v_view', $data, 0); 
 	}
 // ------------------------- master data ----------------------------------------					
-	public function SimpanMst(){
-		$aksi     = $this->input->post('aksi');
-		$nopo     = $this->input->post("a1");
-		$tglpo    = date('Y-m-d',strtotime($this->input->post("a2")));
-		$supplier = $this->input->post("a3");
-		$branch   = $this->input->post("a4");
-		$wh       = $this->input->post("a5");
-		$estimasi = date("Y-m-d",strtotime($this->input->post("a6")));
-		$catatan  = $this->input->post("a8");
-		$userid   = $this->input->post("a9");
-			$message = ""; 
-			$data = array(
-				'fc_branch'     => $this->session->userdata("branch"),
-				'fc_nopo'       => $nopo,
-				'fd_po'         => $tglpo,
-				'fc_kdsupplier' => $supplier,
-				'fc_branch_to'  => $branch,
-				'fc_wh'         => $wh,
-				'fd_estdatang'  => $estimasi,
-				'fd_input'      => date("Y-m-d"),
-				'fc_userid'     => $userid,
-				'fc_status'     => "I",
-				'fv_note'       => $catatan
-			);
-			$where = array("fc_branch" => $this->session->userdata("branch"),"fc_nopo" => $nopo,"fc_status" => "I");
-			if ($this->checkMst($where) == 0) {
-				$proses = $this->M_model->tambah("tm_po",$data);
-			}else if($this->checkMst($where) > 0){
-				$where = array("fc_branch" => $this->session->userdata("branch"),"fc_nopo" => $nopo);
-				$proses = $this->M_model->update("tm_po",$data,$where);
-			}
-			if ($proses > 0) {
-				$message = 'Berhasil menyimpan data';
-			}else{
-				$message = 'Gagal menyimpan data'; 
-			} 
+	public function SimpanMst(){ 
+		$nopo      = $this->input->post("a1");
+		$tglpo     = date('Y-m-d',strtotime($this->input->post("a2")));
+		$supplier  = $this->input->post("a3");
+		$branch    = $this->input->post("a4");
+		$wh        = $this->input->post("a5");
+		$estimasi  = date("Y-m-d",strtotime($this->input->post("a6")));
+		$catatan   = $this->input->post("a9"); 
+		$tglInput  = date('Y-m-d H:i:s',strtotime($this->input->post("a10")));
+		$userinput = $this->input->post("a11");
+		$message   = ""; 
+		$data = array(
+			'fc_branch'     => $this->session->userdata("branch"),
+			'fc_nopo'       => $nopo,
+			'fd_po'         => $tglpo,
+			'fc_kdsupplier' => $supplier,
+			'fc_branch_to'  => $branch,
+			'fc_wh'         => $wh,
+			'fd_estdatang'  => $estimasi,
+			'fd_input'      => $tglInput,
+			'fc_userid'     => $userinput,
+			'fc_status'     => "I",
+			'fv_note'       => $catatan,
+			'fc_approve'       => '0'
+		);
+		$where = array("fc_branch" => $this->session->userdata("branch"),"fc_nopo" => $nopo,"fc_status" => "I");
+		if ($this->checkMst($where) == 0) {
+			$proses = $this->M_model->tambah("tm_po",$data);
+		}else if($this->checkMst($where) > 0){
+			$where = array("fc_branch" => $this->session->userdata("branch"),"fc_nopo" => $nopo);
+			$proses = $this->M_model->update("tm_po",$data,$where);
+		}
+		if ($proses > 0) {
+			$message = 'Berhasil menyimpan data';
+		}else{
+			$message = 'Gagal menyimpan data'; 
+		} 
 		echo json_encode($message);
 	}
 	public  function checkMst($where){
 		$data = $this->M_model->checkMst($where);
 		return $data;
 	}
-	public function EditMst(){
+	public function getPO(){
 		$branch = $this->uri->segment(3);
 		$nopo = $this->uri->segment(4);
 		$data = array("fc_branch" => $branch,"fc_nopo" => $nopo);
@@ -87,23 +89,22 @@ class Purchase extends CI_Controller
 		echo $data;
 	}  
 // ------------------------- end data ----------------------------------------	
-// ------------------------- data intro ----------------------------------------									
-	public function data(){ 
-		$tabel = $this->table;  
-		$limit = $this->input->post('length');
-        $start = $this->input->post('start');
-        $order = $kolom[$this->input->post('order')[0]['column']];
-        $dir = $this->input->post('order')[0]['dir']; 
-        $totalData = $this->M_model->allposts_count($tabel); 
-        $totalFiltered = $totalData;  
+// ------------------------- detail data ----------------------------------------									
+	public function dataDetail(){  
+		$limit         = $this->input->post('length');
+		$start         = $this->input->post('start');
+		$order         = $kolom_Detail[$this->input->post('order')[0]['column']];
+		$dir           = $this->input->post('order')[0]['dir']; 
+		$totalData     = $this->M_model->allposts_count_Detail(); 
+		$totalFiltered = $totalData;  
         if(empty($this->input->post('search')['value']))
         {            
-            $posts = $this->M_model->allposts($tabel,$limit,$start,$order,$dir);
+            $posts = $this->M_model->allposts_Detail($limit,$start);
         }
         else {
             $search = $this->input->post('search')['value'];  
-            $posts =  $this->M_model->posts_search($tabel,$this->primary_key,$this->secondary_key,$limit,$start,$search,$order,$dir); 
-            $totalFiltered = $this->M_model->posts_search_count($tabel,$this->primary_key,$this->secondary_key,$search);
+            $posts =  $this->M_model->posts_search_Detail($limit,$start,$search); 
+            $totalFiltered = $this->M_model->posts_search_count_Detail($search);
         } 
         $data = array();
         if(!empty($posts))
@@ -111,9 +112,9 @@ class Purchase extends CI_Controller
             foreach ($posts as $post)
             { 	
                 $nestedData['no'] = $no++;
-                for ($i=0; $i < count($this->kolom) ; $i++) {
-                	$hasil = $this->kolom[$i]; 
-                	$nestedData[$this->kolom[$i]] = $post->$hasil;
+                for ($i=0; $i < count($this->kolom_Detail) ; $i++) {
+                	$hasil = $this->kolom_Detail[$i]; 
+                	$nestedData[$this->kolom_Detail[$i]] = $post->$hasil;
                 }  
                 $data[] = $nestedData; 
             }
@@ -125,9 +126,7 @@ class Purchase extends CI_Controller
                     "data"            => $data   
                     ); 
         echo json_encode($json_data); 
-	}
-// ------------------------- end data intro ----------------------------------------
-// ------------------------- detail data ----------------------------------------											
+	}  											
 	public function dataPODetail(){ 
 		$kolomDetail = array("fc_id","fc_nopo","fc_stock","fv_stock","fv_size","fv_satuan","fn_qty","fn_konversi","fv_ket");
 		$tabel = "v_detailPO";  
@@ -168,30 +167,29 @@ class Purchase extends CI_Controller
                     ); 
         echo json_encode($json_data); 
 	} 
-	public function simpanDetail(){
-			$aksi       = $this->input->post("aksiDetail");
-			$kode       = $this->input->post("kodeDetail");
-			$nopo       = $this->input->post("nopo");
-			$sku        = $this->input->post("b1");
-			$size       = $this->input->post("b2");
-			$satuan     = $this->input->post("b3");
-			$qty        = $this->input->post("b4");
-			$keterangan = $this->input->post("b5");
+	public function simpanDtl(){  
+			$sku        = $this->input->post("d1");
+			$price      = $this->input->post("d3");
+			$variant    = $this->input->post("d4");
+			$satuan     = explode("#",$this->input->post("d5"));
+			$qty        = $this->input->post("d6");
+			$subtotal   = $this->input->post("d7");
+			$keterangan = $this->input->post("d8");
 			$data       = array(
-							"fc_nopo"   => $nopo,
-							"fc_stock"  => $sku,
-							"fc_size"   => $size,
-							"fc_satuan" => $satuan,
-							"fn_qty"    => $qty,
-							"fv_ket"    => $keterangan,
-							"fc_status" => "I"
-							);
-			if ($aksi == "tambah") {
-				$data = $this->M_model->tambah("td_po",$data);
-			}else if($aksi == "update"){
-				$where = array("fc_id" => $kode);
-				$data = $this->M_model->update("td_po",$data,$where);
-			}
+							"fc_branch"     => $this->session->userdata('branch'),
+							"fc_nopo"       => $this->session->userdata('userid'),
+							"fc_stock"      => $sku,
+							"fc_variant"    => $variant,
+							"fc_satuan"     => $satuan[0],
+							"fn_qty"        => $qty,
+							"fn_qty_terima" => 0,
+							"fn_qty_sisa"   => $qty,
+							"fn_price"      => $price,
+							"fn_total"      => $subtotal,
+							"fv_ket"        => $keterangan,
+							"fc_status"     => "I"
+							); 
+			$data = $this->M_model->tambah("td_po",$data); 
 			if ($data > 0) {
 				echo "Berhasil Menyimpan";
 			}else{
@@ -207,9 +205,9 @@ class Purchase extends CI_Controller
 		}else{
 			echo "Gagal menghapus data";
 		}
-	}
+	} 
 	public function dataItem(){ 
-		$kolomDetail = array("fc_stock","fv_stock","kategori");
+		$kolomDetail = array("fc_stock","fv_stock","kategori","fn_onhand");
 		$tabel = "v_stock";  
 		$limit = $this->input->post('length');
         $start = $this->input->post('start');
@@ -247,33 +245,28 @@ class Purchase extends CI_Controller
                     ); 
         echo json_encode($json_data); 
 	}
-	public function getSize(){
-		$stockcode = $this->uri->segment(3);
-		$data .= "<option value=''>Pilih Size</option>";
-		foreach (getSize($stockcode) as $size) {
-			$data .= "<option value='".$size->fc_size."'>".$size->fv_size."</option>"; 
-		}
-		echo $data;
+	public function getStock(){
+		$fc_stock = $this->uri->segment(3); 
+		$data = array("fc_stock" => $fc_stock);
+		$edit = $this->M_model->getData("t_stock",$data);
+		echo json_encode($edit);
 	}
 	public function getSatuan(){
 		$stockcode = $this->uri->segment(3);
 		$data .= "<option value=''>Pilih Satuan</option>";
 		foreach (getSatuan($stockcode) as $satuan) {
-			$data .= "<option value='".$satuan->fc_uom."'>".$satuan->fv_satuan."</option>"; 
+			$data .= "<option value='".$satuan->fc_uom."#".$satuan->fn_uom."'>".$satuan->fv_satuan."</option>"; 
 		}
 		echo $data;
 	}
-	public function getStock(){
-		$stockcode = $this->uri->segment(3); 
-		echo json_encode(getStock($stockcode));
-	}
-	public function EditDtl(){
-		$branch = $this->uri->segment(3);
-		$nopo = $this->uri->segment(4);
-		$data = array("fc_branch" => $branch,"fc_nopo" => $nopo);
-		$edit = $this->M_model->getData("tm_po",$data);
-		echo json_encode($edit);
-	} 
+	public function getVariant(){
+		$stockcode = $this->uri->segment(3);
+		$data .= "<option value=''>Pilih Variant</option>";
+		foreach (getVariant($stockcode) as $variant) {
+			$data .= "<option value='".$variant->fc_variant."'>".$variant->fv_size." | ".$variant->fv_warna."</option>"; 
+		}
+		echo $data;
+	}  
 // ------------------------- end detail data ---------------------------------------- 
 	public function total(){
 		$hasil = $this->db->select("count(*) as total")->from("td_po")->where(array("fc_nopo" => $this->uri->segment(3)))->get();
@@ -281,13 +274,68 @@ class Purchase extends CI_Controller
 	}
 	public function Finalisasi(){  
 		$where = array("fc_branch" => $this->session->userdata("branch"),"fc_nopo" => $this->session->userdata('userid'));
-		$data = array("fc_status" => "F","fc_nopo" => getNomor("PO"));
+		$data = array("fc_status" => "F","fc_nopo" => $this->session->userdata('userid'));
 		$edit = $this->M_model->update("tm_po",$data,$where); 
+		$update = $this->db->query("call final_PO('".$this->session->userdata('branch')."','".$this->session->userdata('userid')."')");
 		if ($edit) {
-			echo "Berhasil menyimpan data.No po anda ".getNomor("PO");
-			updateNomor("PO");
+			$no_Trx = $this->M_model->getTrxerror(array("fc_userid" => $this->session->userdata("userid")));
+			$this->M_model->hapus("t_trxDummy",array('fc_userid' => $this->session->userdata("userid")));
+			echo "Berhasil menyimpan data,\n".$no_Trx; 
 		}else{
 			echo "Gagal Menyimpan";
 		}
+	}
+	public function batalkan(){
+		$kode = $this->uri->segment(3);
+		$data = array("fc_nopo" => $kode);
+		$hapus = $this->M_model->hapus("tm_po",$data);
+		if ($hapus > 0) {
+			$no_Trx = $this->M_model->getTrxerror(array("fc_userid" => $this->session->userdata("userid")));
+			$this->M_model->hapus("t_trxDummy",array('fc_userid' => $this->session->userdata("userid")));
+			echo "Berhasil menghapus data,\n".$no_Trx;
+		}else{
+			echo "Gagal menghapus data";
+		}
+	}
+	public function getMSTINFO(){
+		$nopo = $this->uri->segment(3);
+		$data = $this->M_model->getData("v_POMST",array("fc_nopo"=>$nopo));
+		echo json_encode($data);
+	}
+	public function getDTLINFO(){
+		$hasil = "";
+		$nopo = $this->uri->segment(3);
+		$data = $this->M_model->getDetail("v_detailPO",array("fc_branch" => $this->session->userdata("branch"),"fc_nopo"=>$nopo));
+		foreach ($data as $key) {
+			$hasil .= "<tr>
+			<td>".$key->fc_stock."</td>
+			<td>".$key->fv_stock."</td>
+			<td>".$key->variant."</td>
+			<td>".$key->fv_satuan."</td>
+			<td>".$key->price."</td>
+			<td>".$key->fn_qty."</td>
+			<td>".$key->fn_uom."</td>
+			<td>".$key->konversi."</td>
+			<td>".$key->total."</td>
+			</tr>";
+		}
+		echo '<table class="table table-striped">
+                                  <thead>
+                                    <tr>
+                                      <th>SKU</th>
+                                      <th>Nama Item</th>
+                                      <th>Variant</th>
+                                      <th>Satuan</th>
+                                      <th>Harga</th>
+                                      <th>Qty</th>
+                                      <th>Qty UOM</th>
+                                      <th>Konversi</th>
+                                      <th>Sub Total</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                  '.$hasil.'
+                                  </tbody>
+                                </table>';
 	} 
 }
