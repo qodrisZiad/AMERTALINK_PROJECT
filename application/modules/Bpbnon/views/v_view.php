@@ -121,7 +121,7 @@
 							{'data' : 'fm_total'},
 							{'data' : 'fc_status'}
 			        		<?php if($delete=='1' || $update =='1'){ ?>,{'mRender': function ( data, type, row ) {
-	                       		return "<?php if($delete == '1'){?><button class='btn btn-danger' onclick=hapus('"+row['fc_id']+"')><i class='fa fa-close'></i></button><?php } ?>&nbsp;<?php if($delete =='1'){ ?><button class='btn btn-info' onclick=edit('"+row['fc_warna']+"')><i class='fa fa-pencil'></i></button><?php } ?>";
+	                       		return "<?php if($delete == '1'){?><button class='btn btn-danger' onclick=hapus('"+row['fc_nobpb']+"')><i class='fa fa-close'></i></button><?php } ?>&nbsp;<?php if($delete =='1'){ ?><button class='btn btn-info' onclick=edit('"+row['fc_warna']+"')><i class='fa fa-pencil'></i></button><?php } ?>";
 	                    		},width:130
                 			} <?php  }else{ ?>
                 				,{'mRender': function ( data, type, row ) {

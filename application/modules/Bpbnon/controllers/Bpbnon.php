@@ -205,6 +205,16 @@ class Bpbnon extends CI_Controller
 				echo "Gagal Menyimpan";
 			}
 	}
+	public function Hapus(){
+		$kode = $this->uri->segment(3);
+		$data = array("fc_nobpb" => $kode);
+		$hapus = $this->M_model->hapus("tm_bpbnon",$data);
+		if ($hapus > 0) {
+			echo "Berhasil menghapus data";
+		}else{
+			echo "Gagal menghapus data";
+		}
+	}
 	public function HapusDetail(){
 		$kode = $this->uri->segment(3);
 		$data = array("fc_id" => $kode);
