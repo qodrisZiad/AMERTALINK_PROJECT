@@ -30,7 +30,7 @@
               <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                   <div class="x_title">
-                    <h2>Purchase Order</h2> 
+                    <h2>Reprint PO</h2> 
                     <div class="clearfix"></div> 
                   </div>
                   <div class="x_content">
@@ -153,15 +153,7 @@
 		       		getDTLINFO(kode);
 		       }
 		       function cetakData(){
-			       	if(confirm("Apakah anda Yakin ingin mencetak?")){ 
-			       		$.get(link+"/Print/"+$("#sup_code").val(), $(this).serialize())
-			            .done(function(data) { 
-			            	//jika berhasil maka print report
-			            	tutup();
-			       			datatable();
-			       			window.print();
-			            }); 
-			       	}
+			       	window.print();
 		       }
 
             </script>   

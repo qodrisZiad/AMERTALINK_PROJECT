@@ -1,6 +1,6 @@
 <?php defined('BASEPATH') or exit('maaf akses anda ditutup.'); 
 error_reporting(0);
-class Print_po extends CI_Controller
+class Reprint_po extends CI_Controller
 {
 	function __construct()
 	{
@@ -15,11 +15,11 @@ class Print_po extends CI_Controller
 		is_logged();
         $hakakses_user = getAkses($this->uri->segment(1));
 		$data = array(
-			'subtitle'     =>'Print PO',
+			'subtitle'     =>'Reprint PO',
 			'greeting'  => $this->session->userdata('greeting'),
 			'nik'       => $this->session->userdata('userid'),
 			'bread'     => 'Purchase Order',
-			'sub_bread' => '/ Print PO',
+			'sub_bread' => '/ Reprint PO',
 			'input'		=> $hakakses_user[0],
 			'update'	=> $hakakses_user[1],
 			'delete'	=> $hakakses_user[2],
