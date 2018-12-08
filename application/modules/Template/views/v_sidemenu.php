@@ -71,7 +71,7 @@
                 <ul class="nav navbar-nav navbar-right">
                   <li class="">
                     <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                      <img src="<?= site_url().'assets/images/logo2.png'; ?>" alt="">John Doe
+                      <img src="<?= site_url().'assets/user.png'; ?>" alt=""><?= $greeting ?>
                       <span class=" fa fa-angle-down"></span>
                     </a>
                     <ul class="dropdown-menu dropdown-usermenu pull-right">
