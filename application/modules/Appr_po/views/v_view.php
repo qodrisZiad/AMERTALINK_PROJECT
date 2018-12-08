@@ -182,7 +182,7 @@
 	                                <label class="control-label col-md-3" for="d6">Qty
 	                                </label>
 	                                <div class="col-md-6">
-	                                  <input type="text" id="d6" name="d6" class="form-control" onchange="hitung()">
+	                                  <input type="text" id="d6" name="d6" class="form-control" onblur="hitung()">
 	                                </div>
 	                              </div>
 	                              <div class="form-group">
@@ -382,13 +382,12 @@
 			            cache: false,
 			            processData:false,
 			            success: function(responseText){ 
-			            	resetDetail();
-			            	alert(responseText);      
+			            	display_message(responseText);
+			            	detail($("#nota").val());  
 			            }           
 			        });
 			        return false;  
-				});
-				 
+				}); 
 				function datatable2(kode){
 	                table = $('#datatable2').DataTable({
 		                'processing': true, //ini untuk menampilkan processing

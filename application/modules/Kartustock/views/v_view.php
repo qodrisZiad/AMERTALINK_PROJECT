@@ -3,6 +3,7 @@
               <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                   <div class="x_title">
+<<<<<<< HEAD:application/modules/Kartustock/views/v_view.php
 <<<<<<< HEAD:application/modules/Bpb/views/v_view.php
                     <h2>Bukti Penerimaan Barang PO</h2> 
                   	<ul class="nav navbar-right panel_toolbox">
@@ -11,6 +12,9 @@
                     <div class="clearfix"></div> 
 =======
                     <h2>Kartustock</h2>
+=======
+                    <h2>Master Warna</h2>
+>>>>>>> parent of df74dbc... modul untuk PO,BPB PO,APPROVAL,PRINT PO,REPRINT PO:application/modules/Bpb/views/v_view.php
                     <ul class="nav navbar-right panel_toolbox">
                       <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li> 
                       <li><a><i class=""></i></a></li>
@@ -18,13 +22,17 @@
                       <li id="close_form" style="display: none"><a><i class="fa fa-close" onclick="tutup()"></i></a></li>
                     </ul>
                     <div class="clearfix"></div>
+<<<<<<< HEAD:application/modules/Kartustock/views/v_view.php
 >>>>>>> cf614395e535c5dd75b2adbdfd726a98eca48cac:application/modules/Kartustock/views/v_view.php
+=======
+>>>>>>> parent of df74dbc... modul untuk PO,BPB PO,APPROVAL,PRINT PO,REPRINT PO:application/modules/Bpb/views/v_view.php
                   </div>
                   <div class="x_content">
                   	<div id="alert_trans" class="alert alert-success alert-dismissible fade in" role="alert" style="display: none;">
                     	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
                     	Transaksi berhasil 
                   	</div>
+<<<<<<< HEAD:application/modules/Kartustock/views/v_view.php
 <<<<<<< HEAD:application/modules/Bpb/views/v_view.php
                   	<input type="hidden" id="no_nota"> 
                   	<h3 style="display:none;" class="StepTitle">Mengambil informasi server...</h3>
@@ -323,6 +331,26 @@
 						<?php 
 							$kolom = array("No.","branch","wh","tanggal","fc_stock","fc_variant","fc_uom");
 >>>>>>> cf614395e535c5dd75b2adbdfd726a98eca48cac:application/modules/Kartustock/views/v_view.php
+=======
+                     <form class="form-horizontal form-label-left" id="formAksi" style="display: none;" method="post">
+                     	<?php 
+                     	$data = array(
+                     		'aksi' => array('name' => 'aksi','type' => 'hidden'),
+                     		'kode' => array('name'=>'kode','type' => 'hidden'),
+                     		'a1' => array('name'=>'a1','label' => 'No. BPB','type' => 'text','class' => 'form-control','col' => 'col-sm-4'),
+							'a2' => array('name'=>'a2','label' => 'Tgl. Terima','type' => 'date','class' => 'form-control','col' => 'col-sm-4'),
+							'a3' => array('name'=>'a3','label' => 'No. BPB','type' => 'option','option' => $listpo, 'class' => 'form-control','col' => 'col-sm-4'),
+							'a4' => array('name'=>'a4','label' => 'Qty Barang','type' => 'number','class' => 'form-control','col' => 'col-sm-4','defaultValue'=>'0'),
+							'a5' => array('name'=>'a5','label' => 'Total Harga','type' => 'number','class' => 'form-control','col' => 'col-sm-4','defaultValue'=>'0'),
+                     		'a6' => array('name'=>'a6','label' => 'Aktif','type' => 'option','class' => 'form-control','option' => array('1'=>'Aktif','0'=>'Non Aktif'),'col' => 'col-sm-2')
+                     	);
+                     	buat_form($data);  
+                     	?>
+                    </form> 
+					<div id="laporan"> 
+						<?php 
+							$kolom = array("No.","Warna","Kode Warna","Status","Aksi");
+>>>>>>> parent of df74dbc... modul untuk PO,BPB PO,APPROVAL,PRINT PO,REPRINT PO:application/modules/Bpb/views/v_view.php
 							buat_table($kolom,"datatable");   
 						?>
 					</div>
@@ -336,6 +364,7 @@
             	var link = "<?php echo site_url().$this->uri->segment(1);?>"; 
             	var table;
             	$(document).ready(function(){
+<<<<<<< HEAD:application/modules/Kartustock/views/v_view.php
 <<<<<<< HEAD:application/modules/Bpb/views/v_view.php
             		 tutup(); 
             	}); 
@@ -343,14 +372,17 @@
             		datatable(); 
             	});
 >>>>>>> cf614395e535c5dd75b2adbdfd726a98eca48cac:application/modules/Kartustock/views/v_view.php
+=======
+            		datatable();
+            	});
+>>>>>>> parent of df74dbc... modul untuk PO,BPB PO,APPROVAL,PRINT PO,REPRINT PO:application/modules/Bpb/views/v_view.php
             	function datatable(){
             		table = $('#datatable').DataTable({
 			        	'processing': true, //ini untuk menampilkan processing
 			        	'serverSide': true, //iini untuk serversidenya
 			        	'order'		: [], //ini jika menginginkan diorder
-			        	'destroy'	: true,
 			        	'language'  : {
-			        		'searchPlaceholder': "Cari"
+			        		'searchPlaceholder': "Cari Warna"
 			        	},
 			        	'ajax':{
 			        		'url'	: "<?php echo site_url($this->uri->segment(1).'/ajax_list');?>",
@@ -360,113 +392,65 @@
 <<<<<<< HEAD:application/modules/Bpb/views/v_view.php
 			        	'columns'	:[
 			        		{'data' : 'no',width:20}, 
-			        		<?php if($delete=='1' || $update =='1'){ ?>
-			        			{'mRender': function ( data, type, row ) {
-			        				return "<button type='button' class='btn btn-success' onclick=detail('"+row['fc_nopo']+"')>Detail</button>"; 
-                					}
-                				}	
-                			<?php } ?>, 
-			        		{'data' : 'fc_nopo'},
-			        		{'data' : 'fd_po'},
-			        		{'data' : 'fv_supplier'}, 
-			        		{'data' : 'fv_addr'}, 
+			        		{'data' : 'fv_warna'},  
 			        		{'mRender': function ( data, type, row ) {
-		                       		return row['fc_telp']+" / "+row['fc_telp2'];
-		                    		},width:130
-                			}, 
-                			{'data' : 'fd_estdatang'},
-                			{'data' : 'untuk_cabang'},
-                			{'data' : 'warehouse'},
-                			{'data' : 'fn_qty'}, 
-                			{'data' : 'total'}, 
-                			{'data' : 'fv_note'},  
-                			{'data' : 'fc_userid'}  
-			        	]   
+	                       		return "<div style='width: 20px;height: 20px;background:"+row['fc_hexacode']+";border-radius: 50%;float:left;margin-right:5px'></div>"+row['fc_hexacode'];
+	                    		},width:130
+                			},  
+			        		{'mRender': function ( data, type, row ) {
+	                       		if (row['fc_status'] == '1') {
+	                       			return "Aktif";
+	                       		}else{
+	                       			return "Non Aktif";
+	                       		}
+	                    		},width:130
+                			}
+			        		<?php if($delete=='1' || $update =='1'){ ?>,{'mRender': function ( data, type, row ) {
+	                       		return "<?php if($update == '1'){?><button class='btn btn-danger' onclick=hapus('"+row['fc_warna']+"')><i class='fa fa-close'></i></button><?php } ?>&nbsp;<?php if($delete =='1'){ ?><button class='btn btn-info' onclick=edit('"+row['fc_warna']+"')><i class='fa fa-pencil'></i></button><?php } ?>";
+	                    		},width:130
+                			} <?php  }else{ ?>
+                				,{'mRender': function ( data, type, row ) {
+	                       		return "Akses ditutup";
+	                    		},width:130
+                			}	
+                			<?php } ?>
+			        	]  
 			        }); 
             	}
-            	function datatable2(){
-            		table = $('#datatable2').DataTable({
-			        	'processing': true, //ini untuk menampilkan processing
-			        	'serverSide': true, //iini untuk serversidenya
-			        	'order'		: [], //ini jika menginginkan diorder
-			        	'destroy'	: true,
-			        	'language'  : {
-			        		'searchPlaceholder': "Cari"
-			        	},
-			        	'ajax':{
-			        		'url'	: "<?php echo site_url($this->uri->segment(1).'/dataDetail');?>/"+$("#no_nota").val(),
-			        		"dataType": "json",
-			        		'type'	: 'POST' 
-			        	},//pasangkan hasil dari ajax ke datatablesnya
-			        	'columns'	:[
-			        		{'data' : 'no',width:20}, 
-			        		<?php if($delete=='1' || $update =='1'){ ?>
-			        			{'mRender': function ( data, type, row ) {
-			        				return "<button type='button' class='btn btn-success' onclick=update('"+row['fc_id']+"')>Input</button><button type='button' class='btn btn-danger' onclick=hapus('"+row['fc_id']+"')>Hapus</button>"; 
-                					}
-                				}	
-                			<?php } ?>, 
-			        		{'data' : 'fc_stock'},
-			        		{'data' : 'fv_stock'},  
-			        		{'data' : 'variant'},  
-			        		{'data' : 'fv_satuan'},  
-			        		{'data' : 'fn_price'},  
-			        		{'data' : 'fn_qty'},  
-			        		{'data' : 'fn_terima'},  
-			        		{'data' : 'fn_total'},  
-			        		{'data' : 'fv_ket'}  
-			        	]   
-			        }); 
-            	}  
-            	function tutup(){
-            		$('#close_form').fadeOut('slow');
-            		$('#no_nota').val("");
-            		$('#wizard').slideUp('slow');
-            		$('#laporan').slideDown('slow');
-            		datatable();
-            	}
-            	function detail(kode){
-					$('.StepTitle').fadeIn('fast');
-					$('#no_nota').val(kode);
-            		$('#close_form').fadeIn('slow');
-            		$('#laporan').slideUp('slow');
-            		$('#wizard').slideDown('slow'); 
+            	function reload_table(){
+			    	table.ajax.reload(null,false);
+			    }
+				function tambah(){
+					$('#laporan').slideUp('slow');
+					$('#formAksi').slideDown('slow');
+					$('#close_form').fadeIn('slow');
+					$('#add_form').fadeOut('slow');
+					$('#aksi').val('tambah');
+					document.getElementById('formAksi').reset();
+				}
+				function tutup(){
+					$('#formAksi').slideUp('slow');
+					$('#laporan').slideDown('slow');
+					$('#close_form').fadeOut('slow');
+					$('#add_form').fadeIn('slow');
+					$('#aksi').val('');
+					reload_table();
+				}
+				function display_message(isi){
+					$('#alert_trans').slideDown('slow').fadeOut(3000);
+					if (isi.includes('Berhasil')==true) { 
+						$('#alert_trans').removeClass("alert-danger");
+						$('#alert_trans').addClass('alert-primary');
+						$('#alert_trans').text(isi);
+					}else if(isi.includes('Gagal') == true){
+						$('#alert_trans').removeClass("alert-primary");
+						$('#alert_trans').addClass('alert-danger');
+						$('#alert_trans').text(isi);
+					}
+				}
+				function edit(kode){ 
 					$.ajax({
-					  type: 'GET',
-					  dataType:'JSON',
-					  url: link+"/getMSTINFO/"+kode,
-					  success:function(responseText){ 
-					  	$('.StepTitle').fadeOut('fast');
-					    $("#a1").val(responseText.fc_nopo); 
-					    $("#a2").val(responseText.fd_po); 
-					    $("#a3").val(responseText.fv_supplier); 
-					    $("#a4").val(responseText.untuk_cabang); 
-					    $("#a5").val(responseText.warehouse); 
-					    $("#a7").val(responseText.fn_qty); 
-					    $("#a8").val(responseText.total); 
-					    $("#a9").val(responseText.fv_note);  
-					    $("#a12").val(responseText.ongkir);
-					    hitungTotal(); 
-					    actionButton(); 
-					  }
-					});
-			    } 
-			    function display_message(isi){
-		          $('#alert_trans').slideDown('slow').fadeOut(5000);
-		          if (isi.includes('Berhasil')==true) { 
-		            $('#alert_trans').removeClass("alert-danger");
-		            $('#alert_trans').addClass('alert-primary');
-		            $('#alert_trans').text(isi);
-		          }else if(isi.includes('Gagal') == true){
-		            $('#alert_trans').removeClass("alert-primary");
-		            $('#alert_trans').addClass('alert-danger');
-		            $('#alert_trans').text(isi);
-		          }
-		        }
-			    $(document).on('submit','#formMaster',function(e){
-			    	$('.StepTitle').fadeIn('fast');
-					e.preventDefault();
-					$.ajax({
+<<<<<<< HEAD:application/modules/Kartustock/views/v_view.php
 			            url: link+"/SimpanMst",
 			            type: "POST",
 			            data:  new FormData(this),
@@ -518,6 +502,8 @@
 				}
 				function edit(kode){ 
 					$.ajax({
+=======
+>>>>>>> parent of df74dbc... modul untuk PO,BPB PO,APPROVAL,PRINT PO,REPRINT PO:application/modules/Bpb/views/v_view.php
 			            type: 'GET',
 			            dataType:'JSON',
 			            url: link+"/Edit/"+kode,
@@ -525,6 +511,7 @@
 			            	tambah(); 
 			              	$('#aksi').val('update');
 							$('#kode').val(kode);    
+<<<<<<< HEAD:application/modules/Kartustock/views/v_view.php
 			                $('input[name="a1"]').val(responseText.fv_kat);
 			                $('#pict_detail_img').show();
 			                document.getElementById('pict_detail_img').src = "./assets/foto/"+responseText.fv_pict;
@@ -542,30 +529,42 @@
 			            		actionButton();
 			            		$('.buttonNext').click();  
 			            	}
+=======
+			                $('input[name="a1"]').val(responseText.fv_warna); 
+			                $('input[name="a2"]').val(responseText.fc_hexacode); 
+			                $('#a3').val(responseText.fc_status);           
+>>>>>>> parent of df74dbc... modul untuk PO,BPB PO,APPROVAL,PRINT PO,REPRINT PO:application/modules/Bpb/views/v_view.php
 			            }
-			        	});
-			        return false;  
-				});
-				$(document).on('submit','#formDtl',function(e){
-			    	$('.StepTitle').fadeIn('fast');
+			        });
+				}
+				function hapus(kode){
+					if(confirm("Apakah anda Yakin?")){ 
+						$.get(link+"/Hapus/"+kode, $(this).serialize())
+			            .done(function(data) { 
+			            	display_message(data);
+			            	reload_table();
+			            });
+			            //--------------------------------
+			        }
+				}
+				$(document).on('submit','#formAksi',function(e){
 					e.preventDefault();
 					$.ajax({
-			            url: link+"/SimpanDtl",
+			            url: link+"/Simpan",
 			            type: "POST",
 			            data:  new FormData(this),
 			            contentType: false,
 			            cache: false,
 			            processData:false,
-			            success: function(data){  
-			            	$('.StepTitle').fadeOut('fast');       
+			            success: function(data){ 
+			            if (data.includes("Berhasil") == true && $('#aksi').val()=='tambah') {
+			            	document.getElementById('formAksi').reset();
+			            } 
 			            	display_message(data);
-			            	if (data.includes("Berhasil") == true) {
-			            		datatable2();  
-			            	}
-			            	document.getElementById("formDtl").reset();
-			            }
-			        	});
+			            }           
+			        });
 			        return false;  
+<<<<<<< HEAD:application/modules/Kartustock/views/v_view.php
 <<<<<<< HEAD:application/modules/Bpb/views/v_view.php
 				});   
 				function hitungTotal(){
@@ -687,3 +686,7 @@
 				};
             </script>   
 >>>>>>> cf614395e535c5dd75b2adbdfd726a98eca48cac:application/modules/Kartustock/views/v_view.php
+=======
+				}); 
+            </script>   
+>>>>>>> parent of df74dbc... modul untuk PO,BPB PO,APPROVAL,PRINT PO,REPRINT PO:application/modules/Bpb/views/v_view.php
