@@ -248,10 +248,6 @@
 		$hasil_rupiah = "Rp " . number_format($angka,2,',','.');
 		return $hasil_rupiah;
 	} 
-	function decimal($angka){
-		$hasil = str_replace(".","",str_replace("Rp.","",$angka));
-		return $hasil;
-	}
 	function getNomor($document){ 
 		$ci =& get_instance();
 		$ci->load->database();

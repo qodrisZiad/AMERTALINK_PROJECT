@@ -67,10 +67,10 @@
                                  </div>
                                 </div>
                                 <div class="form-group">
-                                <label class="control-label col-md-6" for="a3">Supplier <span style="color: red">*</span> 
+                                <label class="control-label col-md-6" for="a3">Supplier 
                                 </label>
                                 <div class="col-md-6" >
-                                  <select id="a3" name="a3" class="form-control" required="required">
+                                  <select id="a3" name="a3" class="form-control">
                                     <?php 
                                     foreach (getSupplier() as $key => $value) {
                                       echo "<option value='".$key."'>".$value."</option>";
@@ -80,10 +80,10 @@
                                 </div>
                                 </div> 
                                 <div class="form-group">
-                                  <label class="control-label col-md-6" for="a4">Untuk Cabang <span style="color: red">*</span> 
+                                  <label class="control-label col-md-6" for="a4">Untuk Cabang 
                                   </label>
                                   <div class="col-md-6" >
-                                    <select id="a4" name="a4" class="form-control" required="required">
+                                    <select id="a4" name="a4" class="form-control">
                                       <?php 
                                       foreach (getBranch() as $key => $value) {
                                         echo "<option value='".$key."'>".$value."</option>";
@@ -94,10 +94,10 @@
                                 </div>
                                 <input type="hidden" id="temp_gudang">
                                 <div class="form-group">
-                                  <label class="control-label col-md-6" for="a5">Gudang <span style="color: red">*</span> 
+                                  <label class="control-label col-md-6" for="a5">Gudang 
                                   </label>
                                   <div class="col-md-6" >
-                                    <select id="a5" name="a5" class="form-control" required="required"> 
+                                    <select id="a5" name="a5" class="form-control"> 
                                     </select>
                                   </div>
                                 </div>
@@ -164,11 +164,11 @@
                          <form class="form-horizontal form-label-left" id="actionDetail" name="actionDetail" method="POST" style="overflow: hidden;">
                             <div class="col-xs-6">
                                 <div class="form-group">
-                                  <label class="control-label col-md-6" for="d1">SKU<span style="color: red">*</span> 
+                                  <label class="control-label col-md-6" for="d1">SKU 
                                   </label>
                                   <div class="col-md-6" >
                                     <div class='input-group'>
-                                      <input type='text' class="form-control" id="d1" name="d1" onchange="getSku($('#d1').val())" required="required" />
+                                      <input type='text' class="form-control" id="d1" name="d1" onchange="getSku($('#d1').val())"/>
                                       <span class="input-group-addon" style="cursor: pointer;" data-toggle="modal" data-target=".bs-example-modal-lg">
                                        <span class="glyphicon glyphicon-search"></span>
                                      </span>
@@ -202,25 +202,25 @@
                                   </div>
                                 </div>
                                 <div class="form-group">
-                                  <label class="control-label col-md-6" for="d3">Harga Terakhir(@default)<span style="color: red">*</span> 
+                                  <label class="control-label col-md-6" for="d3">Harga Terakhir(@default)
                                   </label>
                                   <div class="col-md-6">
-                                    <input type="text" id="d3" name="d3" class="form-control" onchange="hitung()" required="required">
+                                    <input type="text" id="d3" name="d3" class="form-control" readonly>
                                   </div>
                                 </div>
                                 <div class="form-group"> 
-                                  <label class="control-label col-md-6" for="d4">Variant <span style="color: red">*</span> 
+                                  <label class="control-label col-md-6" for="d4">Variant 
                                   </label>
                                   <div class="col-md-6" >
-                                    <select id="d4" name="d4" class="form-control" required="readonly"> 
+                                    <select id="d4" name="d4" class="form-control" onchange="check"> 
                                     </select>
                                   </div>
                                 </div> 
                                 <div class="form-group"> 
-                                  <label class="control-label col-md-6" for="d5">Satuan <span style="color: red">*</span> 
+                                  <label class="control-label col-md-6" for="d5">Satuan 
                                   </label>
                                   <div class="col-md-6" > 
-                                    <select id="d5" name="d5" class="form-control" onchange="isi_Uom()" required="readonly"> 
+                                    <select id="d5" name="d5" class="form-control" onchange="isi_Uom()"> 
                                     </select>
                                   </div>
                               </div>
@@ -234,10 +234,10 @@
                                 </div>
                               </div>
                               <div class="form-group">
-                                <label class="control-label col-md-3" for="d6">Qty<span style="color: red">*</span> 
+                                <label class="control-label col-md-3" for="d6">Qty
                                 </label>
                                 <div class="col-md-6">
-                                  <input type="text" id="d6" name="d6" class="form-control" onchange="hitung()" required="readonly">
+                                  <input type="text" id="d6" name="d6" class="form-control" onchange="hitung()">
                                 </div>
                               </div>
                               <div class="form-group">
@@ -258,8 +258,8 @@
                                   <label class="control-label col-md-3"> 
                                   </label>
                                   <div class="col-md-6">
-                                    <input type="submit"  class="btn btn-success" value="Simpan" />
-                                    <button type="reset" class="btn btn-danger">Batalkan</button>
+                                    <input type="button" onclick="$('#actionDetail').submit()" class="btn btn-success" value="Simpan" />
+                                    <button type="button" class="btn btn-danger">Batalkan</button>
                                   </div>
                               </div> 
                             </div>
@@ -293,7 +293,7 @@
                           </section>
                         </div>
                       </div>  
-                    </div>   
+              </div>   
           </div>
         </div>
       </div> 
@@ -488,9 +488,6 @@
         }); 
       }
       $(document).on('submit','#actionDetail',function(e){
-      	if ($("#d7").val() == "0" || empty($("#d7").val())) {
-      		alert("Periksa inputan anda");
-      	}else{
           $('.StepTitle').fadeIn('fast');
           e.preventDefault();
           $.ajax({
@@ -508,7 +505,6 @@
           }          
           });
           return false;  
-      	}
         });
       function getVariant(sku){
         $('.StepTitle').fadeIn('fast');
