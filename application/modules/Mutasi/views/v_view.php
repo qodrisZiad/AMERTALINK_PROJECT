@@ -3,7 +3,7 @@
               <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                   <div class="x_title">
-                    <h2>Penerimaan Barang</h2>
+                    <h2>Mutasi Barang</h2>
                     <ul class="nav navbar-right panel_toolbox">
                       <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li> 
                       <li><a><i class=""></i></a></li>
@@ -21,13 +21,14 @@
 						 <?php 
                      	$data = array(
                      		'aksi' => array('name' => 'aksi','type' => 'hidden'),
-                     		'wh' => array('name'=>'wh','type' => 'hidden'),
-                     		'a1' => array('name'=>'a1','label' => 'No.BPB','type' => 'text','class' => 'form-control','col' => 'col-sm-2','readonly' => 'true'),
-                     		'a2' => array('name'=>'a2','label' => 'Tgl Terima','type' => 'date','class' => 'form-control','col' => 'col-sm-2','defaultValue' => date('Y-m-d')),
-                     		'a3' => array('name'=>'a3','label' => 'Supplier','type' => 'option','class' => 'form-control','option' => getSupplier(),'col' => 'col-sm-4'),
-                     		'a4' => array('name'=>'a4','label' => 'Cabang','type' => 'text','class' => 'form-control','col' => 'col-sm-4', 'defaultValue'=> $branch, 'readonly'=>'true'),
-                     		'a5' => array('name'=>'a5','label' => 'Gudang','type' => 'option','class' => 'form-control','option' => getWareHouse($branch,1),'col' => 'col-sm-4'),
-                     		'a7' => array('name'=>'a7','label' => 'Total item','type' => 'text','class' => 'form-control','col' => 'col-sm-2','readonly' => 'true','defaultValue'=>'0'),
+                     		'wh_to' => array('name'=>'wh_to','type' => 'hidden'),
+                     		'a1' => array('name'=>'a1','label' => 'No.Mutasi','type' => 'text','class' => 'form-control','col' => 'col-sm-2','readonly' => 'true'),
+                     		'a2' => array('name'=>'a2','label' => 'Tgl Mutasi','type' => 'date','class' => 'form-control','col' => 'col-sm-2','defaultValue' => date('Y-m-d')),
+                     		'a3' => array('name'=>'a3','label' => 'Cabang Asal','type' => 'text','class' => 'form-control','col' => 'col-sm-4', 'defaultValue'=> $branch, 'readonly'=>'true'),
+                     		'a4' => array('name'=>'a4','label' => 'Gudang Asal','type' => 'option','class' => 'form-control','option' => getWareHouse($branch,1),'col' => 'col-sm-4'),
+							'a5' => array('name'=>'a5','label' => 'Cabang Tujuan','type' => 'option','class' => 'form-control','col' => 'col-sm-4', 'option'=> getBranch()),
+                     		'a6' => array('name'=>'a6','label' => 'Gudang Tujuan','type' => 'option','class' => 'form-control','option' => '','col' => 'col-sm-4'), 
+							'a7' => array('name'=>'a7','label' => 'Total Jenis Item','type' => 'text','class' => 'form-control','col' => 'col-sm-2','readonly' => 'true','defaultValue'=>'0'),
                      		'a8' => array('name'=>'a8','label' => 'Catatan','type' => 'text','class' => 'form-control','col' => 'col-sm-6'),
                      		'a9' => array('name'=>'a9','label' => 'Userid','type' => 'text','class' => 'form-control','col' => 'col-sm-2','readonly'=>'true','defaultValue'=>$userid)
                      	);						 
@@ -41,29 +42,30 @@
 		                     	$dataDetil = array(
 									'aksiDetail' => array('name' => 'aksiDetail','type' => 'hidden'),
 									'kodeDetail' => array('name'=>'kode','type' => 'hidden'),
-									'nobpb'       => array('name'=>'nobpb','type' => 'hidden'),
+									'nomutasi'   => array('name'=>'nomutasi','type' => 'hidden'),
+									'wh_asal'    => array('name'=>'wh_asal','type' => 'hidden'),
 									'kode_varian'=> array('name'=>'kode_varian', 'type'=>'hidden'),
 									'b1'         => array('name'=>'b1','label' => 'Kode Item','type' => 'text','class' => 'form-control','col' => 'col-sm-3','input_search' => true),
-									'item'       => array('name'=>'item','label' => 'Nama Item','type' => 'text','class' => 'form-control','col' => 'col-sm-3',"readonly" => true),
+									'item'       => array('name'=>'item','label' => 'Nama Item','type' => 'text','class' => 'form-control','col' => 'col-sm-5',"readonly" => true),
 									'b2'         => array('name'=>'b2','label' => 'Ukuran','type' => 'option','class' => 'form-control','col' => 'col-sm-3','option' => ''), 
 									'b3'         => array('name'=>'b3','label' => 'Warna','type' => 'option','class' => 'form-control','col' => 'col-sm-3','option' => ''),
-									'item_harga' => array('name'=>'item_harga','label' => 'Harga Beli','type' => 'text','class' => 'form-control','col' => 'col-sm-3','readonly' => 'true'), 
+									'item_harga' => array('name'=>'item_harga','label' => 'Harga Beli','type' => 'hidden','class' => 'form-control','col' => 'col-sm-3','readonly' => 'true'), 
 									'b4'         => array('name'=>'b4','label' => 'Satuan','type' => 'option','class' => 'form-control','col' => 'col-sm-3','option' => ''), 
 									'b5'         => array('name'=>'b5','label' => 'Qty','type' => 'number','class' => 'form-control','col' => 'col-sm-2','defaultValue' => '0'), 
-									'total_harga' => array('name'=>'total_harga','label' => 'Nominal','type' => 'text','class' => 'form-control','col' => 'col-sm-3','readonly' => 'true'), 
+									'total_harga' => array('name'=>'total_harga','label' => 'Nominal','type' => 'hidden','class' => 'form-control','col' => 'col-sm-3','readonly' => 'true'), 
 									'b6'         => array('name'=>'b6','label' => 'Keterangan','type' => 'text','class' => 'form-control','col' => 'col-sm-4')
 		                     	);
 		                     	buat_form($dataDetil);  
 	                     	?>
                     	</form>
                     	<?php 
-							$kolom = array("No.","Kode Item","Item","Ukuran|Warna","Satuan","Qty","Harga Beli","Opsi");
+							$kolom = array("No.","Kode Item","Item","Ukuran | Warna","Satuan","Qty","Opsi");
 							buat_table($kolom,"datatable2");   
 						?>
                     </div> 
 					<div id="laporan"> 
 						<?php 
-							$kolom2 = array("No.","NO BPB","Supplier","Gudang","Jenis","Jumlah","Total Nominal","Status","Opsi");
+							$kolom2 = array("No.","NO Mutasi","Cabang Tujuan","Gudang Tujuan","Jenis","Jumlah","Total Nominal","Status","Opsi");
 							buat_table($kolom2,"datatable");   
 						?>
 					</div>
@@ -104,7 +106,7 @@
 			        	'serverSide': true, //iini untuk serversidenya
 			        	'order'		: [], //ini jika menginginkan diorder
 			        	'language'  : {
-			        		'searchPlaceholder': "Cari No BPB"
+			        		'searchPlaceholder': "Cari No Mutasi"
 			        	},
 			        	'ajax':{
 			        		'url'	: "<?php echo site_url($this->uri->segment(1).'/data');?>",
@@ -113,9 +115,9 @@
 			        	},//pasangkan hasil dari ajax ke datatablesnya
 			        	'columns'	:[
 			        		{'data' : 'no',width:20}, 
-							{'data' : 'fc_nobpb'}, 
-							{'data' : 'fv_supplier'},
-							{'data' : 'fv_wh'},
+							{'data' : 'fc_nomutasi'}, 
+							{'data' : 'fv_branch_to'},
+							{'data' : 'fv_wh_to'},
 							{'data' : 'fn_jenis'},
 							{'data' : 'fn_qty'},			        		 
 							{'data' : 'fm_total'},
@@ -127,7 +129,7 @@
 	                    		},width:130
                 			}
 			        		<?php if($delete=='1' || $update =='1'){ ?>,{'mRender': function ( data, type, row ) {
-	                       		return "<?php if($delete == '1'){?><button class='btn btn-danger' onclick=hapus('"+row['fc_nobpb']+"')><i class='fa fa-close'></i></button><?php } ?>&nbsp; <?php if($update == '1'){ ?><button class='btn btn-info' onclick=edit('"+row['fc_branch']+"','"+row['fc_nobpb']+"')><i class='fa fa-pencil'></i></button><?php } ?>";
+	                       		return "<?php if($delete == '1'){?><button class='btn btn-danger' onclick=hapus('"+row['fc_nomutasi']+"')><i class='fa fa-close'></i></button><?php } ?>&nbsp; <?php if($update == '1'){ ?><button class='btn btn-info' onclick=edit('"+row['fc_branch']+"','"+row['fc_nomutasi']+"')><i class='fa fa-pencil'></i></button><?php } ?>";
 	                    		},width:130
                 			} <?php  }else{ ?>
                 				,{'mRender': function ( data, type, row ) {
@@ -151,24 +153,26 @@
 					document.getElementById('formMaster').reset();
 					$('#aksi').val('tambah');
 					ganti_button();					
-					disableForm(["a2","a3","a5","a8","btn_reset","btn_dtl","btn_simpan"],false);
+					disableForm(["a2","a4","a5","a6","a8","btn_reset","btn_dtl","btn_simpan"],false);
 					checkMst('<?= $this->session->userdata("branch");?>','<?= $this->session->userdata("userid");?>'); 
 				}
-				function edit(branch, nobpb){
+				function edit(branch, nomutasi){
 					$.ajax({
-						url: link+"/EditMst/"+branch+"/"+nobpb,
+						url: link+"/EditMst/"+branch+"/"+nomutasi,
 						type: "GET",
 						dataType: "JSON",
 						success: function(data){
 							if (data != null) {
-								$("#a1").val(data.fc_nobpb);
-								$("#a2").val(data.fd_bpb);
-				        		$("#a3").val(data.fc_kdsupplier);
-				           		$("#a4").val(data.fc_branch);
-								$("#a5").val(data.fc_wh); $("#wh").val(data.fc_wh);
+								$("#a1").val(data.fc_nomutasi);
+								$("#a2").val(data.fd_mutasi);
+				        		$("#a3").val(data.fc_branch);
+				           		$("#a4").val(data.fc_wh);
+								$("#a5").val(data.fc_branch_to); 
+									$("select#a5").change();
+								$("#a6").val(data.fc_wh_to);		
 								$("#a7").val(data.fn_jenis); 
 				           		$("#a8").val(data.fv_note);
-
+								   $("#wh_to").val(data.fc_wh_to); 
 								$('#laporan').slideUp('slow');
 								$('#formMaster').slideDown('slow');
 								$('#close_form').fadeIn('slow');
@@ -176,7 +180,7 @@
 
 								$('#aksi').val('edit');
 								ganti_button();					
-								disableForm(["a2","a3","a5","a8","btn_reset","btn_dtl","btn_simpan"],false);
+								disableForm(["a2","a4","a5","a6","a8","btn_reset","btn_dtl","btn_simpan"],false);
 				        	} else {								
 								$('#alert_trans').removeClass("alert-primary");
 								$('#alert_trans').addClass('alert-danger');
@@ -185,6 +189,31 @@
 							}
 						}
 					});
+				}
+				function checkMst(branch,nomutasi){ 					
+					$.ajax({
+				        type: 'GET',
+				        dataType:'JSON',
+				        url: link+"/EditMst/"+branch+"/"+nomutasi,
+				        success:function(data){ 
+				        	if (data != null) {
+								$("#a1").val(data.fc_nomutasi);
+								$("#a2").val(data.fd_mutasi);
+				        		$("#a3").val(data.fc_branch);
+				           		$("#a4").val(data.fc_wh);
+								$("#a5").val(data.fc_branch_to); $("select#a5").change();								
+				           		$("#wh_to").val(data.fc_wh_to);
+				           		//$("select#a4").data; 
+				           		$("#a8").val(data.fv_note);
+				           		hitungQty();
+								$("#a6").val(data.fc_wh_to);
+				        	} else {
+								$("#a1").val('<?= $userid ?>');
+							}
+							disableForm(["btn_reset","btn_dtl","btn_simpan"],true);
+				        	disableForm(["btn_reset","btn_dtl"],false); 
+				        }
+				    });
 				}
 				function tutup(){
 					$('#formMaster').slideUp('slow');
@@ -205,31 +234,7 @@
 						$('#alert_trans').addClass('alert-danger');
 						$('#alert_trans').text(isi);
 					}
-				}
-				function checkMst(branch,nobpb){ 
-					disableForm(["btn_reset","btn_dtl","btn_simpan"],true);
-					$.ajax({
-				        type: 'GET',
-				        dataType:'JSON',
-				        url: link+"/EditMst/"+branch+"/"+nobpb,
-				        success:function(responseText){ 
-				        	if (responseText != null) {
-								$("#a1").val(responseText.fc_nobpb);
-								$("#a2").val(responseText.fd_bpb);
-				        		$("#a3").val(responseText.fc_kdsupplier);
-				           		$("#a4").val(responseText.fc_branch);
-								$("#a5").val(responseText.fc_wh);
-				           		$("#wh").val(responseText.fc_wh);
-				           		//$("select#a4").change(); 
-				           		$("#a8").val(responseText.fv_note);
-				           		hitungQty();
-				        	} else {
-								$("#a1").val('<?= $userid ?>');
-							}
-				        	disableForm(["btn_reset","btn_dtl"],false); 
-				        }
-				    });
-				}
+				}				
 				function hapus(kode){
 					if(confirm("Apakah anda Yakin?")){ 
 						$.get(link+"/Hapus/"+kode, $(this).serialize())
@@ -251,8 +256,8 @@
 			            processData:false,
 			            success: function(data){ 
 			            	$('#close_form').fadeOut('slow');
-			             	disableForm(["a2","a3","a4","a5","a8","btn_reset","btn_dtl","btn_simpan"],true);
-			             	tambahDetail();
+							disableForm(["a2","a4","a5","a6","a8","btn_reset","btn_dtl","btn_simpan"],true);
+							tambahDetail();
 			             }
 			        });
 			        return false;  
@@ -268,7 +273,7 @@
                     disableForm(["btn_simpan"],true);
 				}
 				function finalisasi(){
-					if(confirm("Anda akan melakukan finalisasi data.\n Data tidak dapat diubah kembali.\n Anda yakin melanjutkan.?")){ 
+					if(confirm("Anda akan melakukan finalisasi data.\nData tidak akan dapat diubah kembali.\nApakah Anda yakin ingin melanjutkan?")){ 
 						$.get(link+"/Finalisasi", $(this).serialize())
 			            .done(function(data) { 
 							alert(data);
@@ -298,7 +303,8 @@
 					datatable_detail();
 					ganti_buttonDetail();
 					document.getElementById("formDetail").reset();
-					$('#nobpb').val($("#a1").val());
+					$('#nomutasi').val($("#a1").val());
+					$('#wh_asal').val($("#a4").val());
 					$('#aksiDetail').val("tambah");
 					hitungQty();
 					disableForm(["b1","b2","b3","b4","b5"],false); 
@@ -320,11 +326,10 @@
 			        	'columns'	:[
 			        		{'data' : 'no',width:20}, 
 			        		{'data' : 'fc_stock'},   
-			        		{'data' : 'fv_stock'},   
+			        		{'data' : 'fv_stock',width:150},   
 			        		{'data' : 'variant'},   
 			        		{'data' : 'fv_satuan'},   
-			        		{'data' : 'fn_qty'},  
-			        		{'data' : 'price'}  
+			        		{'data' : 'fn_qty'}
 			        		<?php if($delete=='1' || $update =='1'){ ?>,{'mRender': function ( data, type, row ) {
 	                       		return "<?php if($delete == '1'){?><button class='btn btn-danger' onclick=hapusDetail('"+row['fc_id']+"')><i class='fa fa-close'></i></button><?php } ?>";
 	                    		},width:130
@@ -398,6 +403,12 @@
             		$(".close").click();
             		getStock(stockcode);  
             	}
+				$(document).on('change','#a5',function(e){
+            		$.get(link+"/getListWarehouse/"+$("#a5").val(), $(this).serialize())
+		            .done(function(data) { 
+		            	$("#a6").html(data); 
+					});
+				});
             	$(document).on('change','#b1',function(e){
             		sizeSatuan();
 				});
@@ -456,13 +467,15 @@
 					});
 				} 
 				function hitungQty(){ 
-		            $.ajax({
-				        type: 'GET',
-				        dataType:'JSON',
-				        url: link+"/total/"+$("#a1").val(),
-				        success:function(responseText){
-				        	$("#a7").val(responseText.total); 
-				        }
-				    });
+					if ($("#a1").val() != ''){
+						$.ajax({
+							type: 'GET',
+							dataType:'JSON',
+							url: link+"/total/"+$("#a1").val(),
+							success:function(responseText){
+								$("#a7").val(responseText.total); 
+							}
+						});
+					}
 				}
             </script>   

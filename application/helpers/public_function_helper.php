@@ -339,3 +339,24 @@
 		}
 		return $hasil;
 	}
+	/**
+	 * 
+	 */
+	function insertKartuStock($branch, $wh, $fc_stock, $fc_variant, $fc_uom, $fn_in=0, $fn_out=0, $referensi, $fc_ket, $userid){
+		$ci =& get_instance();
+		$ci->load->database();
+		$data = array (
+			'fc_branch'		=> $branch,
+			'fc_wh'			=> $wh,
+			'fc_stock'		=> $fc_stock,
+			'fc_variant'	=> $fc_variant,
+			'fc_uom'		=> $fc_uom,
+			'fn_in'			=> $fn_in,
+			'fn_out'		=> $fn_out,
+			'fc_referensi'	=> $referensi,
+			'fc_userid'		=> $userid,
+			'fc_ket'		=> $fc_ket
+		);
+		$query = $ci->db->insert('t_kartustock', $data);
+		return $ci->db->affected_rows();
+	}

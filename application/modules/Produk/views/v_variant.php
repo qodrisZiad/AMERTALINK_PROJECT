@@ -6,13 +6,16 @@
                  		'kode_variant' => array('name' => 'kode_variant','type' => 'hidden'), 
                  		'sku_variant' => array('name'=>'sku_variant','type' => 'hidden'),  
                  		'c1' => array('name'=>'c1','label' => 'Ukuran','type' => 'option','class' => 'form-control','option' => $ukuran,'col' => 'col-sm-2'),
-                 		'c2' => array('name'=>'c2','label' => 'Warna','type' => 'option','class' => 'form-control','option' => $warna,'col' => 'col-sm-2')
+						'c2' => array('name'=>'c2','label' => 'Warna','type' => 'option','class' => 'form-control','option' => $warna,'col' => 'col-sm-2'),
+						'c3' => array('name'=>'c3','label' => 'Harga Beli','type' => 'text','class' => 'form-control','defaultValue' => '0','col' => 'col-sm-2'),
+						'c4' => array('name'=>'c4','label' => 'Harga Jual','type' => 'text','class' => 'form-control','defaultValue' => '0','col' => 'col-sm-2'),
+						 
                  	);
                  	buat_form($data);  
                  	?>
                 </form>
                 <?php 
-					$kolom_Prop = array("No.","Ukuran","Warna","User Input","Aksi");
+					$kolom_Prop = array("No.","Ukuran","Warna","Harga Beli","Harga Jual","User Input","Aksi");
 					buat_table($kolom_Prop,"datatable_Variant");   
 				?> 
        		</div> 
@@ -39,8 +42,8 @@
 	            processData:false,
 	            success: function(datane){ 
             		reload_tableVariant();
-            		$("#c1").val(""); 
-            		$("#c2").val(""); 
+            		$("#c1").val(""); $("#c3").val("");
+            		$("#c2").val(""); $("#c4").val("");
             		display_message(datane); 
             	}      
 	        });
@@ -73,6 +76,8 @@
 	        		{'data' : 'no',width:20}, 
 	        		{'data' : 'fv_size'},
 	        		{'data' : 'fv_warna'},
+					{'data' : 'fn_hargabeli'},
+					{'data' : 'fn_hargajual'},
 	        		{'data' : 'fc_userid'},  
 	        		<?php if($delete=='1' || $update =='1'){ ?>{'mRender': function ( data, type, row ) {
 	               		return "<?php if($delete == '1'){?><button class='btn btn-danger' onclick=delVariant('"+row['fc_variant']+"')><i class='fa fa-close'></i></button><?php } ?>";

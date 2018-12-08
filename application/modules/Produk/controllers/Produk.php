@@ -320,7 +320,7 @@ class Produk extends CI_Controller
 		echo json_encode($hasil);
 	}
 	public function data_Variant(){ 
-		$kolomVariant = array("fc_variant","fc_stock","fv_size","fv_warna","fc_userid");
+		$kolomVariant = array("fc_variant","fc_stock","fv_size","fv_warna","fn_hargabeli","fn_hargajual","fc_userid");
 		$tabel = "v_variant";  
 		$where = array('fc_stock' => $this->uri->segment(3));
 		$limit = $this->input->post('length');

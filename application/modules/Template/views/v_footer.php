@@ -18,7 +18,7 @@
     <script type="text/javascript">
       $('#tanggal').datetimepicker({
         format: 'DD-MM-YYYY'
-    });
+      });
       function rupiah(bilangan){
                 var number_string = bilangan.toString(),
                 sisa  = number_string.length % 3,
