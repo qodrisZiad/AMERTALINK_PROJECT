@@ -18,9 +18,7 @@
     <script type="text/javascript">
       $('#tanggal').datetimepicker({
         format: 'DD-MM-YYYY'
-<<<<<<< HEAD
     });
-<<<<<<< HEAD
       function rupiah(bilangan = "0"){
         var rupiah = ""; 
         if (bilangan == null) {
@@ -42,26 +40,6 @@
           var hasil = (angka.split('.').join('')).split('Rp').join('');
           return hasil;
         }
-=======
-      });
-=======
->>>>>>> parent of df74dbc... modul untuk PO,BPB PO,APPROVAL,PRINT PO,REPRINT PO
-      function rupiah(bilangan){
-                var number_string = bilangan.toString(),
-                sisa  = number_string.length % 3,
-                rupiah  = number_string.substr(0, sisa),
-                ribuan  = number_string.substr(sisa).match(/\d{3}/g);
-                  
-                if (ribuan) {
-                  separator = sisa ? '.' : '';
-                  rupiah += separator + ribuan.join('.');
-                }
-                return rupiah;
-              }
-<<<<<<< HEAD
->>>>>>> cf614395e535c5dd75b2adbdfd726a98eca48cac
-=======
->>>>>>> parent of df74dbc... modul untuk PO,BPB PO,APPROVAL,PRINT PO,REPRINT PO
     </script>
   </body>
 </html>
