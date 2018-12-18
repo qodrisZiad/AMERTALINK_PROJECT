@@ -4,12 +4,9 @@ class Kartustock extends CI_Controller
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->model('M_model');
+		$this->load->model('M_model','model');
 	}
-	private $table = "tm_kategori";
-	private $primary_key = "fc_kat";
-	private $secondary_key = "fv_kat";
-	private $kolom = array("fc_kat","fv_kat","fc_status","fv_pict");
+	
 	public function index(){
 		is_logged();
         $hakakses_user = getAkses($this->uri->segment(1));
@@ -43,10 +40,10 @@ class Kartustock extends CI_Controller
 				);
 			} 
 			if ($aksi == 'tambah') {
-				$proses = $this->M_model->tambah($data);
+				$proses = $this->model->tambah($data);
 			}else if($aksi =='update'){
 				$where = array($this->primary_key => $this->input->post('kode'));
-				$proses = $this->M_model->update($data,$where);
+				$proses = $this->model->update($data,$where);
 			}
 			if ($proses > 0) {
 				$message = 'Berhasil menyimpan data';
@@ -58,14 +55,14 @@ class Kartustock extends CI_Controller
 	public function Edit(){
 		$kode = $this->uri->segment(3);
 		$data = array($this->primary_key => $kode);
-		$edit = $this->M_model->getData($data);
+		$edit = $this->model->getData($data);
 		echo json_encode($edit);
 	} 
 	public function Hapus(){
 		$kode = $this->uri->segment(3);
 		$foto = $this->uri->segment(4);
 		$data = array($this->primary_key => $kode);
-		$hapus = $this->M_model->hapus($data);
+		$hapus = $this->model->hapus($data);
 		if ($hapus > 0) {
 			$dir = "./assets/foto/".$foto;
 			unlink($dir);
@@ -74,32 +71,44 @@ class Kartustock extends CI_Controller
 			echo "Gagal menghapus data";
 		}
 	}
-	public function ajax_list()
+	public function getTableData()
     {
-        $list = $this->M_model->get_datatables();
+        $fieldList = $this->model->get_datatables();
         $data = array();
         $no = $_POST['start'];
-        foreach ($list as $datalist) {
+        foreach ($fieldList as $field) {
             $no++;
             $row = array();
             $row[] = $no;
-            $row[] = $datalist->fc_branch;
-            $row[] = $datalist->fc_wh;
-            $row[] = $datalist->fd_tgl;
-            $row[] = $datalist->fc_stock;
-            $row[] = $datalist->fc_variant;
-            $row[] = $datalist->fc_uom;
- 
+            $row[] = $field->fd_tgl;
+            $row[] = $field->fv_stock;
+            $row[] = $field->fv_variant;
+            $row[] = $field->fn_in;
+			$row[] = $field->fn_out;
+			$row[] = $field->fn_sisa;
+			$row[] = $field->fc_referensi;
+			$row[] = $field->fc_ket;
+			if(!empty($field->fc_userid)){	$row[] = $field->fc_userid; } else { $row[] = "<a class='btn btn-warning'>kosong</a>"; }
             $data[] = $row;
         }
  
         $output = array(
                         "draw" => $_POST['draw'],
-                        "recordsTotal" => $this->M_model->count_all(),
-                        "recordsFiltered" => $this->M_model->count_filtered(),
+                        "recordsTotal" => $this->model->count_all(),
+                        "recordsFiltered" => $this->model->count_filtered(),
                         "data" => $data,
                 );
         //output to json format
         echo json_encode($output);
-    }
+	}
+	
+	public function getListwh(){
+		$branch = $this->uri->segment(3);
+		$result = "<option>-- Pilih Warehouse --</option>\n";
+		$list = getWareHouse($branch);
+		foreach ($list as $value) {
+			$result .= "<option value='$value->fc_wh'>$value->fv_wh</option>\n";
+		}
+		echo $result;
+	}
 }
