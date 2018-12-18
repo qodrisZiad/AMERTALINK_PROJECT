@@ -47,7 +47,7 @@
 									'item'       => array('name'=>'item','label' => 'Nama Item','type' => 'text','class' => 'form-control','col' => 'col-sm-3',"readonly" => true),
 									'b2'         => array('name'=>'b2','label' => 'Ukuran','type' => 'option','class' => 'form-control','col' => 'col-sm-3','option' => ''), 
 									'b3'         => array('name'=>'b3','label' => 'Warna','type' => 'option','class' => 'form-control','col' => 'col-sm-3','option' => ''),
-									'item_harga' => array('name'=>'item_harga','label' => 'Harga Beli','type' => 'text','class' => 'form-control','col' => 'col-sm-3','readonly' => 'true'), 
+									'item_harga' => array('name'=>'item_harga','label' => 'Harga Beli','type' => 'text','class' => 'form-control','col' => 'col-sm-3'), 
 									'b4'         => array('name'=>'b4','label' => 'Satuan','type' => 'option','class' => 'form-control','col' => 'col-sm-3','option' => ''), 
 									'b5'         => array('name'=>'b5','label' => 'Qty','type' => 'number','class' => 'form-control','col' => 'col-sm-2','defaultValue' => '0'), 
 									'total_harga' => array('name'=>'total_harga','label' => 'Nominal','type' => 'text','class' => 'form-control','col' => 'col-sm-3','readonly' => 'true'), 

@@ -39,6 +39,7 @@
                     	Transaksi berhasil 
                   	</div>  
                   	<div class="area_print" style="display: none;">
+                  		<input type="hidden" id="sup_code">
                   		<section class="content invoice"> 
                             <div class="row invoice-info" id="hasilMstINfo"> 
                               
@@ -51,7 +52,7 @@
                             <!-- /.row -->   
                             <div class="row no-print">
                               <div class="col-xs-12"> 
-                                <button class="btn btn-success pull-right" onclick="window.print()">Print</button>
+                                <button class="btn btn-success pull-right" onclick="cetakData()">Print</button>
                                 <button class="btn btn-warning pull-right" onclick="tutup()">Tutup</button> 
                               </div>
                             </div>
@@ -147,7 +148,20 @@
 		       		$('#laporan').slideUp('slow'); 
 		       		$('.area_print').slideDown('slow'); 
 		       		$('#close_form').fadeIn('slow'); 
+		       		$('#sup_code').val(kode);
 		       		getMSTINFO(kode);
 		       		getDTLINFO(kode);
 		       }
+		       function cetakData(){
+			       	if(confirm("Apakah anda Yakin ingin mencetak?")){ 
+			       		$.get(link+"/cetak/"+$("#sup_code").val(), $(this).serialize())
+			            .done(function(data) { 
+			            	//jika berhasil maka print report
+			            	tutup();
+			       			datatable();
+			       			window.print();
+			            }); 
+			       	}
+		       }
+
             </script>   

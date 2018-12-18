@@ -26,26 +26,26 @@ class M_model extends CI_Model
     }
 // ---------------------------------------------------------------------
 	//update data
-	function update($data,$where){
-		$query = $this->db->update($this->table,$data,$where);
+	function update($table,$data,$where){
+		$query = $this->db->update($table,$data,$where);
 		return $this->db->affected_rows();
 	}
 	//ini khusus untuk datatablenya
     function allposts_count($tabel)
     {   
-        $query = $this->db->where(array("fc_approve" => "1"))->get($tabel);
+        $query = $this->db->where(array("fc_approve" => "1","fc_print" => "0"))->get($tabel);
         return $query->num_rows();  
     } 
     function allposts($tabel,$limit,$start,$col,$dir)
     {   
-       $query = $this->db->where(array("fc_approve" => "1"))->limit($limit,$start)->order_by($col,$dir)->get($tabel);
+       $query = $this->db->where(array("fc_approve" => "1","fc_print" => "0"))->limit($limit,$start)->order_by($col,$dir)->get($tabel);
         if($query->num_rows()>0)
         { return $query->result();}
         else{return null;}
     }
     function posts_search($tabel,$field1,$field2,$limit,$start,$search,$col,$dir)
     {
-        $query = $this->db->where(array("fc_approve" => "1"))
+        $query = $this->db->where(array("fc_approve" => "1","fc_print" => "0"))
         				 ->like($field1,$search)
                          ->or_like($field2,$search)
                          ->limit($limit,$start)
@@ -55,6 +55,6 @@ class M_model extends CI_Model
         else { return null; }
     } 
     function posts_search_count($tabel,$field1,$field2,$search)
-    {   $query = $this->db->where(array("fc_approve" => "1"))->like($field1,$search)->or_like($field2,$search)->get($tabel);
+    {   $query = $this->db->where(array("fc_approve" => "1","fc_print" => "0"))->like($field1,$search)->or_like($field2,$search)->get($tabel);
         return $query->num_rows();  }
 }

@@ -107,7 +107,7 @@ class Reprint_po extends CI_Controller
                                   </tbody>
                                 </table>';
 	}
-	public function Print(){
+	public function cetak(){
 		$printCode = $this->uri->segment(3);
 		$aksi = $this->M_model->update("tm_po",array("fc_print" => "1"),array("fc_nopo" => $printCode));
 		if ($aksi > 0) {

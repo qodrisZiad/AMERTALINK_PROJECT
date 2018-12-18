@@ -106,5 +106,14 @@ class Print_po extends CI_Controller
                                   '.$hasil.'
                                   </tbody>
                                 </table>';
+	}
+	public function cetak(){
+		$printCode = $this->uri->segment(3);
+		$aksi = $this->M_model->update("tm_po",array("fc_print" => "1"),array("fc_nopo" => $printCode));
+		if ($aksi > 0) {
+			echo "Berhasil";
+		}else{
+			echo "Gagal";
+		}
 	}  
 }
