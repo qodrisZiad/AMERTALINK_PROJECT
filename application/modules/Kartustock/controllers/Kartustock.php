@@ -4,7 +4,7 @@ class Kartustock extends CI_Controller
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->model('M_model','model');
+		$this->load->model('M_model');
 	}
 	private $table = "tm_kategori";
 	private $primary_key = "fc_kat";
@@ -18,7 +18,6 @@ class Kartustock extends CI_Controller
 			'greeting'  => $this->session->userdata('greeting'),
 			'nik'       => $this->session->userdata('userid'),
 			'bread'     => 'Kartustock',
-			'listBranch'=> getBranch(),
 			'sub_bread' => '/ History Barang',
 			'input'		=> $hakakses_user[0],
 			'update'	=> $hakakses_user[1],
@@ -44,10 +43,10 @@ class Kartustock extends CI_Controller
 				);
 			} 
 			if ($aksi == 'tambah') {
-				$proses = $this->model->tambah($data);
+				$proses = $this->M_model->tambah($data);
 			}else if($aksi =='update'){
 				$where = array($this->primary_key => $this->input->post('kode'));
-				$proses = $this->model->update($data,$where);
+				$proses = $this->M_model->update($data,$where);
 			}
 			if ($proses > 0) {
 				$message = 'Berhasil menyimpan data';
@@ -59,14 +58,14 @@ class Kartustock extends CI_Controller
 	public function Edit(){
 		$kode = $this->uri->segment(3);
 		$data = array($this->primary_key => $kode);
-		$edit = $this->model->getData($data);
+		$edit = $this->M_model->getData($data);
 		echo json_encode($edit);
 	} 
 	public function Hapus(){
 		$kode = $this->uri->segment(3);
 		$foto = $this->uri->segment(4);
 		$data = array($this->primary_key => $kode);
-		$hapus = $this->model->hapus($data);
+		$hapus = $this->M_model->hapus($data);
 		if ($hapus > 0) {
 			$dir = "./assets/foto/".$foto;
 			unlink($dir);
@@ -75,42 +74,32 @@ class Kartustock extends CI_Controller
 			echo "Gagal menghapus data";
 		}
 	}
-	public function tabledata()
+	public function ajax_list()
     {
-        $fieldList = $this->model->get_datatables();
+        $list = $this->M_model->get_datatables();
         $data = array();
         $no = $_POST['start'];
-        foreach ($fieldList as $field) {
+        foreach ($list as $datalist) {
             $no++;
             $row = array();
-				$row[] = $no;
-				$row[] = $field->fd_tgl;
-				$row[] = $field->fc_stock;
-				$row[] = $field->fv_stock;
-				$row[] = $field->fv_variant;
-				$row[] = $field->fc_referensi;
-				$row[] = $field->fc_ket;
-				$row[] = $field->fc_userid;
-			$data[] = $row;
+            $row[] = $no;
+            $row[] = $datalist->fc_branch;
+            $row[] = $datalist->fc_wh;
+            $row[] = $datalist->fd_tgl;
+            $row[] = $datalist->fc_stock;
+            $row[] = $datalist->fc_variant;
+            $row[] = $datalist->fc_uom;
+ 
+            $data[] = $row;
         }
  
         $output = array(
                         "draw" => $_POST['draw'],
-                        "recordsTotal" => $this->model->count_all(),
-                        "recordsFiltered" => $this->model->count_filtered(),
+                        "recordsTotal" => $this->M_model->count_all(),
+                        "recordsFiltered" => $this->M_model->count_filtered(),
                         "data" => $data,
                 );
         //output to json format
         echo json_encode($output);
-	}
-	public function getListWH(){
-		$branch = $this->uri->segment(3);
-		//$branch = $this->input->post('f_wh');
-		$dataWH = getWarehouse($branch);
-		$form_option = "<option value='%'>Pilih Warehouse</option>\n";
-		foreach ($dataWH as $wh) {
-			$form_option .= "<option value='$wh->fc_wh'>$wh->fv_wh</option>\n";
-		}
-		echo $form_option;
-	}
+    }
 }

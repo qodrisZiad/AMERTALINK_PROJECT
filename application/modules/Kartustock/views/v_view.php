@@ -328,24 +328,7 @@
                      	?> 
                     </form> 
 					<div id="laporan"> 
-					<form id="form-filter" class="form-horizontal">
-					<?php
-						$filterField = array(
-							'f1'	=> array('name' => 'f_branch', 'label' => 'Cabang', 'type' => 'option', 'option' => $listBranch, 'class' => 'form-control','col' => 'col-sm-4'),
-							'f2'	=> array('name' => 'f_wh', 'label' => 'Gudang', 'type' => 'option', 'option' => array(), 'class' => 'form-control','col' => 'col-sm-4'),
-							'f3'	=> array('name' => 'f_nmbrg', 'label' => 'Nama Barang', 'type' => 'text', 'class' => 'form-control', 'col' => 'col-sm-4', 'defaultValue'=> '')
-						);
-						$btnData = array(
-							'b1' => array('id' => 'btn-reset', 'type'=>'reset','class'=>'btn btn-danger','label'=>'Reset'),
-							'b2' => array('id' => 'btn-filter', 'type'=>'button','class'=>'btn btn-success','label'=>'Filter') 
-						);
-						buat_form($filterField, $btnData);
-					?>
-					</form>
 						<?php 
-<<<<<<< HEAD
-							$kolom = array("No.","Tanggal","Kode","Nama Barang","Variant","Referensi","Keterangan","User");
-=======
 							$kolom = array("No.","branch","wh","tanggal","fc_stock","fc_variant","fc_uom");
 >>>>>>> cf614395e535c5dd75b2adbdfd726a98eca48cac:application/modules/Kartustock/views/v_view.php
 =======
@@ -368,7 +351,6 @@
 						<?php 
 							$kolom = array("No.","Warna","Kode Warna","Status","Aksi");
 >>>>>>> parent of df74dbc... modul untuk PO,BPB PO,APPROVAL,PRINT PO,REPRINT PO:application/modules/Bpb/views/v_view.php
->>>>>>> 9f9461861a217844192a9eaf6b068bda8b412692
 							buat_table($kolom,"datatable");   
 						?>
 					</div>
@@ -403,14 +385,9 @@
 			        		'searchPlaceholder': "Cari Warna"
 			        	},
 			        	'ajax':{
-			        		'url'	: link + "/tabledata",
-			        		"dataType": "JSON",
-			        		'type'	: 'POST',
-							'data'	: function( data ){
-								data.f_branch = $('#f_branch').val();
-								data.f_wh = $('#f_wh').val();
-								data.f_namabrg = $('#f_nmbrg').val();
-							} 
+			        		'url'	: "<?php echo site_url($this->uri->segment(1).'/ajax_list');?>",
+			        		"dataType": "json",
+			        		'type'	: 'POST' 
 			        	},//pasangkan hasil dari ajax ke datatablesnya
 <<<<<<< HEAD:application/modules/Bpb/views/v_view.php
 			        	'columns'	:[
@@ -489,8 +466,6 @@
 								"orderable": false, //set not orderable
 							},
 						],
-						'searching': false,
-						'deferRender': true
    
 			        }); 
             	}
@@ -695,22 +670,8 @@
             <script src="<?= site_url()?>vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js"></script> 
 =======
 				}); 
-				$(document).on('change','#f_branch',function(e){
-					$.ajax({
-						url		  : link + '/getListWH/' + $('#f_branch').val(),
-						type	  : "GET",
-						data	  : $('#f_branch').val(),
-						success	  : function (e){
-							$('#f_wh').html(e);
-						}
-					});
-				});
-				$('#btn-filter').click( function (){
-					table.ajax.reload();
-				});
-				$('#btn-reset').click( function (){
-					$('#form-filter')[0].reset();
-					table.ajax.reload();
+				$(document).on('change','#a2',function(e){
+					PreviewImage('pict_detail_img','a2');
 				});
 				function PreviewImage(hasil,dari) {
 					var oFReader = new FileReader();
