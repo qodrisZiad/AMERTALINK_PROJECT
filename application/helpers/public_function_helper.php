@@ -126,7 +126,7 @@
 			return json_encode($out);
 		}		
 	}
-	function buat_form($data){  
+	function buat_form($data, $buttons = array()){  
 		$inputan_data = "";
 		  foreach ($data as $key => $value) {
 		  	$input =  $value; 
@@ -189,13 +189,27 @@
 			  	';
 			}
 		  }
-		  $button = '<div class="ln_solid"></div>
-                      <div class="form-group" id="button_action">
-                        <div class="col-md-9 col-sm-9 col-xs-12">
-                          <button type="reset" class="btn btn-danger">Reset</button> 
-                          <button type="submit" class="btn btn-success">Simpan</button>
-                        </div>
-                      </div>';
+		  // make default if no input array button
+		  if(count($buttons) == 0){
+			  $button = '<div class="ln_solid"></div>
+						  <div class="form-group" id="button_action">
+							<div class="col-md-9 col-sm-9 col-xs-12">
+							  <button type="reset" class="btn btn-danger">Reset</button> 
+							  <button type="submit" class="btn btn-success">Simpan</button>
+							</div>
+						  </div>';
+		  } else {
+			$button = "<div class=\"ln_solid\"></div>\n
+							<div class=\"form-group\" id=\"button_action\">\n
+								<div class=\"col-md-9 col-sm-9 col-xs-12\">\n";
+			$idbtn = '';
+			foreach ($buttons as $btn) {
+				($btn['id'] != '') ? ($idbtn = "id=\"$btn[id]\"") : ($idbtn = "");
+				$button .= "<button $idbtn type=\"".$btn['type']."\" class=\"".$btn['class']."\">".$btn['label']."</button>\n";
+			} 
+			$button .= "</div>\n
+					</div>";
+		  }
 		  echo $inputan_data.$button;
 	} 
 	function buat_table($kolom,$id){
