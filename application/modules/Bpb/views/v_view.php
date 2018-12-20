@@ -222,14 +222,14 @@
 									        <label class="control-label col-md-3 col-sm-3 col-xs-12">Qty PO 
 									        </label>
 									        <div class="col-md-9 col-sm-9 col-xs-12">
-									          <input class="form-control col-md-7 col-xs-12" id="d6" name="d6" type="text" readonly>
+									          <input class="form-control col-md-7 col-xs-12" id="d6" name="d6" type="number" readonly>
 									        </div>
 									      </div>
 									      <div class="form-group">
 									        <label class="control-label col-md-3 col-sm-3 col-xs-12">Qty Terima 
 									        </label>
 									        <div class="col-md-9 col-sm-9 col-xs-12">
-									          <input class="form-control col-md-7 col-xs-12" id="d7" name="d7" type="text" required onblur="hitungsubtotal()">
+									          <input class="form-control col-md-7 col-xs-12" id="d7" name="d7" type="number" required onblur="hitungsubtotal()">
 									        </div>
 									      </div>
 									      <div class="form-group">
@@ -303,135 +303,135 @@
               </div> 
             </div> 
 
-            <script type="text/javascript">
-            	var link = "<?php echo site_url().$this->uri->segment(1);?>"; 
-            	var table;
-            	$(document).ready(function(){
-            		 tutup(); 
-            	}); 
-            	function datatable(){
-            		table = $('#datatable').DataTable({
-			        	'processing': true, //ini untuk menampilkan processing
-			        	'serverSide': true, //iini untuk serversidenya
-			        	'order'		: [], //ini jika menginginkan diorder
-			        	'destroy'	: true,
-			        	'language'  : {
-			        		'searchPlaceholder': "Cari"
-			        	},
-			        	'ajax':{
-			        		'url'	: "<?php echo site_url($this->uri->segment(1).'/data');?>",
-			        		"dataType": "json",
-			        		'type'	: 'POST' 
-			        	},//pasangkan hasil dari ajax ke datatablesnya
-			        	'columns'	:[
-			        		{'data' : 'no',width:20}, 
-			        		<?php if($delete=='1' || $update =='1'){ ?>
-			        			{'mRender': function ( data, type, row ) {
-			        				return "<button type='button' class='btn btn-success' onclick=detail('"+row['fc_nopo']+"')>Detail</button>"; 
-                					}
-                				}	
-                			<?php } ?>, 
-			        		{'data' : 'fc_nopo'},
-			        		{'data' : 'fd_po'},
-			        		{'data' : 'fv_supplier'}, 
-			        		{'data' : 'fv_addr'}, 
-			        		{'mRender': function ( data, type, row ) {
-		                       		return row['fc_telp']+" / "+row['fc_telp2'];
-		                    		},width:130
-                			}, 
-                			{'data' : 'fd_estdatang'},
-                			{'data' : 'untuk_cabang'},
-                			{'data' : 'warehouse'},
-                			{'data' : 'fn_qty'}, 
-                			{'data' : 'total'}, 
-                			{'data' : 'fv_note'},  
-                			{'data' : 'fc_userid'}  
-			        	]   
-			        }); 
-            	}
-            	function datatable2(){
-            		table = $('#datatable2').DataTable({
-			        	'processing': true, //ini untuk menampilkan processing
-			        	'serverSide': true, //iini untuk serversidenya
-			        	'order'		: [], //ini jika menginginkan diorder
-			        	'destroy'	: true,
-			        	'language'  : {
-			        		'searchPlaceholder': "Cari"
-			        	},
-			        	'ajax':{
-			        		'url'	: "<?php echo site_url($this->uri->segment(1).'/dataDetail');?>/"+$("#no_nota").val(),
-			        		"dataType": "json",
-			        		'type'	: 'POST' 
-			        	},//pasangkan hasil dari ajax ke datatablesnya
-			        	'columns'	:[
-			        		{'data' : 'no',width:20}, 
-			        		<?php if($delete=='1' || $update =='1'){ ?>
-			        			{'mRender': function ( data, type, row ) {
-			        				return "<button type='button' class='btn btn-success' onclick=update('"+row['fc_id']+"')>Input</button><button type='button' class='btn btn-danger' onclick=hapus('"+row['fc_id']+"')>Hapus</button>"; 
-                					}
-                				}	
-                			<?php } ?>, 
-			        		{'data' : 'fc_stock'},
-			        		{'data' : 'fv_stock'},  
-			        		{'data' : 'variant'},  
-			        		{'data' : 'fv_satuan'},  
-			        		{'data' : 'fn_price'},  
-			        		{'data' : 'fn_qty'},  
-			        		{'data' : 'fn_terima'},  
-			        		{'data' : 'fn_total'},  
-			        		{'data' : 'fv_ket'}  
-			        	]   
-			        }); 
-            	}  
-            	function tutup(){
-            		$('#close_form').fadeOut('slow');
-            		$('#no_nota').val("");
-            		$('#wizard').slideUp('slow');
-            		$('#laporan').slideDown('slow');
-            		datatable();
-            	}
-            	function detail(kode){
+				<script type="text/javascript">
+				var link = "<?php echo site_url().$this->uri->segment(1);?>"; 
+				var table;
+				$(document).ready(function(){
+						tutup(); 
+				}); 
+				function datatable(){
+						table = $('#datatable').DataTable({
+						'processing': true, //ini untuk menampilkan processing
+						'serverSide': true, //iini untuk serversidenya
+						'order'		: [], //ini jika menginginkan diorder
+						'destroy'	: true,
+						'language'  : {
+							'searchPlaceholder': "Cari"
+						},
+						'ajax':{
+							'url'	: "<?php echo site_url($this->uri->segment(1).'/data');?>",
+							"dataType": "json",
+							'type'	: 'POST' 
+						},//pasangkan hasil dari ajax ke datatablesnya
+						'columns'	:[
+							{'data' : 'no',width:20}, 
+							<?php if($delete=='1' || $update =='1'){ ?>
+								{'mRender': function ( data, type, row ) {
+									return "<button type='button' class='btn btn-success' onclick=detail('"+row['fc_nopo']+"')>Detail</button>"; 
+											}
+										}	
+									<?php } ?>, 
+							{'data' : 'fc_nopo'},
+							{'data' : 'fd_po'},
+							{'data' : 'fv_supplier'}, 
+							{'data' : 'fv_addr'}, 
+							{'mRender': function ( data, type, row ) {
+													return row['fc_telp']+" / "+row['fc_telp2'];
+												},width:130
+									}, 
+									{'data' : 'fd_estdatang'},
+									{'data' : 'untuk_cabang'},
+									{'data' : 'warehouse'},
+									{'data' : 'fn_qty'}, 
+									{'data' : 'total'}, 
+									{'data' : 'fv_note'},  
+									{'data' : 'fc_userid'}  
+						]   
+					}); 
+				}
+        function datatable2(){
+						table = $('#datatable2').DataTable({
+						'processing': true, //ini untuk menampilkan processing
+						'serverSide': true, //iini untuk serversidenya
+						'order'		: [], //ini jika menginginkan diorder
+						'destroy'	: true,
+						'language'  : {
+							'searchPlaceholder': "Cari"
+						},
+						'ajax':{
+							'url'	: "<?php echo site_url($this->uri->segment(1).'/dataDetail');?>/"+$("#no_nota").val(),
+							"dataType": "json",
+							'type'	: 'POST' 
+						},//pasangkan hasil dari ajax ke datatablesnya
+						'columns'	:[
+							{'data' : 'no',width:20}, 
+							<?php if($delete=='1' || $update =='1'){ ?>
+								{'mRender': function ( data, type, row ) {
+									return "<button type='button' class='btn btn-success' onclick=update('"+row['fc_id']+"')>Input</button><button type='button' class='btn btn-danger' onclick=hapus('"+row['fc_id']+"')>Hapus</button>"; 
+											}
+										}	
+									<?php } ?>, 
+							{'data' : 'fc_stock'},
+							{'data' : 'fv_stock'},  
+							{'data' : 'variant'},  
+							{'data' : 'fv_satuan'},  
+							{'data' : 'fn_price'},  
+							{'data' : 'fn_qty'},  
+							{'data' : 'fn_terima'},  
+							{'data' : 'fn_total'},  
+							{'data' : 'fv_ket'}  
+						]   
+					}); 
+        }  
+				function tutup(){
+					$('#close_form').fadeOut('slow');
+					$('#no_nota').val("");
+					$('#wizard').slideUp('slow');
+					$('#laporan').slideDown('slow');
+					datatable();
+				}
+				function detail(kode){
 					$('.StepTitle').fadeIn('fast');
 					$('#no_nota').val(kode);
-            		$('#close_form').fadeIn('slow');
-            		$('#laporan').slideUp('slow');
-            		$('#wizard').slideDown('slow'); 
+								$('#close_form').fadeIn('slow');
+								$('#laporan').slideUp('slow');
+								$('#wizard').slideDown('slow'); 
 					$.ajax({
-					  type: 'GET',
-					  dataType:'JSON',
-					  url: link+"/getMSTINFO/"+kode,
-					  success:function(responseText){ 
-					  	$('.StepTitle').fadeOut('fast');
-					    $("#a1").val(responseText.fc_nopo); 
-					    $("#a2").val(responseText.fd_po); 
-					    $("#a3").val(responseText.fv_supplier); 
-					    $("#a4").val(responseText.untuk_cabang); 
-					    $("#a5").val(responseText.warehouse); 
-					    $("#a7").val(responseText.fn_qty); 
-					    $("#a8").val(responseText.total); 
-					    $("#a9").val(responseText.fv_note);  
-					    $("#a12").val(responseText.ongkir);
-					    hitungTotal(); 
-					    actionButton(); 
-					  }
-					});
-			    } 
-			    function display_message(isi){
-		          $('#alert_trans').slideDown('slow').fadeOut(5000);
-		          if (isi.includes('Berhasil')==true) { 
-		            $('#alert_trans').removeClass("alert-danger");
-		            $('#alert_trans').addClass('alert-primary');
-		            $('#alert_trans').text(isi);
-		          }else if(isi.includes('Gagal') == true){
-		            $('#alert_trans').removeClass("alert-primary");
-		            $('#alert_trans').addClass('alert-danger');
-		            $('#alert_trans').text(isi);
-		          }
-		        }
-			    $(document).on('submit','#formMaster',function(e){
+						type: 'GET',
+						dataType:'JSON',
+						url: link+"/getMSTINFO/"+kode,
+						success:function(responseText){ 
+								$('.StepTitle').fadeOut('fast');
+								$("#a1").val(responseText.fc_nopo); 
+								$("#a2").val(responseText.fd_po); 
+								$("#a3").val(responseText.fv_supplier); 
+								$("#a4").val(responseText.untuk_cabang); 
+								$("#a5").val(responseText.warehouse); 
+								$("#a7").val(responseText.fn_qty); 
+								$("#a8").val(responseText.total); 
+								$("#a9").val(responseText.fv_note);  
+								$("#a12").val(responseText.ongkir);
+								hitungTotal(); 
+								actionButton(); 
+							}
+						});
+				} 
+				function display_message(isi){
+					$('#alert_trans').slideDown('slow').fadeOut(5000);
+					if (isi.includes('Berhasil')==true) { 
+						$('#alert_trans').removeClass("alert-danger");
+						$('#alert_trans').addClass('alert-primary');
+						$('#alert_trans').text(isi);
+					}else if(isi.includes('Gagal') == true){
+						$('#alert_trans').removeClass("alert-primary");
+						$('#alert_trans').addClass('alert-danger');
+						$('#alert_trans').text(isi);
+					}
+				}
+			  $(document).on('submit','#formMaster',function(e){
 			    	$('.StepTitle').fadeIn('fast');
-					e.preventDefault();
-					$.ajax({
+						e.preventDefault();
+						$.ajax({
 			            url: link+"/SimpanMst",
 			            type: "POST",
 			            data:  new FormData(this),
@@ -449,26 +449,30 @@
 			        	});
 			        return false;  
 				});
-				$(document).on('submit','#formDtl',function(e){
+				$(document).on('submit','#formDtl',function(e){ 
 			    	$('.StepTitle').fadeIn('fast');
-					e.preventDefault();
-					$.ajax({
-			            url: link+"/SimpanDtl",
-			            type: "POST",
-			            data:  new FormData(this),
-			            contentType: false,
-			            cache: false,
-			            processData:false,
-			            success: function(data){  
-			            	$('.StepTitle').fadeOut('fast');       
-			            	display_message(data);
-			            	if (data.includes("Berhasil") == true) {
-			            		datatable2();  
-			            	}
-			            	document.getElementById("formDtl").reset();
-			            }
-			        	});
-			        return false;  
+						e.preventDefault();
+						if(parseInt($("#d7").val()) > parseInt($('#d6').val())){
+							alert("Qty Terima tidak boleh > Qty PO");
+						}else{
+							$.ajax({
+											url: link+"/SimpanDtl",
+											type: "POST",
+											data:  new FormData(this),
+											contentType: false,
+											cache: false,
+											processData:false,
+											success: function(data){  
+												$('.StepTitle').fadeOut('fast');       
+												display_message(data);
+												if (data.includes("Berhasil") == true) {
+													datatable2();  
+												}
+												document.getElementById("formDtl").reset();
+											}
+										});
+									return false;  
+						}
 				});   
 				function hitungTotal(){
 					var subtotal = parseInt(decimal($('#a8').val()));
@@ -476,43 +480,43 @@
 					hasil = subtotal + ongkir;
 					$('#a13').val("Rp."+rupiah(hasil));
 				}  
-			    function update(kode){
-			    	$.ajax({
-					  type: 'GET',
-					  dataType:'JSON',
-					  url: link+"/getDataPO/"+kode,
-					  success:function(responseText){ 
-					  	$('.StepTitle').fadeOut('fast');
-					  	$('[name="kode"]').val(responseText.fc_id);
-					  	$('[name="kdvar"]').val(responseText.fc_variant);
-					  	$('[name="kdsat"]').val(responseText.fc_satuan);
-					  	$("#d1").val(responseText.fc_stock);
-					  	$("#d2").val(responseText.fv_stock);
-					  	$("#d3").val(responseText.variant);
-					  	$("#d4").val(responseText.fv_satuan);
-					  	$("#d5").val(decimal(responseText.fn_price));
-					  	$("#d6").val(responseText.fn_qty);
-					  	$("#d7").val(responseText.fn_terima);
-					  	$("#d8").val(responseText.fn_total);
-					  	$("#d9").val(responseText.fv_ket);
-					  }
+				function update(kode){
+					$.ajax({
+					type: 'GET',
+					dataType:'JSON',
+					url: link+"/getDataPO/"+kode,
+					success:function(responseText){ 
+							$('.StepTitle').fadeOut('fast');
+							$('[name="kode"]').val(responseText.fc_id);
+							$('[name="kdvar"]').val(responseText.fc_variant);
+							$('[name="kdsat"]').val(responseText.fc_satuan);
+							$("#d1").val(responseText.fc_stock);
+							$("#d2").val(responseText.fv_stock);
+							$("#d3").val(responseText.variant);
+							$("#d4").val(responseText.fv_satuan);
+							$("#d5").val(decimal(responseText.fn_price));
+							$("#d6").val(responseText.fn_qty);
+							$("#d7").val(responseText.fn_terima);
+							$("#d8").val(responseText.fn_total);
+							$("#d9").val(responseText.fv_ket);
+						}
 					});
-			    }
-			    function hitungsubtotal(){
+				}
+				function hitungsubtotal(){
 					var harga = parseInt(decimal($('#d5').val()));
 					var qty   = parseInt(decimal($('#d7').val()));
 					var total = harga * qty;
 					$("#d8").val("Rp."+rupiah(total));
-			    }
-			    function hapus(kode){
+				}
+				function hapus(kode){
 					if(confirm("Apakah anda Yakin?")){ 
 						$.get(link+"/HapusDtl/"+kode, $(this).serialize())
-			            .done(function(data) { 
-			            	display_message(data);
-			            	datatable2();
-			            });
-			            //--------------------------------
-			        }
+									.done(function(data) { 
+										display_message(data);
+										datatable2();
+									});
+									//--------------------------------
+					}
 				}
 				function batalkan(kode){
 					if(confirm("Apakah anda Yakin?")){ 
@@ -559,15 +563,29 @@
 		              }
 		          });
 		       	}
-		       	function getDTLINFO(kode){
-		          $('.StepTitle').fadeIn('fast'); 
-		          $.get(link+"/getDetail/"+kode, $(this).serialize())
-		                  .done(function(data) {
-		                    $('.StepTitle').fadeOut('fast');
-		                   document.getElementById('hasilDtlInfo').innerHTML = "";
-		                   document.getElementById('hasilDtlInfo').innerHTML = data;
-		                  }); 
-		              
-		       }   
-            </script>   
-            <script src="<?= site_url()?>vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js"></script> 
+				function getDTLINFO(kode){
+					$('.StepTitle').fadeIn('fast'); 
+					$.get(link+"/getDetail/"+kode, $(this).serialize())
+									.done(function(data) {
+										$('.StepTitle').fadeOut('fast');
+										document.getElementById('hasilDtlInfo').innerHTML = "";
+										document.getElementById('hasilDtlInfo').innerHTML = data;
+									}); 
+							
+				}
+				function finalisasi(){
+					if(confirm("Apakah anda Yakin?")){ 
+						$.get(link+"/finalisasi/"+$("#no_nota").val(), $(this).serialize())
+							.done(function(data) { 
+								if(data.includes("Berhasil") == true){
+									tutup();
+									datatable();
+									alert(data);
+								}else{
+									display_message(data);	
+								}
+						}); 
+					}
+				}   
+				</script>   
+        <script src="<?= site_url()?>vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js"></script> 

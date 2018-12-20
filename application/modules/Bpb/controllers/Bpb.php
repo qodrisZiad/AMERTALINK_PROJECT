@@ -236,4 +236,16 @@ class Bpb extends CI_Controller
 			echo "Gagal menghapus data";
 		}
 	}
+
+	public function finalisasi(){
+		$po_no = $this->uri->segment(3);
+		$aksi  = $this->M_model->finalisasi($po_no);
+		if(!empty($aksi)){
+			foreach($aksi as $data){
+				echo "Berhasil menyimpan data PO.Nomor Transaksi anda:".$data->no_bpb;
+			}
+		}else{
+			echo "Gagal menyimpan data PO periksa kembali.";
+		}
+	}
 }
