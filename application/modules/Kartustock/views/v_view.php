@@ -1,4 +1,4 @@
-            <div class="clearfix"></div>
+<div class="clearfix"></div>
             <div class="row">
               <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
@@ -17,21 +17,25 @@
                     	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
                     	Transaksi berhasil 
                   	</div>
-                     <form class="form-horizontal form-label-left" id="formAksi" style="display: none;" method="post" enctype="multipart/form-data">
-                     	<?php 
+                     <form class="form-horizontal form-label-left" id="form-filter">
+						 <?php 
+						$tombols = array(
+							'b1' => array('id'=>'bf1','type'=>'button','label'=>'Reset','class'=>'btn btn-warning'),
+							'b2' => array('id'=>'bf2','type'=>'button','label'=>'Filter','class'=>'btn btn-primary'),
+						);
                      	$data = array(
                      		'aksi' => array('name' => 'aksi','type' => 'hidden'),
                      		'kode' => array('name'=>'kode','type' => 'hidden'),
-                     		'a1' => array('name'=>'a1','label' => 'Kategori','type' => 'text','class' => 'form-control','col' => 'col-sm-4'), 
-                     		'a2' => array('name'=>'a2','label' => 'Gambar','type' => 'file','class' => 'form-control','col' => 'col-sm-4'), 
-                     		'a3' => array('name'=>'a3','label' => 'Aktif','type' => 'option','class' => 'form-control','option' => array('1'=>'Aktif','0'=>'Non Aktif'),'col' => 'col-sm-2')
+                     		'f1' => array('name'=>'f_branch','label' => 'Cabang','type' => 'option', 'option'=> getBranch(),'class' => 'form-control','col' => 'col-sm-4'), 
+                     		'f2' => array('name'=>'f_wh','label' => 'Gudang','type' => 'option', 'option'=> array(),'class' => 'form-control','col' => 'col-sm-4'), 
+                     		'f3' => array('name'=>'f_namabrg','label' => 'Nama Barang','type' => 'text','class' => 'form-control','col' => 'col-sm-4','defaultValue'=>'')
                      	);
-                     	buat_form($data);  
+                     	buat_form($data,$tombols);  
                      	?> 
                     </form> 
 					<div id="laporan"> 
 						<?php 
-							$kolom = array("No.","branch","wh","tanggal","fc_stock","fc_variant","fc_uom");
+							$kolom = array("No.","Tanggal","Nama Barang","Variant","Keluar","Masuk","Sisa","Referensi","Keterangan","User");
 							buat_table($kolom,"datatable");   
 						?>
 					</div>
@@ -49,17 +53,23 @@
             	});
             	function datatable(){
             		table = $('#datatable').DataTable({
-			        	'processing': true, //ini untuk menampilkan processing
-			        	'serverSide': true, //iini untuk serversidenya
-			        	'order'		: [], //ini jika menginginkan diorder
-			        	'destroy'	: true,
-			        	'language'  : {
+			        	'processing' : true, 	//ini untuk menampilkan processing
+			        	'serverSide' : true, 	//ini untuk serversidenya
+			        	'order'		 : [], 		//ini jika menginginkan diorder
+						'deferRender': true,	//ini penting jika data 
+						'searching'	 : false,
+						'info'		 : false,
+			        	'language'   : {
 			        		'searchPlaceholder': "Cari"
 			        	},
 			        	'ajax':{
-			        		'url'	: "<?php echo site_url($this->uri->segment(1).'/ajax_list');?>",
-			        		"dataType": "json",
-			        		'type'	: 'POST' 
+			        		'url'	: "<?php echo site_url($this->uri->segment(1).'/getTableData');?>",
+			        		"type"	: 'POST',
+							"data"	: function ( data ) {
+								data.f_branch 	= $('#f_branch').val();
+								data.f_wh 		= $('#f_wh').val();
+								data.f_namabrg 	= $('#f_namabrg').val();
+							} 
 			        	},//pasangkan hasil dari ajax ke datatablesnya
 			        	"columnDefs": [
 							{ 
@@ -122,38 +132,43 @@
 						$.get(link+"/Hapus/"+kode+"/"+img, $(this).serialize())
 			            .done(function(data) { 
 			            	display_message(data);
-			            	if (data.includes("Berhasil") == true) {
-			            		actionButton();
-			            		$('.buttonNext').click();  
-			            	}
-			            }
-			        	});
-			        return false;  
-				});
-				$(document).on('submit','#formDtl',function(e){
-			    	$('.StepTitle').fadeIn('fast');
+			            	reload_table();
+			            });
+			            //--------------------------------
+			        }
+				}
+				$(document).on('submit','#formAksi',function(e){
 					e.preventDefault();
 					$.ajax({
-			            url: link+"/SimpanDtl",
+			            url: link+"/Simpan",
 			            type: "POST",
 			            data:  new FormData(this),
 			            contentType: false,
 			            cache: false,
 			            processData:false,
-			            success: function(data){  
-			            	$('.StepTitle').fadeOut('fast');       
+			            success: function(data){ 
+			            if (data.includes("Berhasil") == true && $('#aksi').val()=='tambah') {
+			            	document.getElementById('formAksi').reset();
+			            } 
 			            	display_message(data);
-			            	if (data.includes("Berhasil") == true) {
-			            		datatable2();  
-			            	}
-			            	document.getElementById("formDtl").reset();
-			            }
-			        	});
+			            }           
+			        });
 			        return false;  
 				}); 
-				$(document).on('change','#a2',function(e){
-					PreviewImage('pict_detail_img','a2');
+				$(document).on('change','#f_branch',function(e){
+					$.get(link+'/getListWH/'+$('#f_branch').val(), $(this).serialize())
+						.done(function( data ){
+							$('#f_wh').html( data );
+						});
 				});
+				$('#bf2').click(function(){ //button filter event click
+					table.ajax.reload();  //just reload table
+				});
+				$('#bf1').click(function(){ //button reset event click
+					$('#form-filter')[0].reset();
+					table.ajax.reload();  //just reload table
+				});
+
 				function PreviewImage(hasil,dari) {
 					var oFReader = new FileReader();
 					oFReader.readAsDataURL(document.getElementById(dari).files[0]);
@@ -165,4 +180,4 @@
 					    
 					};
 				};
-            </script>   
+            </script> 
