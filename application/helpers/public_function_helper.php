@@ -378,3 +378,6 @@
 		$query = $ci->db->insert('t_kartustock', $data);
 		return $ci->db->affected_rows();
 	}
+	function format_tanggal_indo($tanggalan){
+		return date("d-m-Y",strtotime($tanggalan));
+	}

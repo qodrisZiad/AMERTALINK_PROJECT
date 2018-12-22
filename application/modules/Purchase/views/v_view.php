@@ -303,7 +303,7 @@
       //------------------------------------------------------------------- 
         $(document).ready(function(){
             $("#temp_gudang").val(""); 
-            getData();
+            getData(); 
         });
 
         $(document).on('change','#a4',function(e){
@@ -552,7 +552,7 @@
         datatable2();
         getPO('<?php echo $this->session->userdata("branch");?>','<?php echo $this->session->userdata("userid");?>'); 
         getMSTINFO('<?php echo $this->session->userdata("userid");?>');
-        getDTLINFO('<?php echo $this->session->userdata("userid");?>');
+        getDTLINFO('<?php echo $this->session->userdata("userid");?>'); 
       }
       function finalisasi(kode){
           if(confirm("Apakah anda Yakin?")){ 
