@@ -1,199 +1,490 @@
             <div class="clearfix"></div>
             <div class="row">
               <div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="x_panel">
+                <div class="x_panel" id="wizardContainer">
                   <div class="x_title">
-                    <h2>Penerimaan Barang</h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li> 
-                      <li><a><i class=""></i></a></li>
-                      <?php if($input=='1'){?><li id="add_form"><a><i class="fa fa-plus" onclick="tambah()"></i></a></li><?php }?>
-                      <li id="close_form" style="display: none"><a><i class="fa fa-close" onclick="tutup()"></i></a></li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="x_content">
-                  	<div id="alert_trans" class="alert alert-success alert-dismissible fade in" role="alert" style="display: none;">
-                    	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    	Transaksi berhasil 
-                  	</div>
-                    <form class="form-horizontal form-label-left" id="formMaster" style="display: none;" method="post">
-						 <?php 
-                     	$data = array(
-                     		'aksi' => array('name' => 'aksi','type' => 'hidden'),
-                     		'wh' => array('name'=>'wh','type' => 'hidden'),
-                     		'a1' => array('name'=>'a1','label' => 'No.BPB','type' => 'text','class' => 'form-control','col' => 'col-sm-2','readonly' => 'true'),
-                     		'a2' => array('name'=>'a2','label' => 'Tgl Terima','type' => 'date','class' => 'form-control','col' => 'col-sm-2','defaultValue' => date('Y-m-d')),
-                     		'a3' => array('name'=>'a3','label' => 'Supplier','type' => 'option','class' => 'form-control','option' => getSupplier(),'col' => 'col-sm-4'),
-                     		'a4' => array('name'=>'a4','label' => 'Cabang','type' => 'text','class' => 'form-control','col' => 'col-sm-4', 'defaultValue'=> $branch, 'readonly'=>'true'),
-                     		'a5' => array('name'=>'a5','label' => 'Gudang','type' => 'option','class' => 'form-control','option' => getWareHouse($branch,1),'col' => 'col-sm-4'),
-                     		'a7' => array('name'=>'a7','label' => 'Total item','type' => 'text','class' => 'form-control','col' => 'col-sm-2','readonly' => 'true','defaultValue'=>'0'),
-                     		'a8' => array('name'=>'a8','label' => 'Catatan','type' => 'text','class' => 'form-control','col' => 'col-sm-6'),
-                     		'a9' => array('name'=>'a9','label' => 'Userid','type' => 'text','class' => 'form-control','col' => 'col-sm-2','readonly'=>'true','defaultValue'=>$userid)
-                     	);						 
-						 buat_form($data); 	 
-                     	?>
-						<div class="ln_solid"></div>
-                    </form>					
-                    <div id="detail" style="display: none;">
-                    	<form class="form-horizontal form-label-left" id="formDetail" method="post">
-	                     	<?php 
-		                     	$dataDetil = array(
-									'aksiDetail' => array('name' => 'aksiDetail','type' => 'hidden'),
-									'kodeDetail' => array('name'=>'kode','type' => 'hidden'),
-									'nobpb'       => array('name'=>'nobpb','type' => 'hidden'),
-									'kode_varian'=> array('name'=>'kode_varian', 'type'=>'hidden'),
-									'b1'         => array('name'=>'b1','label' => 'Kode Item','type' => 'text','class' => 'form-control','col' => 'col-sm-3','input_search' => true),
-									'item'       => array('name'=>'item','label' => 'Nama Item','type' => 'text','class' => 'form-control','col' => 'col-sm-3',"readonly" => true),
-									'b2'         => array('name'=>'b2','label' => 'Ukuran','type' => 'option','class' => 'form-control','col' => 'col-sm-3','option' => ''), 
-									'b3'         => array('name'=>'b3','label' => 'Warna','type' => 'option','class' => 'form-control','col' => 'col-sm-3','option' => ''),
-									'item_harga' => array('name'=>'item_harga','label' => 'Harga Beli','type' => 'text','class' => 'form-control','col' => 'col-sm-3'), 
-									'b4'         => array('name'=>'b4','label' => 'Satuan','type' => 'option','class' => 'form-control','col' => 'col-sm-3','option' => ''), 
-									'b5'         => array('name'=>'b5','label' => 'Qty','type' => 'number','class' => 'form-control','col' => 'col-sm-2','defaultValue' => '0'), 
-									'total_harga' => array('name'=>'total_harga','label' => 'Nominal','type' => 'text','class' => 'form-control','col' => 'col-sm-3','readonly' => 'true'), 
-									'b6'         => array('name'=>'b6','label' => 'Keterangan','type' => 'text','class' => 'form-control','col' => 'col-sm-4')
-		                     	);
-		                     	buat_form($dataDetil);  
-	                     	?>
-                    	</form>
-                    	<?php 
-							$kolom = array("No.","Kode Item","Item","Ukuran|Warna","Satuan","Qty","Harga Beli","Opsi");
-							buat_table($kolom,"datatable2");   
-						?>
-                    </div> 
-					<div id="laporan"> 
-						<?php 
-							$kolom2 = array("No.","NO BPB","Supplier","Gudang","Jenis","Jumlah","Total Nominal","Status","Opsi");
-							buat_table($kolom2,"datatable");   
-						?>
-					</div>
+                    <h2>Penerimaan Barang Tanpa PO</h2> 
+                  	<ul class="nav navbar-right panel_toolbox">
+                  		<li id="close_form" style="display: none"><a><i class="fa fa-close" onclick="tutup()"></i></a></li>
+                  	</ul>
+                    <div class="clearfix"></div> 
+                	</div>
+					<div class="x_content">
+						<div id="alert_trans" class="alert alert-success alert-dismissible fade in" role="alert" style="display: none;">
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+							Transaksi berhasil 
+						</div>						
+						<!-- Smart Wizard -->
+						<div id="wizardCustom" class="form_wizard wizard_horizontal">
+							<ul class="wizard_steps">
+								<li>
+									<a href="#step-1">
+										<span class="step_no">1</span>
+										<span class="step_descr">
+												Step 1<br />
+												<small>Form Data Master</small>
+										</span>
+									</a>
+								</li>
+								<li>
+									<a href="#step-2">
+										<span class="step_no">2</span>
+										<span class="step_descr">
+												Step 2<br />
+												<small>Form Detil Barang</small>
+										</span>
+									</a>
+								</li>
+								<li>
+									<a href="#step-3">
+										<span class="step_no">3</span>
+										<span class="step_descr">
+												Step 3<br />
+												<small>Finalisasi Data</small>
+										</span>
+									</a>
+								</li>													
+							</ul>
+							<div id="step-1"> 
+								<form class="form-horizontal form-label-left" id="formMaster" name="formMaster" method="POST" style="overflow: hidden;">
+									<div class="col-md-6">
+										<div class="form-group">
+										<label class="control-label col-md-6" for="bpb_no">No.BPB 
+										</label>
+										<div class="col-md-6">
+											<input type="text" id="bpb_no" name="bpb_no"  class="form-control" value="<?= $this->session->userdata('userid');?>" readonly>
+										</div>
+										</div>
+										<div class="form-group">
+										<label class="control-label col-md-6" for="a2">Supplier   
+										</label>
+										<div class="col-md-6" >
+											<select name="a2" id="a2" class="form-control">
+												<?= $listSupplier; ?>
+											</select>
+										</div>
+										</div> 
+										<div class="form-group">
+										<label class="control-label col-md-6" for="a3">Diterima Di Cabang   
+										</label>
+										<div class="col-md-6" >
+											<input type="text" class="form-control" name="a3" id="a3" value="<?= $this->session->userdata('branch'); ?>" readonly="true">
+										</div>
+										</div>
+										<input type="hidden" id="temp_gudang">
+										<div class="form-group">
+											<label class="control-label col-md-6" for="a4">Gudang   
+											</label>
+										<div class="col-md-6" >
+											<select name="a4" id="a4" class="form-control">
+												<?= $listWarehouse; ?>	
+											</select>
+										</div>
+										</div>
+										<div class="form-group">
+										<label class="control-label col-md-6" for="a5">Tanggal Terima 
+										</label>
+										<div class="col-md-6" >
+											<div class='input-group date' id='tanggal'>
+											<input type='text' class="form-control" name="a5" value="<?= date("d-m-Y"); ?>" />
+											<span class="input-group-addon">
+												<span class="glyphicon glyphicon-calendar"></span>
+											</span>
+										</div>
+										</div>
+									</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label class="control-label col-md-3" for="a6">Total Jenis Barang 
+											</label>
+											<div class="col-md-6">
+												<input type="text" id="a6" name="a6"  class="form-control" value="0" readonly="true">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="control-label col-md-3" for="a7">Total Qty Item 
+											</label>
+											<div class="col-md-6">
+											<input type="text" id="a7" name="a7"  class="form-control" value="0" readonly="true">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="control-label col-md-3" for="a8">Catatan 
+											</label>
+											<div class="col-md-6">
+												<textarea class="form-control" name="a8" id="a8"></textarea>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="control-label col-md-3" for="a9">Tgl Input 
+											</label>
+											<div class="col-md-6">
+											<input type="text" id="a9" name="a9"  class="form-control" value="<?= date('d-m-Y');?>" readonly>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="control-label col-md-3" for="a11">User Input 
+											</label>
+											<div class="col-md-6">
+											<input type="text" id="a11" name="a11"  class="form-control" value="<?= $this->session->userdata('userid');?>" readonly>
+											</div>
+										</div>
+										<div class="form-group"><label class="control-label col-md-3">&nbsp;</label>
+									<div class="col-md-6">
+										<button type="reset" class="btn btn-danger">Reset Form</button>
+									</div>
+									</div> 
+									</div> 
+								</form> 
+							</div>
+							<div id="step-2">
+								<h2 class="StepTitle">Step 2 Content <small id="labelNota"></small></h2>
+								<div class="ln-solid"></div>
+								<form class="form-horizontal form-label-left" id="formDetail" method="post">
+									<?php 
+										$dataDetil = array(
+											'aksiDetail' => array('name' => 'aksiDetail','type' => 'hidden'),
+											'kodeDetail' => array('name'=>'kode','type' => 'hidden'),
+											'nobpb'       => array('name'=>'nobpb','type' => 'hidden'),
+											'kode_varian'=> array('name'=>'kode_varian', 'type'=>'hidden'),
+											'b1'         => array('name'=>'b1','label' => 'Kode Item','type' => 'text','class' => 'form-control','col' => 'col-sm-3','input_search' => true),
+											'item'       => array('name'=>'item','label' => 'Nama Item','type' => 'text','class' => 'form-control','col' => 'col-sm-3',"readonly" => true),
+											'item_harga' => array('name'=>'item_harga','label' => 'Harga Beli','type' => 'text','class' => 'form-control','col' => 'col-sm-3'), 
+											'b4'         => array('name'=>'b4','label' => 'Satuan','type' => 'option','class' => 'form-control','col' => 'col-sm-3','option' => ''), 
+											'b5'         => array('name'=>'b5','label' => 'Qty','type' => 'number','class' => 'form-control','col' => 'col-sm-2','defaultValue' => '0'), 
+											'total_harga' => array('name'=>'total_harga','label' => 'Nominal','type' => 'text','class' => 'form-control','col' => 'col-sm-3','readonly' => 'true'), 
+											'b6'         => array('name'=>'b6','label' => 'Keterangan','type' => 'text','class' => 'form-control','col' => 'col-sm-4')
+										);
+										buat_form($dataDetil);  
+									?>
+								</form>
+								<div class="ln_solid"></div>
+								<div id="laporanContainer2"> 
+								<?php 
+									$kolomTableDetil = array('No','Kode Barang','Nama Barang','Satuan','Qty','Harga','Opsi');
+									buat_table($kolomTableDetil,"tabel-detil");   
+								?>
+								</div>
+								<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+									<div class="modal-dialog modal-lg">
+									<div class="modal-content">
+										<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+										</button>
+										<h4 class="modal-title" id="myModalLabel">Cari SKU</h4>
+										</div>
+										<div class="modal-body">
+										<?php 
+												$kolom3 = array("No.","Kategori","Kode Item","Nama Item","Opsi");
+												buat_table($kolom3,"tabel-sku");   
+											?>
+										</div> 
 
-                  </div>
+									</div>
+									</div>
+								</div>	
+							</div>
+							<div id="step-3">
+								<h2 class="StepTitle">Step 3 Content</h2>
+								<p>
+									Silahkan diteliti kembali barang-barang yang anda terima :
+								</p>
+								<div class="ln-solid"></div>
+								<form class="form-horizontal form-label-left" id="formReview" name="formReview" style="overflow: hidden;">
+									<div class="col-md-6">
+										<div class="form-group">
+										<label class="control-label col-md-6" for="bpb_no">No.BPB 
+										</label>
+										<div class="col-md-6">
+											<input type="text" id="r1" name="r1"  class="form-control" readonly>
+										</div>
+										</div>
+										<div class="form-group">
+										<label class="control-label col-md-6" for="a2">Supplier   
+										</label>
+										<div class="col-md-6" >
+											<input type="text" name="r2" id="r2" class="form-control" readonly>
+										</div>
+										</div> 
+										<div class="form-group">
+										<label class="control-label col-md-6" for="a3">Diterima Di Cabang   
+										</label>
+										<div class="col-md-6" >
+										<input type="text" name="r3" id="r3" class="form-control" readonly>
+										</div>
+										</div>
+										<input type="hidden" id="temp_gudang">
+										<div class="form-group">
+											<label class="control-label col-md-6" for="a4">Gudang   
+											</label>
+										<div class="col-md-6" >
+											<input type="text" name="r4" id="r4" class="form-control" readonly>
+										</div>
+										</div>
+										<div class="form-group">
+										<label class="control-label col-md-6" for="a5">Tanggal Terima 
+										</label>
+										<div class="col-md-6" >
+											<div class='input-group date' id='tanggal'>
+											<input type='text' class="form-control" id="r5" name="r5" value="<?= date("d-m-Y"); ?>" readonly/>
+											<span class="input-group-addon">
+												<span class="glyphicon glyphicon-calendar"></span>
+											</span>
+										</div>
+										</div>
+									</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label class="control-label col-md-3" for="a6">Total Jenis Barang 
+											</label>
+											<div class="col-md-6">
+												<input type="text" id="r6" name="r6"  class="form-control" readonly="true">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="control-label col-md-3" for="a7">Total Qty Item 
+											</label>
+											<div class="col-md-6">
+											<input type="text" id="r7" name="r7"  class="form-control" readonly="true">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="control-label col-md-3" for="a8">Catatan 
+											</label>
+											<div class="col-md-6">
+												<textarea class="form-control" id="r8" name="a8" id="r8" readonly></textarea>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="control-label col-md-3" for="a9">Tgl Input 
+											</label>
+											<div class="col-md-6">
+											<input type="text" id="r9" name="r9"  class="form-control" value="<?= date('d-m-Y');?>" readonly>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="control-label col-md-3" for="a11">User Input 
+											</label>
+											<div class="col-md-6">
+											<input type="text" id="r10" name="r10"  class="form-control" value="" readonly>
+											</div>
+										</div>									 
+									</div> 
+								</form>
+								<div class="ln-solid"></div>
+								<?php 
+									$kolomTableReview = array('No','Kode Barang','Nama Barang','Satuan','Qty','Harga');
+									buat_table($kolomTableReview,"tabel-review");     
+								?>
+							</div>
+
+						</div>
+						<!-- End SmartWizard Content -->			
+					</div>
                 </div>
               </div> 
-            </div> 
-			<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                  <div class="modal-content">
-
-                    <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
-                      </button>
-                      <h4 class="modal-title" id="myModalLabel">Cari SKU</h4>
-                    </div>
-                    <div class="modal-body">
-                       <?php 
-							$kolom3 = array("No.","Kategori","Kode Item","Item","Opsi");
-							buat_table($kolom3,"datatable3");   
+			  <!-- end form wizard -->
+			  <!-- start form laporan -->	
+			  <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel" id="panelReport">
+                  <div class="x_title">
+                    <h2>Data Penerimaan Barang</h2> 
+                  	<ul class="nav navbar-right panel_toolbox">
+                  		<li id="close_form" style="display: none"><a><i class="fa fa-close" onclick="tutup()"></i></a></li>
+						  <li id="close_form"><a><i class="fa fa-plus" onclick="tambah('down')"></i></a></li>
+                  	</ul>
+                    <div class="clearfix"></div> 
+                	</div>
+					<div class="x_content">
+						<div id="alert_trans" class="alert alert-success alert-dismissible fade in" role="alert" style="display: none;">
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+							Transaksi berhasil 
+						</div>
+						<div id="laporanContainer"> 
+						<?php 
+							$kolomTableLaporan = array('No','Gudang','Tanggal Terima','Supplier','Jenis','Qty','Nominal','User');
+							buat_table($kolomTableLaporan,"tabel-laporan");   
 						?>
-                    </div> 
-
-                  </div>
+						</div>					
+					</div>
                 </div>
-              </div>
-            <script type="text/javascript">
-            	var link = "<?php echo site_url().$this->uri->segment(1);?>"; 
-            	var table,table2;
-            	$(document).ready(function(){
-            		datatable();
-            	});
-// --------------------------- report data --------------------------------------            	
-            	function datatable(){
-            		table = $('#datatable').DataTable({
-			        	'processing': true, //ini untuk menampilkan processing
-			        	'serverSide': true, //iini untuk serversidenya
-			        	'order'		: [], //ini jika menginginkan diorder
-			        	'language'  : {
-			        		'searchPlaceholder': "Cari No BPB"
+              </div> <!-- end form laporan -->
+            </div> 
+
+			
+				<script type="text/javascript">
+				var link = "<?php echo site_url().$this->uri->segment(1);?>"; 
+				var table, table2, table3, table4;
+				$(document).ready(function(){
+					$('#wizardCustom').smartWizard({
+						selected: 0,
+						keyNavigation: false,
+						labelNext:'Form Selanjutnya',
+						labelPrevious: 'Form Sebelumnya',
+						labelFinish: 'Selesai',
+						hideButtonsOnDisabled: true,
+						buttonOrder: ['prev','next','finish'],
+						transitionEffect: 'slide',
+						fixHeight: '330',
+						onLeaveStep: function (obj,context) {
+							if (context.fromStep == 2 && context.toStep == 1 ){
+								$('#aksiDetail').val('update');
+								$('#panelReport').show();
+								return true;
+							} else
+							if (context.fromStep == 1){
+								$('#formMaster').submit();
+								datatableDetil();	
+								datatableSKU();
+								$('#panelReport').hide(); 							
+								return true;
+							} else 
+							if (context.fromStep == 2){
+								getReview();
+								datatableReview();
+								return true;
+							} 
+							return false;
+						},
+						onFinish: function(data){
+							finalisasi();
+							location.reload();
+						} 
+					});
+					$('#wizardCustom').smartWizard({ selected: 1 });
+					// load all table
+					datatable();					
+					
+				}); 
+				function datatable(){
+            		table = $('#tabel-laporan').DataTable({
+			        	'processing' : true, 	//ini untuk menampilkan processing
+			        	'serverSide' : true, 	//ini untuk serversidenya
+			        	'order'		 : [], 		//ini jika menginginkan diorder
+						'deferRender': true,	//ini penting jika data 
+						'searching'	 : true,
+						'info'		 : false,
+						'destroy'	 : true,
+			        	'language'   : {
+			        		'searchPlaceholder': "Cari"
 			        	},
 			        	'ajax':{
-			        		'url'	: "<?php echo site_url($this->uri->segment(1).'/data');?>",
-			        		"dataType": "json",
-			        		'type'	: 'POST' 
+			        		'url'	: "<?php echo site_url($this->uri->segment(1).'/getTableData');?>",
+			        		"type"	: 'POST'							
 			        	},//pasangkan hasil dari ajax ke datatablesnya
-			        	'columns'	:[
-			        		{'data' : 'no',width:20}, 
-							{'data' : 'fc_nobpb'}, 
-							{'data' : 'fv_supplier'},
-							{'data' : 'fv_wh'},
-							{'data' : 'fn_jenis'},
-							{'data' : 'fn_qty'},			        		 
-							{'data' : 'fm_total'},
-							{'mRender': function ( data, type, row ) {
-								let hasil='';
-	                       		if (row.fc_status == 'F') { hasil = "<a class='btn btn-success'>FINAL</a>" } else
-								if (row.fc_status == 'I') { hasil = "<a class='btn btn-warning'>INPUT</a>" }
-								   return hasil;
-	                    		},width:130
-                			}
-			        		<?php if($delete=='1' || $update =='1'){ ?>,{'mRender': function ( data, type, row ) {
-	                       		return "<?php if($delete == '1'){?><button class='btn btn-danger' onclick=hapus('"+row['fc_nobpb']+"')><i class='fa fa-close'></i></button><?php } ?>&nbsp; <?php if($update == '1'){ ?><button class='btn btn-info' onclick=edit('"+row['fc_branch']+"','"+row['fc_nobpb']+"')><i class='fa fa-pencil'></i></button><?php } ?>";
-	                    		},width:130
-                			} <?php  }else{ ?>
-                				,{'mRender': function ( data, type, row ) {
-	                       		return "Akses ditutup";
-	                    		},width:130
-                			}	
-                			<?php } ?>
-			        	]  
+			        	"columnDefs": [
+							{ 
+								"targets": [ 0 ], //first column / numbering column
+								"orderable": false, //set not orderable
+							},
+						],   
 			        }); 
             	}
-            	function reload_table(){
-			    	table.ajax.reload(null,false);
-			    }
-// --------------------------- end report data --------------------------------------			    
-// --------------------------- untuk master data --------------------------------------
-				function tambah(){					
-					$('#laporan').slideUp('slow');
-					$('#formMaster').slideDown('slow');
-					$('#close_form').fadeIn('slow');
-					$('#add_form').fadeOut('slow');
-					document.getElementById('formMaster').reset();
-					$('#aksi').val('tambah');
-					ganti_button();					
-					disableForm(["a2","a3","a5","a8","btn_reset","btn_dtl","btn_simpan"],false);
-					checkMst('<?= $this->session->userdata("branch");?>','<?= $this->session->userdata("userid");?>'); 
-				}
-				function edit(branch, nobpb){
+				function datatableDetil(){
+            		table2 = $('#tabel-detil').DataTable({
+			        	'processing' : true, 	//ini untuk menampilkan processing
+			        	'serverSide' : true, 	//ini untuk serversidenya
+			        	'order'		 : [], 		//ini jika menginginkan diorder
+						'deferRender': true,	//ini penting jika data 
+						'searching'	 : true,
+						'info'		 : false,
+						'destroy'	 : true,
+			        	'language'   : {
+			        		'searchPlaceholder': "Cari"
+			        	},
+			        	'ajax':{
+			        		'url'	: "<?php echo site_url($this->uri->segment(1).'/getTableDataDetil');?>",
+			        		"type"	: 'POST',
+							"data"	: function(data){
+								data.f_bpbno = $('#nobpb').val();
+							}							
+			        	},//pasangkan hasil dari ajax ke datatablesnya
+			        	"columnDefs": [
+							{ 
+								"targets": [ 0 ], //first column / numbering column
+								"orderable": false, //set not orderable
+							},
+						],   
+			        }); 
+            	}
+				function datatableSKU(){
+            		table3 = $('#tabel-sku').DataTable({
+			        	'processing' : true, 	//ini untuk menampilkan processing
+			        	'serverSide' : true, 	//ini untuk serversidenya
+			        	'order'		 : [], 		//ini jika menginginkan diorder
+						'deferRender': true,	//ini penting jika data 
+						'searching'	 : true,
+						'info'		 : false,
+						'destroy'	 : true,
+			        	'language'   : {
+			        		'searchPlaceholder': "Cari SKU"
+			        	},
+			        	'ajax':{
+			        		'url'	: "<?php echo site_url($this->uri->segment(1).'/getTableDataSKU');?>",
+			        		"type"	: 'POST'							
+			        	},//pasangkan hasil dari ajax ke datatablesnya
+			        	"columnDefs": [
+							{ 
+								"targets": [ 0 ], //first column / numbering column
+								"orderable": false, //set not orderable
+							},
+						],   
+			        }); 
+            	}
+				function datatableReview(){
+            		table4 = $('#tabel-review').DataTable({
+			        	'processing' : true, 	//ini untuk menampilkan processing
+			        	'serverSide' : true, 	//ini untuk serversidenya
+			        	'order'		 : [], 		//ini jika menginginkan diorder
+						'deferRender': true,	//ini penting jika data 
+						'searching'	 : false,
+						'info'		 : false,
+						'destroy'	 : true,
+			        	'language'   : {
+			        		'searchPlaceholder': "Cari"
+			        	},
+			        	'ajax':{
+			        		'url'	: "<?php echo site_url($this->uri->segment(1).'/getTableDataReview');?>",
+			        		"type"	: 'POST',
+							"data"	: function(data){
+								data.f_bpbno = $('#nobpb').val();
+							}							
+			        	},//pasangkan hasil dari ajax ke datatablesnya
+			        	"columnDefs": [
+							{ 
+								"targets": [ 0 ], //first column / numbering column
+								"orderable": false, //set not orderable
+							},
+						],   
+			        }); 
+            	}
+				$(document).on('submit','#formMaster',function(e){
+					e.preventDefault();
 					$.ajax({
-						url: link+"/EditMst/"+branch+"/"+nobpb,
-						type: "GET",
+			            url: link+"/SimpanMst",
+			            type: "POST",
 						dataType: "JSON",
-						success: function(data){
-							if (data != null) {
-								$("#a1").val(data.fc_nobpb);
-								$("#a2").val(data.fd_bpb);
-				        		$("#a3").val(data.fc_kdsupplier);
-				           		$("#a4").val(data.fc_branch);
-								$("#a5").val(data.fc_wh); $("#wh").val(data.fc_wh);
-								$("#a7").val(data.fn_jenis); 
-				           		$("#a8").val(data.fv_note);
-
-								$('#laporan').slideUp('slow');
-								$('#formMaster').slideDown('slow');
-								$('#close_form').fadeIn('slow');
-								$('#add_form').fadeOut('slow');
-
-								$('#aksi').val('edit');
-								ganti_button();					
-								disableForm(["a2","a3","a5","a8","btn_reset","btn_dtl","btn_simpan"],false);
-				        	} else {								
-								$('#alert_trans').removeClass("alert-primary");
-								$('#alert_trans').addClass('alert-danger');
-								$('#alert_trans').text("data sudah FINAL, tidak dapat dirubah lagi!");
-								$('#alert_trans').slideDown('slow').fadeOut(4000);
-							}
-						}
-					});
-				}
-				function tutup(){
-					$('#formMaster').slideUp('slow');
-					$('#laporan').slideDown('slow');
-					$('#close_form').fadeOut('slow');
-					$('#add_form').fadeIn('slow');
-					$('#aksi').val('');
-					reload_table();
-				}
+			            data:  new FormData(this),
+			            contentType: false,
+			            cache: false,
+			            processData:false,
+			            success: function(data){  
+							if (data.proses > 0) {
+								table.ajax.reload();
+								$('#aksiDetail').val('tambah');
+								$('#labelNota').html('No-BPB : '+data.nobpb);
+								$('#nobpb').val(data.nobpb);
+								table2.ajax.reload();	// reload
+							} else {
+								$('#nobpb').val(); // empty
+							}  	
+							display_message(data.message);
+			             }
+			        });
+			        return false;  
+				});
 				function display_message(isi){
 					$('#alert_trans').slideDown('slow').fadeOut(5000);
 					if (isi.includes('Berhasil')==true) { 
@@ -206,229 +497,20 @@
 						$('#alert_trans').text(isi);
 					}
 				}
-				function checkMst(branch,nobpb){ 
-					disableForm(["btn_reset","btn_dtl","btn_simpan"],true);
-					$.ajax({
-				        type: 'GET',
-				        dataType:'JSON',
-				        url: link+"/EditMst/"+branch+"/"+nobpb,
-				        success:function(responseText){ 
-				        	if (responseText != null) {
-								$("#a1").val(responseText.fc_nobpb);
-								$("#a2").val(responseText.fd_bpb);
-				        		$("#a3").val(responseText.fc_kdsupplier);
-				           		$("#a4").val(responseText.fc_branch);
-								$("#a5").val(responseText.fc_wh);
-				           		$("#wh").val(responseText.fc_wh);
-				           		//$("select#a4").change(); 
-				           		$("#a8").val(responseText.fv_note);
-				           		hitungQty();
-				        	} else {
-								$("#a1").val('<?= $userid ?>');
-							}
-				        	disableForm(["btn_reset","btn_dtl"],false); 
-				        }
-				    });
-				}
-				function hapus(kode){
-					if(confirm("Apakah anda Yakin?")){ 
-						$.get(link+"/Hapus/"+kode, $(this).serialize())
-			            .done(function(data) { 
-			            	display_message(data);
-			            	reload_table();
-			            });
-			            //--------------------------------
-			        }
-				}
-				$(document).on('submit','#formMaster',function(e){
-					e.preventDefault();
-					$.ajax({
-			            url: link+"/SimpanMst",
-			            type: "POST",
-			            data:  new FormData(this),
-			            contentType: false,
-			            cache: false,
-			            processData:false,
-			            success: function(data){ 
-			            	$('#close_form').fadeOut('slow');
-			             	disableForm(["a2","a3","a4","a5","a8","btn_reset","btn_dtl","btn_simpan"],true);
-			             	tambahDetail();
-			             }
-			        });
-			        return false;  
-				});
-				
-				function ganti_button(){
-					document.getElementById("button_action").innerHTML = '<div class="col-md-9 col-sm-9 col-xs-12">'+
-                          '<button type="button" id="btn_reset" onclick="tutup()" class="btn btn-danger">Kembali</button> '+
-                          '<button type="submit" id="btn_dtl" class="btn btn-warning">Tambah Item</button>'+
-                          '<button type="button" id="btn_simpan" onclick="finalisasi()" class="btn btn-success">Finalisasi Data</button>'+
-                        '</div>';
-                    disableForm(["a3","a4","a5","a6","a8"],false);
-                    disableForm(["btn_simpan"],true);
-				}
-				function finalisasi(){
-					if(confirm("Anda akan melakukan finalisasi data.\n Data tidak dapat diubah kembali.\n Anda yakin melanjutkan.?")){ 
-						$.get(link+"/Finalisasi", $(this).serialize())
-			            .done(function(data) { 
-							alert(data);
-							tutup();
-			            });
-			            //--------------------------------
-			        }
-				}
-// --------------------------- end master data --------------------------------------
-// ------------------------- untuk detail data ----------------------------------------
-				function ganti_buttonDetail(){
-					$('#detail #button_action').html("<div class='col-md-9 col-sm-9 col-xs-12'>"+ 
-					"<button type='button' id='btn_dtlMst' class='btn btn-warning' onclick='btnMaster()'>Kembali</button>"+
-                        "<button type='submit' id='btn_dtlsimpan' class='btn btn-success'>Simpan Item Detil</button>"+
-                        "</div>");
-				}
-				function btnMaster(){
-					$('#detail').slideUp("slow");
-					disableForm(["b1","b2","b3","b4","b5"],true); 
-					disableForm(["btn_dtlsimpan","btn_dtlMst"],true); 
-					ganti_button();
-					disableForm(["btn_simpan"],false);					
-				}
-				function tambahDetail(){
-					$('#detail').slideDown("slow");
-					document.getElementById("detail").focus();
-					datatable_detail();
-					ganti_buttonDetail();
-					document.getElementById("formDetail").reset();
-					$('#nobpb').val($("#a1").val());
-					$('#aksiDetail').val("tambah");
-					hitungQty();
-					disableForm(["b1","b2","b3","b4","b5"],false); 
-				}
-				function datatable_detail(){
-            		table2 = $('#datatable2').DataTable({
-			        	'processing': true, //ini untuk menampilkan processing
-			        	'serverSide': true, //iini untuk serversidenya
-			        	'order'		: [], //ini jika menginginkan diorder
-			        	'destroy'   : true,
-			        	'language'  : {
-			        		'searchPlaceholder': "Cari SKU"
-			        	},
-			        	'ajax':{
-			        		'url'	: "<?php echo site_url($this->uri->segment(1).'/dataBPBDetail');?>/"+$('#a1').val()+"",
-			        		"dataType": "json",
-			        		'type'	: 'POST' 
-			        	},//pasangkan hasil dari ajax ke datatablesnya
-			        	'columns'	:[
-			        		{'data' : 'no',width:20}, 
-			        		{'data' : 'fc_stock'},   
-			        		{'data' : 'fv_stock'},   
-			        		{'data' : 'variant'},   
-			        		{'data' : 'fv_satuan'},   
-			        		{'data' : 'fn_qty'},  
-			        		{'data' : 'price'}  
-			        		<?php if($delete=='1' || $update =='1'){ ?>,{'mRender': function ( data, type, row ) {
-	                       		return "<?php if($delete == '1'){?><button class='btn btn-danger' onclick=hapusDetail('"+row['fc_id']+"')><i class='fa fa-close'></i></button><?php } ?>";
-	                    		},width:130
-                			} <?php  }else{ ?>
-                				,{'mRender': function ( data, type, row ) {
-	                       		return "Akses ditutup";
-	                    		},width:130
-                			}	
-                			<?php } ?>
-			        	]  
-			        }); 
-            	}
-            	function hapusDetail(kode){
-					if(confirm("Apakah anda Yakin?")){ 
-						$.get(link+"/HapusDetail/"+kode, $(this).serialize())
-			            .done(function(data) { 
-			            	display_message(data);
-			            	datatable_detail();
-			            	hitungQty();
-			            });
-			            //--------------------------------
-			        }
-				}
-				$(document).on('submit','#formDetail',function(e){
-					e.preventDefault();
-					$.ajax({
-			            url: link+"/simpanDetail",
-			            type: "POST",
-			            data:  new FormData(this),
-			            contentType: false,
-			            cache: false,
-			            processData:false,
-			            success: function(data){ 
-			            	tambahDetail(); 
-			             	datatable_detail();
-			             	hitungQty();
-			             }
-			        });
-			        return false;  
-				});
-				function datatable_SKU(){
-            		table2 = $('#datatable3').DataTable({
-			        	'processing': true, //ini untuk menampilkan processing
-			        	'serverSide': true, //iini untuk serversidenya
-			        	'order'		: [], //ini jika menginginkan diorder
-			        	'destroy'   : true,
-			        	'language'  : {
-			        		'searchPlaceholder': "Cari SKU"
-			        	},
-			        	'ajax':{
-			        		'url'	: "<?php echo site_url($this->uri->segment(1).'/dataItem');?>",
-			        		"dataType": "json",
-			        		'type'	: 'POST' 
-			        	},//pasangkan hasil dari ajax ke datatablesnya
-			        	'columns'	:[
-			        		{'data' : 'no',width:20}, 
-			        		{'data' : 'kategori'},   
-			        		{'data' : 'fc_stock'},   
-			        		{'data' : 'fv_stock'}  
-			        		,{'mRender': function ( data, type, row ) {
-	                       		return "<button class='btn btn-info' onclick=pilih('"+row['fc_stock']+"')>Pilih</button>";
-	                    		},width:130
-                			}
-			        	]  
-			        }); 
-            	}
-            	$(document).on('click','#btn_cari',function(e){
-            		datatable_SKU();
-            	});
-            	function pilih(stockcode){
+				function pilih(stockcode){
             		$(".close").click();
             		getStock(stockcode);  
             	}
             	$(document).on('change','#b1',function(e){
             		sizeSatuan();
 				});
-				$(document).on('change','#b2', function(e){
-					$.get(link+"/getWarna/"+$("#b1").val()+"/"+$("#b2 option:selected").text(), $(this).serialize())
-		            .done(function(data) { 
-		            	$("select#b3").html(data); 
-					});
-				});
-				$(document).on('change','#b3', function(e){	
-					$.ajax({
-						type: 'GET',
-						url: link+"/getHarga/"+$("#b3").val(), 
-						data: $(this).serialize(),
-						dataType: "JSON",
-						success:function(data) { 													
-							$("#item_harga").val(data.harga); 
-							$("#kode_varian").val(data.varian);
-						}						
-					});	
-				});
+				
 				$(document).on('change','#b5', function(e){
 					if( $('#item_harga').val() >= 1 ){
 						$('#total_harga').val( $('#item_harga').val() * $('#b5').val() );
 					}					
 				});
-				function sizeSatuan(){
-					$.get(link+"/getSize/"+$("#b1").val(), $(this).serialize())
-		            .done(function(data) { 
-		            	$("select#b2").html(data); 
-		            });		            
+				function sizeSatuan(){            
 					$.get(link+"/getSatuan/"+$("#b1").val(), $(this).serialize())
 		            .done(function(data) { 
 		            	$("select#b4").html(data); 
@@ -446,23 +528,101 @@
 				        }
 				    });
 				} 
-// ------------------------- end detail data ----------------------------------------				
-				function disableForm(data,status){
-					$(document).ready(function(){
-						for (var i = 0; i < data.length; i++) {
-							//document.getElementById(data[i]).disabled = status;
-							$("#"+data[i]).prop("disabled", status);
-						}	
-					});
-				} 
+//--------------- fungsi untuk form detil -----------------
+				function hapusDetail(kode){
+					if(confirm("Apakah anda Yakin? ["+kode+"]")){ 
+						$.get(link+"/HapusDetail/"+kode, $(this).serialize())
+			            .done(function(data) { 
+			            	display_message(data);
+			            	table2.ajax.reload();
+			            	hitungQty();
+			            });
+			            //--------------------------------
+			        }
+				}
+				$(document).on('submit','#formDetail',function(e){
+					e.preventDefault();
+					$.ajax({
+			            url: link+"/simpanDetail",
+			            type: "POST",
+			            data:  new FormData(this),
+			            contentType: false,
+			            cache: false,
+			            processData:false,
+			            success: function(data){ 
+							table2.ajax.reload();
+							display_message(data);
+							hitungQty();			             	
+			             }
+			        });
+			        return false;  
+				});
 				function hitungQty(){ 
 		            $.ajax({
 				        type: 'GET',
 				        dataType:'JSON',
 				        url: link+"/total/"+$("#a1").val(),
-				        success:function(responseText){
-				        	$("#a7").val(responseText.total); 
+				        success:function(data){
+				        	$("#a6").val(data.total); 
 				        }
 				    });
 				}
-            </script>   
+//----------- end form detil action ---------------------
+				function tambah(cmd){
+					if (cmd == 'up') {
+						$('#wizardContainer').slideUp();
+						$('#panelReport').slideDown();
+					} else
+					if (cmd == 'down'){
+						$('#wizardContainer').slideDown();
+					}
+				}
+				function batalkan(kode){
+					if(confirm("Apakah anda Yakin?")){ 
+						$.get(link+"/batalkan/"+kode, $(this).serialize())
+			            .done(function(data) { 
+			            	$("#step1").click();
+			            	display_message(data);
+			            	tutup();
+			            	datatable();
+			            });
+			            //--------------------------------
+			        }
+				}
+				function getReview(){
+					$.ajax({
+				        type: 'GET',
+				        dataType:'JSON',
+				        url: link+"/getReview/"+$("#nobpb").val(),
+				        success:function(data){
+				        	$('#r1').val(data.fc_nobpb);
+							$('#r2').val(data.fv_supplier);
+							$('#r3').val(data.fc_branch);
+							$('#r4').val(data.fv_wh);
+							$('#r5').val(data.fd_bpb);
+							$('#r6').val(data.fn_jenis);
+							$('#r7').val(data.fn_qty);
+							$('#r8').val(data.fv_note);
+							$('#r9').val(data.fd_tglinput);
+							$('#r10').val(data.fc_userid);
+				        }
+				    });
+				}
+				
+				function finalisasi(){
+					if(confirm("Apakah anda Yakin?")){ 
+						$.get(link+"/finalisasi/"+$("#nobpb").val(), $(this).serialize())
+							.done(function(data) { 
+								if(data.includes("Berhasil") == true){
+									tutup();
+									table.ajax.reload();
+									display_message(data);
+								}else{
+									display_message(data);	
+								}
+						}); 
+					}
+				}   
+				</script>   
+
+				<script src="<?= site_url()?>vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js"></script> 

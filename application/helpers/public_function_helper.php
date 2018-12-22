@@ -21,16 +21,21 @@
 				 ->get();
 		return $query;
 	}
-	function getSupplier(){
+	function getSupplier($out=1){
 		$ci =& get_instance();
 		$ci->load->database();
 		$data = $ci->db->where(array("fc_status" => "1"))->get("tm_supplier");
-		$arr_data = array();
-			$arr_data[""] = "Pilih Supplier";
-			foreach ($data->result() as $supp) {
-				$arr_data[$supp->fc_kdsupplier] = $supp->fc_kdsupplier." | ".$supp->fv_supplier;
-			}
-			return $arr_data;
+		if ($out==0){
+			return $data->result();
+		} else 
+		if ($out==1){
+			$arr_data = array();
+				$arr_data[""] = "Pilih Supplier";
+				foreach ($data->result() as $supp) {
+					$arr_data[$supp->fc_kdsupplier] = $supp->fc_kdsupplier." | ".$supp->fv_supplier;
+				}
+				return $arr_data;
+		}
 	}
 	function getBranch(){
 		$ci =& get_instance();
@@ -57,6 +62,13 @@
 				$arr_data[$wh->fc_wh] = $wh->fc_wh." | ".$wh->fv_wh;
 			}
 			return $arr_data;
+		} else
+		if ($out==2){
+			$result = "<option>-- Pilih Warehouse --</option>\n";
+			foreach ($data->result() as $wh) {
+				$result .= "<option value='$wh->fc_wh'>$wh->fv_wh</option>\n"; 
+			}
+			return $result;
 		}
 	}
 	function getWarna($stockcode, $size){
