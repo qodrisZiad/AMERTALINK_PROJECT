@@ -89,7 +89,8 @@ class Bpb extends CI_Controller
 		if ($check > 0) {
 			$this->db->query("delete from tm_bpb where fc_nobpb ='".$nobpb."'");
 		}
-		$data = array("fc_nobpb" => $nobpb,
+		$data = array(	"fc_branch" => $this->session->userdata('branch'),
+						"fc_nobpb" => $nobpb,
 						"fd_tglterima" => $tglterima,
 						"fc_nopo"      => $nopo,
 						"fn_qty"       => $fn_qty,
@@ -187,7 +188,7 @@ class Bpb extends CI_Controller
 	}
 	public function getMaster(){
 		$kode = $this->uri->segment(3);
-		$query = $this->db->query("select a.fc_nobpb,b.fv_supplier,b.fv_addr,b.fc_telp,b.fc_telp2,a.fd_tglterima,b.fd_po,a.fc_nopo,b.fn_qty as qty_po,a.fn_qty as terima,(b.fn_qty - a.fn_qty) as sisa,a.fn_ongkir,a.fm_total,a.fc_userid,b.fv_note from tm_bpb a LEFT OUTER JOIN v_POMST b ON b.fc_nopo=a.fc_nopo WHERE a.fc_nopo='".$kode."'");
+		$query = $this->db->query("select a.fc_nobpb,b.fv_supplier,b.fv_addr,b.fc_telp,b.fc_telp2,a.fd_tglterima,b.fd_po,a.fc_nopo,b.fn_qty as qty_po,a.fn_qty as terima,(b.fn_qty - a.fn_qty) as sisa,a.fn_ongkir,a.fm_total,a.fc_userid,b.fv_note from tm_bpb a LEFT OUTER JOIN v_POMST b ON b.fc_nopo=a.fc_nopo WHERE a.fc_branch='".$this->session->userdata('branch')."' AND a.fc_nopo='".$kode."'");
 		echo json_encode($query->row());
 	} 
 	public function getDetail(){
