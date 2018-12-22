@@ -43,6 +43,17 @@
 			}
 			return $arr_data;
 	} 
+	function getKaryawan(){
+		$ci =& get_instance();
+		$ci->load->database();
+		$data = $ci->db->where("fc_branch",$ci->session->userdata("branch"))->get("v_user");
+		$arr_data = array();
+			$arr_data[""] = "Pilih Karyawan";
+			foreach ($data->result() as $branch) {
+				$arr_data[$branch->fc_userid] = $branch->fc_nik." | ".$branch->fv_nama;
+			}
+			return $arr_data;
+	}
 	function getWareHouse($branch, $out=0){
 		$ci =& get_instance();
 		$ci->load->database();
