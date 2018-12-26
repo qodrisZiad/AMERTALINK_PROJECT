@@ -23,15 +23,16 @@
 							'b1' => array('id'=>'bf1','type'=>'button','label'=>'Reset','class'=>'btn btn-warning'),
 							'b2' => array('id'=>'bf2','type'=>'button','label'=>'Filter','class'=>'btn btn-primary'),
 						);
-                     	$data = array(
-                     		'aksi' => array('name' => 'aksi','type' => 'hidden'),
-                     		'kode' => array('name'=>'kode','type' => 'hidden'),
+                     	$data = array( 
+							'aksi' => array('name' => 'aksi','type' => 'hidden'),
+							'kode' => array('name'=>'kode','type' => 'hidden'),                    		
                      		'f1' => array('name'=>'f_branch','label' => 'Cabang','type' => 'option', 'option'=> getBranch(),'class' => 'form-control','col' => 'col-sm-4'), 
                      		'f2' => array('name'=>'f_wh','label' => 'Gudang','type' => 'option', 'option'=> array(),'class' => 'form-control','col' => 'col-sm-4'), 
                      		'f3' => array('name'=>'f_namabrg','label' => 'Nama Barang','type' => 'text','class' => 'form-control','col' => 'col-sm-4','defaultValue'=>'')
-                     	);
-                     	buat_form($data,$tombols);  
-                     	?> 
+						);						 
+						buat_form($data,$tombols);  
+                     	?>
+					<div class="ln_solid"></div> 
                     </form> 
 					<div id="laporan"> 
 						<?php 

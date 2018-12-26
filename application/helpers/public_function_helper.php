@@ -404,3 +404,109 @@
 	function format_tanggal_indo($tanggalan){
 		return date("d-m-Y",strtotime($tanggalan));
 	}
+	/** memecah array menjadi beberapa bagian 
+	 * $output = array multidimensi
+	*/
+	function array_split($array, $pieces=2) 
+	{   
+		if ($pieces < 2) return array($array); 		
+		$newCount = ceil(count($array)/$pieces); 
+		$a = array_slice($array, 0, $newCount); 
+		$b = array_split(array_slice($array, $newCount), $pieces-1); 
+		return array_merge(array($a),$b); 
+	}
+	/**
+	 * fungsi ini membutuhkan form-helper module
+	 */
+	function buat_form_col($fields, $hiddenField, $buttons)
+	{  
+		$result 	= '';		 					// initialize output
+		$n_col 		= 2; 							// jumlah kolom (sementara HANYA DUA)
+		$n_field 	= count($fields);  				// cari tau jumlah item array						// jumlah kolom
+		$n_items	= array_split($fields,$n_col);	// memecah array 
+
+		// loop hidden type
+		foreach ($hiddenField as $arr_key => $arr_data) {
+			$defaultValue = (array_key_exists('value',$arr_data)) ? $arr_data['value'] : '';
+			$inData = array(
+				'type'	=> 'hidden',
+				'id'	=> $arr_data['name'],
+				'name'	=> $arr_data['name'],
+				'value'	=> $defaultValue
+			);
+			$result .= form_input($inData);				
+		}
+		// loop column first
+		for ($i=0; $i < $n_col ; $i++) { 
+			$result .= "<div class=\"col-md-6 col-sm-6 col-xs-12\">\n";	// open form syntax			
+			// loop normal type
+			foreach ($n_items[$i] as $arr_key => $arr_data) {
+				// make some global variable
+				$inType 		= strtolower($arr_data['type']);		
+				$defaultValue 	= (array_key_exists('value',$arr_data)) ? $arr_data['value'] : '';
+				$readonly	 	= (array_key_exists('readonly',$arr_data)) ? 'readonly' : '';
+				$isRequired 	= (array_key_exists('required',$arr_data)) ? 'required' : '';
+
+				$result .= "<div class=\"form-group\">\n";
+				if ($inType == 'text' || $inType == 'number') 
+				{
+					$result .= "<label class=\"control-label col-md-6 col-sm-6 col-xs-12\" for=\"$arr_data[name]\">$arr_data[label]</label>\n";
+					$result .= "<div class=\"col-md-6 col-sm-6 col-xs-12\">\n";
+					$result .= "<input type=\"$inType\" id=\"$arr_data[name]\" name=\"$arr_data[name]\" class=\"form-control col-md-6 col-sm-6 col-xs-12\" value=\"$defaultValue\" $readonly $isRequired>";
+					$result .= "</div>\n";
+				} else 
+				if ($inType == 'date') 
+				{
+					$defaultDate = (array_key_exists('value',$arr_data)) ? $arr_data['value'] : date('Y-m-d');
+					$result .= "<label class=\"control-label col-md-6 col-sm-6 col-xs-12\" for=\"$arr_data[name]\">$arr_data[label]</label>\n";
+					$result .= "<div class=\"col-md-6 col-sm-6 col-xs-12\">\n";
+					$result .= "<input type=\"$inType\" id=\"$arr_data[name]\" name=\"$arr_data[name]\" class=\"form-control col-md-6 col-sm-6 col-xs-12\" value=\"$defaultDate\" $readonly $isRequired>";
+					$result .= "</div>\n";
+				} else 
+				if ($inType == 'option') 
+				{
+					$result .= "<label class=\"control-label col-md-6 col-sm-6 col-xs-12\" for=\"$arr_data[name]\">$arr_data[label]</label>\n";
+					$result .= "<div class=\"col-md-6 col-sm-6 col-xs-12\">\n";
+					$result .= "<select id=\"$arr_data[name]\" name=\"$arr_data[name]\" class=\"form-control\" $readonly $isRequired>\n";
+					foreach ($arr_data['option'] as $key => $value) 
+					{
+						$result .= "<option value=\"$key\">$value</option>\n";
+					} 
+					$result .="</select>\n";
+					$result .= "</div>\n";
+				} else
+				if ($inType == 'file') 
+				{
+					$result .= "<label class=\"control-label col-md-6 col-sm-6 col-xs-12\" for=\"$arr_data[name]\">$arr_data[label]</label>\n";
+					$result .= "<div class=\"col-md-6 col-sm-6 col-xs-12\">\n";
+					$result .= "<input type=\"$inType\" id=\"$arr_data[name]\" name=\"$arr_data[name]\" class=\"form-control col-md-6 col-sm-6 col-xs-12\" $readonly $isRequired>\n";
+					$result .= "<img src=\"\" id=\"pict_detail_img\" width=\"400px\" style=\"display: none;\">"; 
+					$result .= "</div>\n";
+				}
+				$result .="</div>\n";
+			} 
+			$result .= "</div>\n";
+		}		
+		// make default if no input array button
+		if(count($buttons) == 0){
+			$button = '<div class="ln_solid"></div>
+						<div class="form-group" id="button_action">
+						<div class="col-md-9 col-sm-9 col-xs-12">
+							<button type="reset" class="btn btn-danger">Reset</button> 
+							<button type="submit" class="btn btn-success">Simpan</button>
+						</div>
+						</div>';
+		} else {
+		$button = "<div class=\"ln_solid\"></div>\n
+						<div class=\"form-group\" id=\"button_action\">\n
+							<div class=\"col-md-9 col-sm-9 col-xs-12\">\n";
+		$idbtn = '';
+		foreach ($buttons as $btn) {
+			($btn['id'] != '') ? ($idbtn = "id=\"$btn[id]\"") : ($idbtn = "");
+			$button .= "<button $idbtn type=\"".$btn['type']."\" class=\"".$btn['class']."\">".$btn['label']."</button>\n";
+		} 
+		$button .= "</div>\n
+				</div>";
+		}
+		echo $result;
+	}
