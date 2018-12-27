@@ -22,18 +22,20 @@
 						$tombols = array(
 							'b1' => array('id'=>'bf1','type'=>'button','label'=>'Reset','class'=>'btn btn-warning'),
 							'b2' => array('id'=>'bf2','type'=>'button','label'=>'Filter','class'=>'btn btn-primary'),
-						);
-                     	$data = array( 
+						);                     	
+						$dataH = array( 
 							'aksi' => array('name' => 'aksi','type' => 'hidden'),
-							'kode' => array('name'=>'kode','type' => 'hidden'),                    		
-                     		'f1' => array('name'=>'f_branch','label' => 'Cabang','type' => 'option', 'option'=> getBranch(),'class' => 'form-control','col' => 'col-sm-4'), 
-                     		'f2' => array('name'=>'f_wh','label' => 'Gudang','type' => 'option', 'option'=> array(),'class' => 'form-control','col' => 'col-sm-4'), 
-                     		'f3' => array('name'=>'f_namabrg','label' => 'Nama Barang','type' => 'text','class' => 'form-control','col' => 'col-sm-4','defaultValue'=>'')
-						);						 
-						buat_form($data,$tombols);  
+							'kode' => array('name'=>'kode','type' => 'hidden')
+						);						
+						$dataF = array(
+                     		'f1' => array('name'=>'f_branch','label' => 'Cabang','type' => 'option', 'option'=> getBranch()), 
+                     		'f2' => array('name'=>'f_wh','label' => 'Gudang','type' => 'option', 'option'=> array()), 
+							'f3' => array('name'=>'f_namabrg','label' => 'Nama Barang','type' => 'text')
+						);	
+						custom_form($dataF, $dataH, $tombols);
                      	?>
-					<div class="ln_solid"></div> 
                     </form> 
+					<div class="ln_solid"></div> 
 					<div id="laporan"> 
 						<?php 
 							$kolom = array("No.","Tanggal","Nama Barang","Variant","Keluar","Masuk","Sisa","Referensi","Keterangan","User");
@@ -44,8 +46,7 @@
                   </div>
                 </div>
               </div> 
-            </div> 
-
+            </div> 			
             <script type="text/javascript">
             	var link = "<?php echo site_url().$this->uri->segment(1);?>"; 
             	var table;
@@ -64,7 +65,7 @@
 			        		'searchPlaceholder': "Cari"
 			        	},
 			        	'ajax':{
-			        		'url'	: "<?php echo site_url($this->uri->segment(1).'/getTableData');?>",
+			        		'url'	: link+"/getTableData",
 			        		"type"	: 'POST',
 							"data"	: function ( data ) {
 								data.f_branch 	= $('#f_branch').val();

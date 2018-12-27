@@ -418,56 +418,60 @@
 	/**
 	 * fungsi ini membutuhkan form-helper module
 	 */
-	function buat_form_col($fields, $hiddenField, $buttons)
+	function custom_form($fields, $hiddenField, $buttons=array(), $n_col=1)
 	{  
-		$result 	= '';		 					// initialize output
-		$n_col 		= 2; 							// jumlah kolom (sementara HANYA DUA)
-		$n_field 	= count($fields);  				// cari tau jumlah item array						// jumlah kolom
-		$n_items	= array_split($fields,$n_col);	// memecah array 
-
+		$result 		= '';		 									// initialize output
+		$n_field 		= count($fields);  								// cari tau jumlah item array						// jumlah kolom
+		$n_items		= array_split($fields,$n_col);					// memecah array
+		$n_width_max	= 12; 											// default max width based on bootstrap
+		$n_width		= round( $n_width_max / $n_col );				// max width is 12, so divide by column
+		$c_width		= "col-md-$n_width col-sm-$n_width col-xs-$n_width_max";
+		$n_width_btn	= ($n_col == 1) ? $n_width_max-3 : $n_width_max;
 		// loop hidden type
 		foreach ($hiddenField as $arr_key => $arr_data) {
-			$defaultValue = (array_key_exists('value',$arr_data)) ? $arr_data['value'] : '';
-			$inData = array(
-				'type'	=> 'hidden',
-				'id'	=> $arr_data['name'],
-				'name'	=> $arr_data['name'],
-				'value'	=> $defaultValue
-			);
-			$result .= form_input($inData);				
+			$defaultValue = (array_key_exists('value',$arr_data)) ? $arr_data['value'] : '';			
+			$result .= "<input type=\"hidden\" id=\"$arr_data[name]\" name=\"$arr_data[name]\" value=\"$defaultValue\">\n";			
 		}
 		// loop column first
 		for ($i=0; $i < $n_col ; $i++) { 
-			$result .= "<div class=\"col-md-6 col-sm-6 col-xs-12\">\n";	// open form syntax			
+			// open container syntax
+			$result .= "<div class=\"$c_width\">\n";				
 			// loop normal type
 			foreach ($n_items[$i] as $arr_key => $arr_data) {
 				// make some global variable
 				$inType 		= strtolower($arr_data['type']);		
 				$defaultValue 	= (array_key_exists('value',$arr_data)) ? $arr_data['value'] : '';
-				$readonly	 	= (array_key_exists('readonly',$arr_data)) ? 'readonly' : '';
-				$isRequired 	= (array_key_exists('required',$arr_data)) ? 'required' : '';
+				$readonly	 	= (array_key_exists('readonly',$arr_data)) ? 'readonly="readonly"' : '';
+				$isRequired 	= (array_key_exists('required',$arr_data)) ? 'required="required"' : '';
+				$isPlaceholder 	= (array_key_exists('placeholder',$arr_data)) ? "placeholder=\"$arr_data[placeholder]\"" : '';
 
 				$result .= "<div class=\"form-group\">\n";
-				if ($inType == 'text' || $inType == 'number') 
+				if ($inType == 'text' || $inType == 'number' || $inType == 'password') 
 				{
-					$result .= "<label class=\"control-label col-md-6 col-sm-6 col-xs-12\" for=\"$arr_data[name]\">$arr_data[label]</label>\n";
+					$result .= "<label class=\"control-label col-md-3 col-sm-3 col-xs-12\" for=\"$arr_data[name]\">$arr_data[label]</label>\n";
 					$result .= "<div class=\"col-md-6 col-sm-6 col-xs-12\">\n";
-					$result .= "<input type=\"$inType\" id=\"$arr_data[name]\" name=\"$arr_data[name]\" class=\"form-control col-md-6 col-sm-6 col-xs-12\" value=\"$defaultValue\" $readonly $isRequired>";
+					$result .= "<input type=\"$inType\" id=\"$arr_data[name]\" name=\"$arr_data[name]\" class=\"form-control col-md-6 col-sm-6 col-xs-12\" value=\"$defaultValue\" $isPlaceholder $readonly $isRequired>";
 					$result .= "</div>\n";
 				} else 
 				if ($inType == 'date') 
 				{
 					$defaultDate = (array_key_exists('value',$arr_data)) ? $arr_data['value'] : date('Y-m-d');
-					$result .= "<label class=\"control-label col-md-6 col-sm-6 col-xs-12\" for=\"$arr_data[name]\">$arr_data[label]</label>\n";
+					$result .= "<label class=\"control-label col-md-3 col-sm-3 col-xs-12\" for=\"$arr_data[name]\">$arr_data[label]</label>\n";
 					$result .= "<div class=\"col-md-6 col-sm-6 col-xs-12\">\n";
 					$result .= "<input type=\"$inType\" id=\"$arr_data[name]\" name=\"$arr_data[name]\" class=\"form-control col-md-6 col-sm-6 col-xs-12\" value=\"$defaultDate\" $readonly $isRequired>";
 					$result .= "</div>\n";
 				} else 
-				if ($inType == 'option') 
+				if ($inType == 'option' || $inType == 'multiple') 
 				{
-					$result .= "<label class=\"control-label col-md-6 col-sm-6 col-xs-12\" for=\"$arr_data[name]\">$arr_data[label]</label>\n";
+					$result .= "<label class=\"control-label col-md-3 col-sm-3 col-xs-12\" for=\"$arr_data[name]\">$arr_data[label]</label>\n";
 					$result .= "<div class=\"col-md-6 col-sm-6 col-xs-12\">\n";
-					$result .= "<select id=\"$arr_data[name]\" name=\"$arr_data[name]\" class=\"form-control\" $readonly $isRequired>\n";
+					if($inType != 'multiple')
+					{
+						$result .= "<select id=\"$arr_data[name]\" name=\"$arr_data[name]\" class=\"form-control\" $readonly $isRequired >\n";
+					} else 
+					{
+						$result .= "<select id=\"$arr_data[name]\" name=\"$arr_data[name]\" class=\"select2_multiple form-control\" multiple=\"multiple\" $readonly $isRequired >\n";
+					}
 					foreach ($arr_data['option'] as $key => $value) 
 					{
 						$result .= "<option value=\"$key\">$value</option>\n";
@@ -477,11 +481,110 @@
 				} else
 				if ($inType == 'file') 
 				{
-					$result .= "<label class=\"control-label col-md-6 col-sm-6 col-xs-12\" for=\"$arr_data[name]\">$arr_data[label]</label>\n";
+					$result .= "<label class=\"control-label col-md-3 col-sm-3 col-xs-12\" for=\"$arr_data[name]\">$arr_data[label]</label>\n";
 					$result .= "<div class=\"col-md-6 col-sm-6 col-xs-12\">\n";
 					$result .= "<input type=\"$inType\" id=\"$arr_data[name]\" name=\"$arr_data[name]\" class=\"form-control col-md-6 col-sm-6 col-xs-12\" $readonly $isRequired>\n";
 					$result .= "<img src=\"\" id=\"pict_detail_img\" width=\"400px\" style=\"display: none;\">"; 
 					$result .= "</div>\n";
+				} else 
+				if ($inType == 'textarea')
+				{
+					$t_rows		 = (array_key_exists('rows',$arr_data)) ? "rows=\"$arr_data[rows]\"" : "rows=\"3\"";
+					//$t_cols		 = (array_key_exists('cols',$arr_data)) ? "cols=\"$arr_data[cols]\"" : "";
+					$result 	.= "<label class=\"control-label col-md-3 col-sm-3 col-xs-12\" for=\"$arr_data[name]\">$arr_data[label]</label>\n";
+					$result 	.= "<div class=\"col-md-6 col-sm-6 col-xs-12\">\n";
+					$result 	.= "<textarea id=\"$arr_data[name]\" name=\"$arr_data[name]\" $t_rows class=\"form-control col-md-6 col-sm-6 col-xs-12\" $isPlaceholder $readonly $isRequired>$defaultValue</textarea>";
+					$result 	.= "</div>\n";
+				} else 
+				if ($inType == 'checkbox' || $inType == 'radio')
+				{
+					/**
+					 * this is how you should define $option variable
+					 * $options = array(
+					 *	'Ops1'	=> array('name'=>'radio','desc'=>'ini keterangan label 1'),
+					 *	'Ops2'	=> array('name'=>'radio','desc'=>'ini keterangan label 2','checked'=>true),
+					 *	);
+					 * -> Ops1 (key) will be value of checkbox
+					 * -> Ops1 (key) will be name and value of radio
+					 */
+					$result 	.= "<label class=\"control-label col-md-3 col-sm-3 col-xs-12\" for=\"$arr_data[name]\">$arr_data[label]</label>\n";
+					$result 	.= "<div class=\"col-md-6 col-sm-6 col-xs-12\">\n";
+					foreach ($arr_data['option'] as $key => $value) 
+					{
+						$isCheckbox	 = ($inType == 'checkbox') ? "$value[name]"."[]" : "$value[name]";
+						$isChecked	 = (array_key_exists('checked',$value)) ? "checked" : "";
+						$result .= "<div class=\"$inType\">\n";
+						$result .= "<label>\n";
+						$result .= "<input type=\"$inType\" name=\"$isCheckbox\" value=\"$key\" $isChecked> $value[desc]\n";							
+						$result .= "</label>\n";
+						$result .= "</div>\n";
+					} 
+					$result 	.= "</div>\n";
+				} else
+				if ($inType == 'btn_addon') 
+				{
+					// default value 
+					$btn_id	 	 = (array_key_exists('btn_id',$arr_data)) ? "$arr_data[btn_id]" : "btn_aksi";
+					$btn_label	 = (array_key_exists('btn_label',$arr_data)) ? "$arr_data[btn_label]" : "Cari";
+					$btn_icon	 = (array_key_exists('btn_icon',$arr_data)) ? "fa $arr_data[btn_icon]" : "fa fa-search";
+					$btn_class	 = (array_key_exists('btn_class',$arr_data)) ? "$arr_data[btn_class]" : "btn-primary";
+					
+					$result 	.= "<label class=\"control-label col-md-3 col-sm-3 col-xs-12\" for=\"$arr_data[name]\">$arr_data[label]</label>\n";
+					$result 	.= "<div class=\"col-md-6 col-sm-6 col-xs-12\">\n";
+					$result 	.= "<div class=\"input-group\">";
+					$result 	.= "<input type=\"text\" id=\"$arr_data[name]\" name=\"$arr_data[name]\" class=\"form-control col-md-6 col-sm-6 col-xs-12\" value=\"$defaultValue\" $isPlaceholder $readonly $isRequired>";
+					$result 	.= "<span class=\"input-group-btn\">";
+					$result 	.= "<button type=\"button\" id=\"$btn_id\" class=\"btn $btn_class\"><i class=\"$btn_icon\"></i> $btn_label</button>";
+					$result 	.= "</span>";
+					$result 	.= "</div>\n";
+					$result 	.= "</div>\n";
+				} else
+				if ($inType == 'btn_action') 
+				{
+					/**
+					 * this sample how to define $option variable
+					 * $options = array(
+					 *	 'Ops1'	=> array('url'=>'home','label'=>'ini keterangan label 1'),
+					 *	 'Ops2'	=> array('url'=>'mutasi','label'=>'ini keterangan label 2'),
+					 *	 'Ops3'	=> array('url'=>'kartustock','label'=>'ini keterangan label 3'),
+					 *	);
+					 */
+					$btn_id	 	 = (array_key_exists('btn_id',$arr_data)) ? "$arr_data[btn_id]" : "btn_aksi";
+					$btn_label	 = (array_key_exists('btn_label',$arr_data)) ? "$arr_data[btn_label]" : "Action";
+					$result 	.= "<label class=\"control-label col-md-3 col-sm-3 col-xs-12\" for=\"$arr_data[name]\">$arr_data[label]</label>\n";
+					$result 	.= "<div class=\"col-md-6 col-sm-6 col-xs-12\">\n";
+					$result 	.= "<div class=\"input-group\">";
+					$result 	.= "<input type=\"text\" id=\"$arr_data[name]\" name=\"$arr_data[name]\" class=\"form-control col-md-6 col-sm-6 col-xs-12\" aria-label=\"Text input with dropdown button\" value=\"$defaultValue\" $isPlaceholder $readonly $isRequired>";
+					$result 	.= "<div class=\"input-group-btn\">";
+					$result 	.= "<button type=\"button\" id=\"$btn_id\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"false\">$btn_label <span class=\"caret\"></span></button>";
+					$result 	.= "<ul class=\"dropdown-menu dropdown-menu-right\" role=\"menu\">\n";
+					foreach ($arr_data['option'] as $key => $value) 
+					{
+						$result .= "<li><a href=\"$value[url]\">$value[label]</a></li>\n";	
+					}
+					$result 	.= "</ul>\n";
+					$result 	.= "</div>\n";
+					$result 	.= "</div>\n";
+					$result 	.= "</div>\n";
+				} else 
+				if ($inType == 'search') 
+				{
+					// default value 
+					$btn_id	 	 = (array_key_exists('btn_id',$arr_data)) ? "$arr_data[btn_id]" : "btn_cari";
+					$btn_label	 = (array_key_exists('btn_label',$arr_data)) ? "$arr_data[btn_label]" : "Cari";
+					$btn_icon	 = (array_key_exists('btn_icon',$arr_data)) ? "fa $arr_data[btn_icon]" : "fa fa-search";
+					$btn_class	 = (array_key_exists('btn_class',$arr_data)) ? "$arr_data[btn_class]" : "btn-primary";
+					$modal_class = (array_key_exists('modal_class',$arr_data)) ? ".$arr_data[modal_class]" : ".bs-example-modal-lg";
+					
+					$result 	.= "<label class=\"control-label col-md-3 col-sm-3 col-xs-12\" for=\"$arr_data[name]\">$arr_data[label]</label>\n";
+					$result 	.= "<div class=\"col-md-6 col-sm-6 col-xs-12\">\n";
+					$result 	.= "<div class=\"input-group\">";
+					$result 	.= "<input type=\"text\" id=\"$arr_data[name]\" name=\"$arr_data[name]\" class=\"form-control col-md-6 col-sm-6 col-xs-12\" value=\"$defaultValue\" $isPlaceholder $readonly $isRequired>";
+					$result 	.= "<span class=\"input-group-btn\">";
+					$result 	.= "<button type=\"button\" id=\"$btn_id\" class=\"btn $btn_class\" data-toggle=\"modal\" data-target=\"$modal_class\"><i class=\"$btn_icon\"></i> $btn_label</button>";
+					$result 	.= "</span>";
+					$result 	.= "</div>\n";
+					$result 	.= "</div>\n";					
 				}
 				$result .="</div>\n";
 			} 
@@ -489,24 +592,49 @@
 		}		
 		// make default if no input array button
 		if(count($buttons) == 0){
-			$button = '<div class="ln_solid"></div>
-						<div class="form-group" id="button_action">
-						<div class="col-md-9 col-sm-9 col-xs-12">
-							<button type="reset" class="btn btn-danger">Reset</button> 
-							<button type="submit" class="btn btn-success">Simpan</button>
-						</div>
-						</div>';
-		} else {
-		$button = "<div class=\"ln_solid\"></div>\n
+			$result .= "<div class=\"clearfix\"></div>\n
+						<div class=\"ln_solid\"></div>\n
 						<div class=\"form-group\" id=\"button_action\">\n
-							<div class=\"col-md-9 col-sm-9 col-xs-12\">\n";
+						<div class=\"$c_width\">\n
+							<button type=\"submit\" class=\"btn btn-success pull-right\">Simpan</button>\n
+							<button type=\"reset\" class=\"btn btn-danger pull-right\">Reset</button>\n 							
+						</div>\n
+						</div>\n";
+		} else {
+		$result .= "<div class=\"clearfix\"></div>\n
+					<div class=\"ln_solid\"></div>\n
+						<div class=\"form-group\" id=\"button_action\">\n
+							<div class=\"col-md-$n_width_btn col-sm-$n_width_btn col-xs-$n_width_max\">\n";
 		$idbtn = '';
+		rsort($buttons);			// reverse array order bcoz pull-right make button placed reverse and this make all come to normal
 		foreach ($buttons as $btn) {
 			($btn['id'] != '') ? ($idbtn = "id=\"$btn[id]\"") : ($idbtn = "");
-			$button .= "<button $idbtn type=\"".$btn['type']."\" class=\"".$btn['class']."\">".$btn['label']."</button>\n";
+			$result .= "<button $idbtn type=\"".$btn['type']."\" class=\"".$btn['class']." pull-right\">".$btn['label']."</button>\n";
 		} 
-		$button .= "</div>\n
-				</div>";
+		$result .= "</div>\n
+				</div>\n";
 		}
+		echo $result;
+	}
+	function getModalDialog($modalAttr = array(), $tableAttr = array()){
+		// make default 
+		$modal_class		= (array_key_exists('modal_class',$modalAttr)) ? "$modalAttr[modal_class]" : "bs-example-modal-lg";
+		$modal_title		= (array_key_exists('title',$modalAttr)) ? "$modalAttr[title]" : "Pencarian Data";
+		$modal_title_id		= (array_key_exists('title_id',$modalAttr)) ? "$modalAttr[title_id]" : "title_id";
+		
+		$result .= "<div class=\"modal fade $modal_class\" tabindex=\"-1\" role=\"dialog\" aria-hidden=\"true\">\n";
+			$result .= "<div class=\"modal-dialog modal-lg\">\n";
+				$result .= "<div class=\"modal-content\">\n";
+					$result .= "<div class=\"modal-header\">\n";
+						$result .= "<button type=\"button\" class=\"close\" data-dismiss=\"modal\"><span aria-hidden=\"true\">×</span></button>\n";
+						$result .= "<h4 class=\"modal-title\" id=\"$modal_title_id\">$modal_title</h4>\n";
+					$result .= "</div>\n";
+					$result .= "<div class=\"modal-body\">\n";
+						buat_table($tableAttr['column'],$tableAttr['table_id']);   
+					$result .= "</div>\n"; 
+				$result .= "</div>\n";
+			$result .= "</div>\n";
+		$result .= "</div>\n";
+		
 		echo $result;
 	}
