@@ -416,7 +416,12 @@
 		return array_merge(array($a),$b); 
 	}
 	/**
-	 * fungsi ini membutuhkan form-helper module
+	 * fungsi ini untuk membuat form secara dinamis
+	 * @field 		(array)		= berisi field (selain type hidden) yang ingin digenerate
+	 * @hiddenField	(array)		= berisi field hidden
+	 * @buttons		(array)		= berisi button
+	 * @n_col		(integer)	= jumlah kolom
+	 * result		(string)
 	 */
 	function custom_form($fields, $hiddenField, $buttons=array(), $n_col=1)
 	{  
@@ -446,16 +451,22 @@
 				$isPlaceholder 	= (array_key_exists('placeholder',$arr_data)) ? "placeholder=\"$arr_data[placeholder]\"" : '';
 
 				$result .= "<div class=\"form-group\">\n";
-				if ($inType == 'text' || $inType == 'number' || $inType == 'password') 
+				if ($inType == 'text' || $inType == 'number' || $inType == 'password' || $inType == 'email' || $inType == 'color' || $inType == 'tel' || $inType == 'search' || $inType == 'time' || $inType == 'url') 
 				{
 					$result .= "<label class=\"control-label col-md-3 col-sm-3 col-xs-12\" for=\"$arr_data[name]\">$arr_data[label]</label>\n";
 					$result .= "<div class=\"col-md-6 col-sm-6 col-xs-12\">\n";
 					$result .= "<input type=\"$inType\" id=\"$arr_data[name]\" name=\"$arr_data[name]\" class=\"form-control col-md-6 col-sm-6 col-xs-12\" value=\"$defaultValue\" $isPlaceholder $readonly $isRequired>";
 					$result .= "</div>\n";
 				} else 
-				if ($inType == 'date') 
+				if ($inType == 'date' || $inType == 'datetime-local' || $inType == 'time') 
 				{
-					$defaultDate = (array_key_exists('value',$arr_data)) ? $arr_data['value'] : date('Y-m-d');
+					switch ($inType) {
+						case 'date' 			:	$defValue = date('Y-m-d');	break;
+						case 'datetime-local'	:	$defValue = date('Y-m-d H:m:s');	break;
+						case 'time' 			:	$defValue = date('H:m:s');	break;
+						default					: 	$defValue = date('Y-m-d');	break;
+					}
+					$defaultDate = (array_key_exists('value',$arr_data)) ? $arr_data['value'] : $defValue;
 					$result .= "<label class=\"control-label col-md-3 col-sm-3 col-xs-12\" for=\"$arr_data[name]\">$arr_data[label]</label>\n";
 					$result .= "<div class=\"col-md-6 col-sm-6 col-xs-12\">\n";
 					$result .= "<input type=\"$inType\" id=\"$arr_data[name]\" name=\"$arr_data[name]\" class=\"form-control col-md-6 col-sm-6 col-xs-12\" value=\"$defaultDate\" $readonly $isRequired>";

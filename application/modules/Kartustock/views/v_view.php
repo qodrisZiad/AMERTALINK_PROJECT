@@ -42,7 +42,8 @@
 							buat_table($kolom,"datatable");   
 						?>
 					</div>
-
+					<div class="ln_solid"></div>
+					
                   </div>
                 </div>
               </div> 
