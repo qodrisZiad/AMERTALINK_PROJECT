@@ -21,6 +21,7 @@ class Login extends CI_Controller{
 		if ($login == 1) {
 			$row = $this->m_login->getData($userid,$pass);			
 			$data_user = array(
+				'logged'	=> true,
 				'userid' 	=> $userid,
 				'nik' 		=> $row->fc_nik,
 				'branch' 	=> $row->fc_branch,

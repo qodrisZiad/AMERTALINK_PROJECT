@@ -309,7 +309,7 @@
 		$ci->load->database();
 		$query = $ci->db->query("update t_nomor set fn_nomor=fn_nomor+1 where fc_param='".$document."'");
 	}
-
+	
 	function getPrice(){
 		$hasil = "";
 		$ci =& get_instance();
@@ -320,8 +320,39 @@
 		}
 		return $hasil;
 	}
+	function encryptPass($pass){
+		$ci =& get_instance();
+		$ci->load->database();
+		$query = $ci->db->select("SUBSTR(MD5(CONCAT(SUBSTR(MD5('".$pass."'),1,16),(select fv_value from t_setup where fc_param = 'KEY_SA'))),1,15) COLLATE utf8_general_ci as data")->get();
+		foreach ($query->result() as $row) {
+			$hasil = $row->data;
+		}
+		return $hasil;
+	}	
+	function format_tanggal_indo($tanggalan){
+		return date("d-m-Y",strtotime($tanggalan));
+	}	
+	function insertKartuStock($branch, $wh, $fc_stock, $fc_variant, $fc_uom, $fn_in=0, $fn_out=0, $referensi, $fc_ket, $userid){
+		$ci =& get_instance();
+		$ci->load->database();
+		$data = array (
+			'fc_branch'		=> $branch,
+			'fc_wh'			=> $wh,
+			'fc_stock'		=> $fc_stock,
+			'fc_variant'	=> $fc_variant,
+			'fc_uom'		=> $fc_uom,
+			'fn_in'			=> $fn_in,
+			'fn_out'		=> $fn_out,
+			'fc_referensi'	=> $referensi,
+			'fc_userid'		=> $userid,
+			'fc_ket'		=> $fc_ket
+		);
+		$query = $ci->db->insert('t_kartustock', $data);
+		return $ci->db->affected_rows();
+	}
+// START ETC METHOD ---------------------------------------------------------------------
 	/*
-	 * mengecek login atau belum
+	* mengecek login atau belum
 	 */
 	function is_logged(){
 		$ci =& get_instance();
@@ -343,10 +374,10 @@
 	 * @data = data yang mau dilewatkan ke view
 	 * @opt  = opsional, untuk menampilkan datatable, atau yang lain
 	 */
-	function loadView($pages='v_view', $data=null, $opt){
+	function loadView($pages='v_view', $data=null, $opt=1){
 		$ci =& get_instance();
 		$ci->load->view('Template/v_header',$data);
-		if($opt==0){ $ci->load->view('Template/v_datatable',$data); } 
+		if($opt==1){ $ci->load->view('Template/v_datatable',$data); } 
 		$ci->load->view('Template/v_sidemenu',$data);
 		if(is_array($pages)){
 			foreach ($pages as $page) {
@@ -371,39 +402,48 @@
 		);
 		$ci->session->set_userdata($data_menu);		
 	}
-	function encryptPass($pass){
-		$ci =& get_instance();
-		$ci->load->database();
-		$query = $ci->db->select("SUBSTR(MD5(CONCAT(SUBSTR(MD5('".$pass."'),1,16),(select fv_value from t_setup where fc_param = 'KEY_SA'))),1,15) COLLATE utf8_general_ci as data")->get();
-		foreach ($query->result() as $row) {
-			$hasil = $row->data;
-		}
-		return $hasil;
-	}
 	/**
-	 * 
+	 * membuat tombol action dinamis
 	 */
-	function insertKartuStock($branch, $wh, $fc_stock, $fc_variant, $fc_uom, $fn_in=0, $fn_out=0, $referensi, $fc_ket, $userid){
-		$ci =& get_instance();
-		$ci->load->database();
-		$data = array (
-			'fc_branch'		=> $branch,
-			'fc_wh'			=> $wh,
-			'fc_stock'		=> $fc_stock,
-			'fc_variant'	=> $fc_variant,
-			'fc_uom'		=> $fc_uom,
-			'fn_in'			=> $fn_in,
-			'fn_out'		=> $fn_out,
-			'fc_referensi'	=> $referensi,
-			'fc_userid'		=> $userid,
-			'fc_ket'		=> $fc_ket
-		);
-		$query = $ci->db->insert('t_kartustock', $data);
-		return $ci->db->affected_rows();
+	function getButtonAction($lists = array(),$options = array()){
+		// make default parameter
+		$btn_title		= (array_key_exists('title',$options)) ? $options['title'] : 'Aksi';
+		$btn_class		= (array_key_exists('class',$options)) ? $options['class'] : 'btn-primary btn-sm';
+		
+		$result  = "<div class='x_content'>\n";
+		$result .= "<div class='btn-group'>\n";
+		$result .= "<button data-toggle='dropdown' class='btn dropdown-toggle $btn_class' type='button' aria-expanded='false'>$btn_title <span class='caret'></span></button>\n";
+		$result .= "<ul role='menu' class='dropdown-menu'>\n";
+		/**
+		 * $lists = array(
+		 * 	'key'	=> array('title' => 'button title','action'=>'button action','visible'=> 'how button should appear','type'=>'button or divider')
+		 * );
+		 */
+		foreach ($lists as $key => $list_attr) {
+			// make default parameter
+			$list_title		= (array_key_exists('title',$list_attr)) ? $list_attr['title'] : 'tombol';
+			$list_action	= (array_key_exists('action',$list_attr)) ? $list_attr['action'] : 'alert(\'hello world!\')';
+			$list_visible	= (array_key_exists('visible',$list_attr)) ? $list_attr['visible'] : '0';
+			$list_type		= (array_key_exists('type',$list_attr)) ? $list_attr['type'] : 'button';
+
+			if($list_type == 'button')
+			{
+				if ($list_visible == '1') 
+				{
+					$result .= "<li><a href='#' onclick=$list_action title='' >$list_title</a></li>\n"; 	
+				}
+			} else
+			{
+				$result .= "<li class='divider'></li>\n";
+			}
+		}
+		$result .= "</ul>\n";
+		$result .= "</div>\n";
+		$result .= "</div>\n";
+		return $result;
 	}
-	function format_tanggal_indo($tanggalan){
-		return date("d-m-Y",strtotime($tanggalan));
-	}
+// END ETC METHOD ---------------------------------------------------------------------
+// START FORM METHOD ---------------------------------------------------------------------
 	/** memecah array menjadi beberapa bagian 
 	 * $output = array multidimensi
 	*/
@@ -627,6 +667,84 @@
 		}
 		echo $result;
 	}
+	/**
+	 * meng-generate script table dengan berbagai options
+	 * sample $table_attr variable
+	 * $table_attr = array(
+	 *		'table_id'		 => 'tabel-karyawan',
+	 *		'columns'		 => array("No.","AKSI","NAMA LENGKAP","SEX","TP LAHIR","TGL LAHIR","HP","ALAMAT","JABATAN","TGL MASUK"),
+	 *		'header'		 => 'complex/simple',
+	 *		'header_options' => array(
+	 *			'row1'		 =>	array(
+	 *							'col1'	=> array('label'=>'NO.','mRow'=>2),
+	 *							'col2'	=> array('label'=>'AKSI','mRow'=>2),
+	 *							'col3'	=> array('label'=>'DATA PRIBADI','mCol'=>6),
+	 *							'col4'	=> array('label'=>'LAIN','mCol'=>2),
+	 *			),
+	 *			'row2'		 => array("NAMA LENGKAP","SEX","TP LAHIR","TGL LAHIR","HP","ALAMAT","JABATAN","TGL MASUK")
+	 *		),
+	 *		'footer'		 => false
+	 *	);
+	 */
+	function custom_table( $table_attr = array() ){
+		// make default 
+		$table_id		= (array_key_exists('table_id',$table_attr)) ? $table_attr['table_id'] : "tabel-1";
+		$table_head		= (array_key_exists('header',$table_attr)) ? $table_attr['header'] : "simple";	
+		$table_foot		= (array_key_exists('footer',$table_attr)) ? $table_attr['footer'] : true;
+		$table_class	= (array_key_exists('class',$table_attr)) ? $table_attr['class'] : "table-striped table-bordered";
+		$table_style	= (array_key_exists('style',$table_attr)) ? $table_attr['style'] : "width:100%;";
+		$header_options	= (array_key_exists('header_options',$table_attr)) ? $table_attr['header_options'] : "";
+		
+		$result = "<table id='$table_id' class='table $table_class' style='$table_style'>\n";
+		if ($table_head == 'simple') {
+			$result .= "<thead>\n";
+			$result .= "<tr>\n";
+			foreach ($table_attr['columns'] as $column) {
+				$result .= "<th>$column</th>\n";
+			}
+			$result .= "</tr>\n";
+			$result .= "</thead>\n";
+		} else 
+		if ($table_head == 'complex')
+		{
+			// header yang lebih kompleks with row+col span
+			// maximum 2 column to merge for now 
+			$result .= "<thead>\n";
+			foreach ($header_options as $rowKey => $columns) {
+				$result .= "<tr>\n";
+				if ($rowKey=='row1')
+				{	
+					foreach ($columns as $colKey => $col_attr) {
+						$mRow	= (array_key_exists('mRow',$col_attr)) ? "rowspan=\"$col_attr[mRow]\"" : "";
+						$mCol	= (array_key_exists('mCol',$col_attr)) ? "colspan=\"$col_attr[mCol]\"" : "";
+						$result .= "<th class=\"align-middle\" $mRow$mCol>$col_attr[label]</th>\n";
+					}
+				} else
+				if($rowKey=='row2')
+				{
+					foreach ($columns as $colKey => $col_attr) {
+						$mRow	= (array_key_exists('mRow',$col_attr)) ? "rowspan='\"$col_attr[mRow]\"" : "";
+						$mCol	= (array_key_exists('mCol',$col_attr)) ? "colspan='\"$col_attr[mCol]\"" : "";
+						$label	= (array_key_exists('label',$col_attr)) ? $col_attr['label'] : $col_attr;
+						$result .= "<th class=\"align-middle\" $mRow$mCol>$label</th>\n";
+					}
+				}
+				$result .= "</tr>\n"; 
+			}
+			$result .= "</thead>\n";
+		}
+		if ($table_foot){
+			$result .= "<tfoot>\n";
+			$result .= "<tr>\n";
+			foreach ($table_attr['columns'] as $column) {
+				$result .= "<th>$column</th>\n";
+			}
+			$result .= "</tr>\n";
+			$result .= "</tfoot>\n";
+		}		
+		$result .= "</table>\n";
+		echo $result;
+	}
 	function getModalDialog($modalAttr = array(), $tableAttr = array()){
 		// make default 
 		$modal_class		= (array_key_exists('modal_class',$modalAttr)) ? "$modalAttr[modal_class]" : "bs-example-modal-lg";
@@ -649,3 +767,90 @@
 		
 		echo $result;
 	}
+// END FORM METHOD ---------------------------------------------------------------------
+// START DATATABLE METHOD ---------------------------------------------------------------------
+	/**
+	 * generate table query untuk dipakai banyak datatable dalam satu halaman 
+	 * @table_name (string)   nama tabel 
+	 * @columnOrder (array)   list kolom yang ingin bisa di urutkan (defaultOrder)
+	 * @columnSearch (array)  list kolom yang ingin bisa di cari (searchable)
+	 * @defaultOrder (array)  kolom yang dijadikan standar pengurutan (default order)
+	*/
+	function get_datatables_custom_table_query($table_name = '', $columnOrder = array(), $columnSearch = array(), $defaultOrder = array('fc_id' => 'asc'))
+	{     
+		$ci =& get_instance();
+		$ci->load->database();
+
+		// you can add custom filter here as many as needed but don't forget every table has different filter
+		if($ci->input->post('f_bpbno'))
+		{
+			$ci->db->where('fc_nobpb', $ci->input->post('f_bpbno'));
+		}
+		
+		$ci->db->from( $table_name ); 
+		
+		$i = 0;  // for table numbering
+		foreach ($columnSearch as $item) // loop column 
+		{
+			if($_POST['search']['value']) // if datatable send POST for search
+			{                
+				if($i===0) // first loop
+				{
+					$ci->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+					$ci->db->like($item, $_POST['search']['value']);
+				}
+				else
+				{
+					$ci->db->or_like($item, $_POST['search']['value']);
+				}
+
+				if(count($columnSearch) - 1 == $i) //last loop
+					$ci->db->group_end(); //close bracket
+			}
+			$i++;
+		}
+		// here order processing
+		if(isset($_POST['order'])) 
+		{
+			$ci->db->order_by($columnOrder[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+		} 
+		else if(isset($defaultOrder))
+		{
+			$ci->db->order_by(key($defaultOrder), $defaultOrder[key($defaultOrder)]);
+		}
+	}	
+	function get_datatables($tableName = '', $columnOrder = array(), $columnSearch = array(), $defaultOrder = array('fc_id' => 'asc'))
+	{
+		$ci =& get_instance();
+		$ci->load->database();
+		get_datatables_custom_table_query($tableName,$columnOrder,$columnSearch,$defaultOrder);
+		if($_POST['length'] != -1)
+			$ci->db->limit($_POST['length'], $_POST['start']);
+		$query = $ci->db->get();
+		return $query->result();
+	}
+
+	function count_filtered($tableName = '', $columnOrder = array(), $columnSearch = array(), $defaultOrder = array('fc_id' => 'asc'))
+	{
+		$ci =& get_instance();
+		$ci->load->database();
+		get_datatables_custom_table_query( $tableName, $columnOrder, $columnSearch, $defaultOrder);
+		$query = $ci->db->get( $table_name ); 
+		return $query->num_rows();
+	}
+
+	/**
+	 * count_all
+	 *
+	 * @param  mixed $table_name
+	 *
+	 * @return void
+	 */
+	function count_all($table_name='')
+	{
+		$ci =& get_instance();
+		$ci->load->database();
+		$ci->db->from( $table_name ); 
+		return $ci->db->count_all_results();
+	}
+// END DATATABLE METHOD ---------------------------------------------------------------------
