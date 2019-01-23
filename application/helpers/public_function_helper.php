@@ -374,10 +374,10 @@
 	 * @data = data yang mau dilewatkan ke view
 	 * @opt  = opsional, untuk menampilkan datatable, atau yang lain
 	 */
-	function loadView($pages='v_view', $data=null, $opt=1){
+	function loadView($pages='v_view', $data=null, $opt=0){
 		$ci =& get_instance();
 		$ci->load->view('Template/v_header',$data);
-		if($opt==1){ $ci->load->view('Template/v_datatable',$data); } 
+		if($opt==0){ $ci->load->view('Template/v_datatable',$data); } 
 		$ci->load->view('Template/v_sidemenu',$data);
 		if(is_array($pages)){
 			foreach ($pages as $page) {
@@ -463,7 +463,7 @@
 	 * @n_col		(integer)	= jumlah kolom
 	 * result		(string)
 	 */
-	function custom_form($fields, $hiddenField, $buttons=array(), $n_col=1)
+	function custom_form($fields, $hiddenField=array(), $buttons=array(), $n_col=1)
 	{  
 		$result 		= '';		 									// initialize output
 		$n_field 		= count($fields);  								// cari tau jumlah item array						// jumlah kolom
@@ -668,6 +668,306 @@
 		echo $result;
 	}
 	/**
+	 * fungsi ini untuk membuat form secara dinamis di form normal (insyaAlloh)
+	 * @fields 		(array)		= berisi field (selain type hidden) yang ingin digenerate
+	 * @hiddenField	(array)		= berisi field hidden
+	 * @buttons		(array)		= berisi button
+	 * @n_col		(integer)	= jumlah kolom
+	 * result		(string)
+	 * 
+	 *  How To Use it!
+	 	// untuk combobox
+	 	$options = array(
+			'Ops1'	=> array('desc'=>'ini keterangan label 1'),
+			'Ops2'	=> array('desc'=>'ini keterangan label 2','checked'=>true),
+		);
+		// tombol
+		$btn_options = array(
+			'Ops1'	=> array('url'=>'home','label'=>'ini keterangan label 1'),
+			'Ops2'	=> array('url'=>'mutasi','label'=>'ini keterangan label 2'),
+			'Ops3'	=> array('url'=>'kartustock','label'=>'ini keterangan label 3'),
+		);
+		// field
+		$field_attr = array(
+			'a1'    => array('type' => 'hidden','label'=>'Nomor Induk','value'=>$userdata['nim'],'readonly'=>true),
+			'a2'    => array('type' => 'text','label'=>'Nomor Induk','value'=>$userdata['nim']),
+			'a3'    => array('type' => 'option','label'=>'Nomor Induk','option'=>array('1'=>'halo','2'=>'halo 2')),
+			'a4'    => array('type' => 'file','label'=>'Nomor Induk','value'=>$userdata['nim']),
+			'a6'    => array('type' => 'btn_addon','label'=>'Nomor Induk','value'=>$userdata['nim']),
+			'a7'    => array('type' => 'btn_action','label'=>'Nomor Induk','option'=>$btn_options),
+			'a8'    => array('type' => 'search','label'=>'pencarian','value'=>$userdata['nim'],'modal_class'=>'modal','required'=>true),
+			'a5'    => array('type' => 'checkbox','label'=>'Nomor Induk','option'=>$options),
+			'a9'    => array('type' => 'textarea','label'=>'test','value'=>'test')
+		);		
+		$buttons = array(
+			'b2'  =>  array('type'=>'submit','class'=>'btn btn-primary','label'=>'Submit'),
+			'b1'  =>  array('type'=>'reset','class'=>'btn btn-warning','label'=>'Reset')
+		);
+		$form_attr = array(
+			'form_id'  =>  'form-2',
+			'upload'  =>  true,
+			'error'   => 'pesan',
+			'center'  =>true
+		);
+		// generate form syntax
+		create_form($field_attr, 2, $buttons, $form_attr);
+		// table attribute
+		$table_attr = array(
+			'table_id'		 => 'tabel-pencarian',
+			'columns'		 => array("No.","AKSI","NAMA LENGKAP","SEX","TP LAHIR","TGL LAHIR","HP","ALAMAT","JABATAN","TGL MASUK"),
+			'header'		 => 'simple/complex',
+			'header_options' => array(
+				'row1'		 =>	array(
+								'col1'	=> array('label'=>'NO.','mRow'=>2),
+								'col2'	=> array('label'=>'AKSI','mRow'=>2),
+								'col3'	=> array('label'=>'DATA PRIBADI','mCol'=>6),
+								'col4'	=> array('label'=>'LAIN','mCol'=>2),
+				),
+				'row2'		 => array("NAMA LENGKAP","SEX","TP LAHIR","TGL LAHIR","HP","ALAMAT","JABATAN","TGL MASUK")
+			),
+			'footer'		 => false
+		);
+		// if you use field type search, don't forget to mention this too work seamless
+		getModalDialog($table_attr,array('class'=>'modal','title_id'=>'model-1','footer'=>'mencoba'));
+	 */
+	function create_form(){
+		// count parameter given
+		$n_param = func_num_args();
+		// make different action for different parameter
+		switch ($n_param) {
+			case 1: list($fields) 									= func_get_args(); $n_col=1; break;
+			case 2: list($fields, $n_col) 							= func_get_args(); break;
+			case 3: list($fields, $n_col, $buttons) 				= func_get_args(); break;
+			case 4: list($fields, $n_col, $buttons, $form_attr) 	= func_get_args(); break;
+		}
+		// make first row
+		$result 		= "<div class=\"row\">\n";
+		// form attribute deploy
+		if(!is_null(@$form_attr)){			
+			$form_id 		= (array_key_exists('name',$form_attr)) ? $form_attr['name'] : "form-1";
+			$form_id 		= (array_key_exists('action',$form_attr)) ? "action=\"$form_attr[action]\"" : "";
+			$form_class 	= (array_key_exists('class',$form_attr)) ? $form_attr['class'] : 'form-horizontal form-label-left';
+			$isHide		 	= (array_key_exists('hide',$form_attr)) ? 'hide' : '';
+			$isUpload	 	= (array_key_exists('upload',$form_attr)) ? "enctype=\"multipart/form-data\"" : '';
+			$isCenter	 	= (array_key_exists('center',$form_attr)) ? "center-margin" : '';
+			// remember error_id dialog untuk container error_msg untuk pesan errornya
+			if(array_key_exists('error',$form_attr)){
+				$dialog 		= "
+				<div id=\"$form_attr[error]\" class=\"hide alert alert-success alert-dismissible fade in\" role=\"alert\">
+					<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">×</span></button>
+					<p id=\"error_msg\">Transaksi berhasil</p>
+				</div>\n";
+				$result 	.= $dialog;
+			}
+			$result 		.= "\n<!-- awal dari form -->\n";
+			$result			.= "<form id=\"$form_id\" name=\"$form_id\" class=\"$form_class $isHide\" method=\"post\" $isUpload>\n";
+			
+		}
+		// make some default 
+		$n_width_max	= 12; 																			// default max width based on column bootstrap
+		$n_width		= round( $n_width_max / $n_col );												// max width is 12, so divide by column
+		if($n_col == 1){
+			$c_width		= "col-md-".($n_width-3)." col-sm-".($n_width-3)." col-xs-$n_width_max";	
+		} else {
+			$c_width		= "col-md-$n_width col-sm-$n_width col-xs-$n_width_max";					// for wide until max 
+		}		
+		// field deploy
+		foreach ($fields as $arr_key => $arr_data) {
+			// make some global variable
+			$inType 		= strtolower($arr_data['type']);		
+			$defaultValue 	= (array_key_exists('value',$arr_data)) ? $arr_data['value'] : '';
+			$readonly	 	= (array_key_exists('readonly',$arr_data)) ? 'readonly="readonly"' : '';
+			$isRequired 	= (array_key_exists('required',$arr_data)) ? 'required="required"' : '';
+			$isPlaceholder 	= (array_key_exists('placeholder',$arr_data)) ? "placeholder=\"$arr_data[placeholder]\"" : '';
+			$defaultName 	= (array_key_exists('name',$arr_data)) ? $arr_data['name'] : $arr_key;
+			$defaultClass 	= (array_key_exists('class',$arr_data)) ? $arr_data['class'] : '';
+			
+			// deploy hidden field
+			if ($inType == 'empty'){
+				$result 	.= "<div class=\"form-group $c_width\">\n";
+				$result 	.= "</div>\n";
+			} else
+			if ($inType == 'hidden'){
+				$result .= "<input type=\"$inType\" id=\"$defaultName\" name=\"$defaultName\" class=\"form-control $defaultClass\" value=\"$defaultValue\">";
+			} else
+			if ($inType == 'text' || $inType == 'number' || $inType == 'password' || $inType == 'email' || $inType == 'color' || $inType == 'tel' || $inType == 'url') 
+			{
+				$result 	.= "<div class=\"form-group $c_width\">\n";
+				$result 	.= "<label class=\"control-label\" for=\"$defaultName\">$arr_data[label]</label>\n";
+				$result 	.= "<input type=\"$inType\" id=\"$defaultName\" name=\"$defaultName\" class=\"form-control $defaultClass\" value=\"$defaultValue\" $isPlaceholder $readonly $isRequired>";
+				$result 	.= "</div>\n";
+			} else 
+			if ($inType == 'date' || $inType == 'datetime-local' || $inType == 'time') 
+			{
+				switch ($inType) {
+					case 'date' 			:	$defValue = date('Y-m-d');	break;
+					case 'datetime-local'	:	$defValue = date('Y-m-d H:m:s');	break;
+					case 'time' 			:	$defValue = date('H:m:s');	break;
+					default					: 	$defValue = date('Y-m-d');	break;
+				}
+				$defaultDate = (array_key_exists('value',$arr_data)) ? $arr_data['value'] : $defValue;
+				$result 	.= "<div class=\"form-group $c_width\">\n";
+				$result 	.= "<label class=\"control-label\" for=\"$defaultName\">$arr_data[label]</label>\n";
+				$result 	.= "<input type=\"$inType\" id=\"$defaultName\" name=\"$defaultName\" class=\"form-control $defaultClass\" value=\"$defaultDate\" $readonly $isRequired>";
+				$result 	.= "</div>\n";
+			} else 
+			if ($inType == 'option' || $inType == 'multiple') 
+			{
+				$result 	.= "<div class=\"form-group $c_width\">\n";
+				$result .= "<label class=\"control-label\" for=\"$defaultName\">$arr_data[label]</label>\n";
+				if($inType != 'multiple')
+				{
+					$result .= "<select id=\"$defaultName\" name=\"$defaultName\" class=\"form-control\" $readonly $isRequired >\n";
+				} else 
+				{
+					$result .= "<select id=\"$defaultName\" name=\"$defaultName\" class=\"select2_multiple form-control\" multiple=\"multiple\" $readonly $isRequired >\n";
+				}
+				foreach ($arr_data['option'] as $key => $value) 
+				{
+					$result .= "<option value=\"$key\">$value</option>\n";
+				} 
+				$result .="</select>\n";
+				$result .="</div>\n";
+			} else
+			if ($inType == 'file') 
+			{
+				$result 	.= "<div class=\"form-group $c_width\">\n";
+				$result 	.= "<label class=\"control-label\" for=\"$defaultName\">$arr_data[label]</label>\n";
+				$result 	.= "<input type=\"$inType\" id=\"$defaultName\" name=\"$defaultName\" class=\"form-control $defaultClass\" $readonly $isRequired>\n";
+				$result 	.= "<img src=\"\" id=\"pict_detail_img\" width=\"400px\" style=\"display: none;\">"; 
+				$result 	.= "</div>\n";
+			} else 
+			if ($inType == 'textarea')
+			{
+				$t_rows		 = (array_key_exists('rows',$arr_data)) ? "rows=\"$arr_data[rows]\"" : "rows=\"3\"";
+				//$t_cols		 = (array_key_exists('cols',$arr_data)) ? "cols=\"$arr_data[cols]\"" : "";
+				$result 	.= "<div class=\"form-group $c_width\">\n";
+				$result 	.= "<label class=\"control-label\" for=\"$defaultName\">$arr_data[label]</label>\n";
+				$result 	.= "<textarea id=\"$defaultName\" name=\"$defaultName\" $t_rows class=\"form-control $defaultClass\" $isPlaceholder $readonly $isRequired>$defaultValue</textarea>";
+				$result 	.= "</div>\n";	
+			} else 
+			if ($inType == 'checkbox' || $inType == 'radio')
+			{
+				/**
+				 * this is how you should define $option variable
+				 * $options = array(
+				 *	'Ops1'	=> array('desc'=>'ini keterangan label 1'),
+					*	'Ops2'	=> array('desc'=>'ini keterangan label 2','checked'=>true),
+					*	);
+					* -> Ops1 (key) will be value of checkbox
+					* -> Ops1 (key) will be value of radio
+					*/
+				$result 	.= "<div class=\"form-group $c_width\">\n";
+				$result 	.= "<label class=\"control-label\" for=\"$defaultName\">$arr_data[label]</label>\n";
+				foreach ($arr_data['option'] as $key => $value) 
+				{
+					$isCheckbox	 = ($inType == 'checkbox') ? $arr_key."[]" : $arr_key;
+					$isChecked	 = (array_key_exists('checked',$value)) ? "checked" : "";
+					$result .= "<div class=\"$inType\">\n";
+					$result .= "<label>\n";
+					$result .= "<input type=\"$inType\" name=\"$isCheckbox\" value=\"$key\" $isChecked> $value[desc]\n";							
+					$result .= "</label>\n";
+					$result .= "</div>\n";
+				} 
+				$result 	.= "</div>\n";
+			} else
+			if ($inType == 'btn_addon') 
+			{
+				// default value 
+				$btn_id	 	 = (array_key_exists('btn_id',$arr_data)) ? "$arr_data[btn_id]" : "btn_aksi";
+				$btn_label	 = (array_key_exists('btn_label',$arr_data)) ? "$arr_data[btn_label]" : "Aksi";
+				$btn_icon	 = (array_key_exists('btn_icon',$arr_data)) ? "fa $arr_data[btn_icon]" : "fa fa-info";
+				$btn_class	 = (array_key_exists('btn_class',$arr_data)) ? "$arr_data[btn_class]" : "btn-primary";
+				
+				$result 	.= "<div class=\"form-group $c_width\">\n";
+				$result 	.= "<label class=\"control-label\" for=\"$defaultName\">$arr_data[label]</label>\n";
+				$result 	.= "<div class=\"input-group\">\n";
+				$result 	.= "<input type=\"text\" id=\"$defaultName\" name=\"$defaultName\" class=\"form-control\" value=\"$defaultValue\" $isPlaceholder $readonly $isRequired>";
+				$result 	.= "<span class=\"input-group-btn\">";
+				$result 	.= "<button type=\"button\" id=\"$btn_id\" class=\"btn $btn_class\"><i class=\"$btn_icon\"></i> $btn_label</button>";
+				$result 	.= "</span>\n";
+				$result 	.= "</div>\n";
+				$result 	.= "</div>\n";
+			} else
+			if ($inType == 'btn_action') 
+			{
+				/**
+				 * this sample how to define $option variable
+				 * $options = array(
+				 *	 'Ops1'	=> array('url'=>'home','label'=>'ini keterangan label 1'),
+					*	 'Ops2'	=> array('url'=>'mutasi','label'=>'ini keterangan label 2'),
+					*	 'Ops3'	=> array('url'=>'kartustock','label'=>'ini keterangan label 3'),
+					*	);
+					*/
+				$btn_id	 	 = (array_key_exists('btn_id',$arr_data)) ? "$arr_data[btn_id]" : "btn_aksi";
+				$btn_label	 = (array_key_exists('btn_label',$arr_data)) ? "$arr_data[btn_label]" : "Action";
+
+				$result 	.= "<div class=\"form-group $c_width\">\n";
+				$result 	.= "<label class=\"control-label \" for=\"$defaultName\">$arr_data[label]</label>\n";
+				$result 	.= "<div class=\"input-group\">";
+				$result 	.= "<input type=\"text\" id=\"$defaultName\" name=\"$defaultName\" class=\"form-control\" aria-label=\"Text input with dropdown button\" value=\"$defaultValue\" $isPlaceholder $readonly $isRequired>";
+				$result 	.= "<div class=\"input-group-btn\">";
+				$result 	.= "<button type=\"button\" id=\"$btn_id\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"false\">$btn_label <span class=\"caret\"></span></button>";
+				$result 	.= "<ul class=\"dropdown-menu dropdown-menu-right\" role=\"menu\">\n";
+				foreach ($arr_data['option'] as $list_key => $list_data) 
+				{
+					$result .= "<li><a href=\"$list_data[url]\">$list_data[label]</a></li>\n";	
+				}
+				$result 	.= "</ul>\n";
+				$result 	.= "</div>\n";
+				$result 	.= "</div>\n";
+				$result 	.= "</div>\n";
+			} else 
+			if ($inType == 'search') 
+			{
+				// default value 
+				$btn_id	 	 = (array_key_exists('btn_id',$arr_data)) ? "$arr_data[btn_id]" : "btn_cari";
+				$btn_label	 = (array_key_exists('btn_label',$arr_data)) ? "$arr_data[btn_label]" : "Cari";
+				$btn_icon	 = (array_key_exists('btn_icon',$arr_data)) ? "fa $arr_data[btn_icon]" : "fa fa-search";
+				$btn_class	 = (array_key_exists('btn_class',$arr_data)) ? "$arr_data[btn_class]" : "btn-primary";
+				$modal_class = (array_key_exists('modal_class',$arr_data)) ? ".$arr_data[modal_class]" : ".bs-example-modal-lg";
+				
+				$result 	.= "<div class=\"form-group $c_width\">\n";
+				$result 	.= "<label class=\"control-label\" for=\"$defaultName\">$arr_data[label]</label>\n";
+				$result 	.= "<div class=\"input-group\">\n";
+				$result 	.= "<input type=\"text\" id=\"$defaultName\" name=\"$defaultName\" class=\"form-control\" value=\"$defaultValue\" $isPlaceholder $readonly $isRequired >";
+				$result 	.= "<span class=\"input-group-btn\">\n";
+				$result 	.= "<button type=\"button\" id=\"$btn_id\" data-toggle=\"modal\" data-target=\"$modal_class\" class=\"btn $btn_class\"><i class=\"$btn_icon\"></i> $btn_label</button>\n";
+				$result 	.= "</span>\n";
+				$result 	.= "</div>\n";		
+				$result 	.= "</div>\n";							
+			}
+		}	
+		// end row
+		$result 		.="</div>\n"; 
+		// make default if no input array button
+		if(!is_null(@$buttons)){
+			// memberi garis di awal tombol
+			$result 		.= "<div class=\"ln_solid\"></div>\n";
+			$result 		.= "<div class=\"row\">\n";
+			$result 		.= "<div class=\"form-group col-md-$n_width_max col-sm-$n_width_max col-xs-$n_width_max\">\n";
+			foreach ($buttons as $btn_key => $btn_data) {
+				//$idbtn 		 = (array_key_exists('name',$btn_data)) ?  "id=\"$btn_key\"" : "id=\"$btn_data[name]\"";
+				if($n_col > 1){
+					$state 		 = (@$btn_data['state'] == '') ? "right" : "left";
+				} else {
+					$state		 = 'left';
+				}
+				$result 	.= "<button id=\"$btn_key\" type=\"".$btn_data['type']."\" class=\"".$btn_data['class']." pull-$state\">".$btn_data['label']."</button>\n";
+			}
+			$result 		.= "</div>\n";
+			$result 		.= "</div>\n";
+			// memberi garis di akhir tombol
+			$result 		.= "<div class=\"ln_solid\"></div>\n";
+		}
+		// close form syntax
+		if(!is_null(@$form_attr)){			
+			$result 		.= "</form> <!-- akhir dari form -->\n\n";
+			
+		}
+		echo $result;
+	}
+	/**
 	 * meng-generate script table dengan berbagai options
 	 * sample $table_attr variable
 	 * $table_attr = array(
@@ -686,7 +986,7 @@
 	 *		'footer'		 => false
 	 *	);
 	 */
-	function custom_table( $table_attr = array() ){
+	function custom_table( $table_attr = array() , $opt =1){
 		// make default 
 		$table_id		= (array_key_exists('table_id',$table_attr)) ? $table_attr['table_id'] : "tabel-1";
 		$table_head		= (array_key_exists('header',$table_attr)) ? $table_attr['header'] : "simple";	
@@ -743,49 +1043,62 @@
 			$result .= "</tfoot>\n";
 		}		
 		$result .= "</table>\n";
-		echo $result;
+		if ($opt == 1) {
+			// tampil langsung
+			echo $result;
+		} else 
+		if ($opt == 2){
+			// agar bisa dimasukkan dalam variabel lain
+			return $result;
+		}
 	}
-	function getModalDialog($modalAttr = array(), $tableAttr = array()){
+	function getModalDialog($tableAttr = array(), $modalAttr = array()){
 		// make default 
 		$modal_class		= (array_key_exists('modal_class',$modalAttr)) ? "$modalAttr[modal_class]" : "bs-example-modal-lg";
 		$modal_title		= (array_key_exists('title',$modalAttr)) ? "$modalAttr[title]" : "Pencarian Data";
 		$modal_title_id		= (array_key_exists('title_id',$modalAttr)) ? "$modalAttr[title_id]" : "title_id";
 		
-		$result .= "<div class=\"modal fade $modal_class\" tabindex=\"-1\" role=\"dialog\" aria-hidden=\"true\">\n";
+		$result = "<div class=\"modal fade $modal_class\" tabindex=\"-1\" role=\"dialog\" aria-hidden=\"true\">\n";
 			$result .= "<div class=\"modal-dialog modal-lg\">\n";
 				$result .= "<div class=\"modal-content\">\n";
 					$result .= "<div class=\"modal-header\">\n";
 						$result .= "<button type=\"button\" class=\"close\" data-dismiss=\"modal\"><span aria-hidden=\"true\">×</span></button>\n";
-						$result .= "<h4 class=\"modal-title\" id=\"$modal_title_id\">$modal_title</h4>\n";
+						$result .= "<h4 class=\"modal-title\" id=\"$modal_title_id\"><i class=\"fa fa-search\"></i> $modal_title</h4>\n";
 					$result .= "</div>\n";
 					$result .= "<div class=\"modal-body\">\n";
-						buat_table($tableAttr['column'],$tableAttr['table_id']);   
+					$result .= custom_table($tableAttr,2);   
 					$result .= "</div>\n"; 
+					if(@$modalAttr['footer'] != ''){
+						$result .= "<div class=\"modal-footer\">\n";
+						$result .= "<small class=\"pull-left\"><b>Informasi: </b><i class=\"fa fa-info\"></i><br>$modalAttr[footer]</small>\n"; 
+						$result .= "<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n";
+						$result .= "</div>\n"; 
+					}
 				$result .= "</div>\n";
 			$result .= "</div>\n";
-		$result .= "</div>\n";
-		
+		$result .= "</div>\n";		
 		echo $result;
 	}
 // END FORM METHOD ---------------------------------------------------------------------
 // START DATATABLE METHOD ---------------------------------------------------------------------
 	/**
-	 * generate table query untuk dipakai banyak datatable dalam satu halaman 
+	 * generate table query untuk dipakai banyak datatable dalam satu halaman, pada penerapannya
+	 * disarankan untuk menduplikasi script ini di model agar bisa di custom / filter 
 	 * @table_name (string)   nama tabel 
 	 * @columnOrder (array)   list kolom yang ingin bisa di urutkan (defaultOrder)
 	 * @columnSearch (array)  list kolom yang ingin bisa di cari (searchable)
 	 * @defaultOrder (array)  kolom yang dijadikan standar pengurutan (default order)
 	*/
-	function get_datatables_custom_table_query($table_name = '', $columnOrder = array(), $columnSearch = array(), $defaultOrder = array('fc_id' => 'asc'))
+	function _get_datatables_custom_table_query($table_name = '', $columnOrder = array(), $columnSearch = array(), $defaultOrder = array('fc_id' => 'asc'))
 	{     
 		$ci =& get_instance();
 		$ci->load->database();
 
 		// you can add custom filter here as many as needed but don't forget every table has different filter
-		if($ci->input->post('f_bpbno'))
-		{
-			$ci->db->where('fc_nobpb', $ci->input->post('f_bpbno'));
-		}
+		// if($ci->input->post('f_bpbno'))
+		// {
+		// 	$ci->db->where('fc_nobpb', $ci->input->post('f_bpbno'));
+		// }
 		
 		$ci->db->from( $table_name ); 
 		
@@ -819,22 +1132,22 @@
 			$ci->db->order_by(key($defaultOrder), $defaultOrder[key($defaultOrder)]);
 		}
 	}	
-	function get_datatables($tableName = '', $columnOrder = array(), $columnSearch = array(), $defaultOrder = array('fc_id' => 'asc'))
+	function _get_datatables($tableName = '', $columnOrder = array(), $columnSearch = array(), $defaultOrder = array('fc_id' => 'asc'))
 	{
 		$ci =& get_instance();
 		$ci->load->database();
-		get_datatables_custom_table_query($tableName,$columnOrder,$columnSearch,$defaultOrder);
+		_get_datatables_custom_table_query($tableName,$columnOrder,$columnSearch,$defaultOrder);
 		if($_POST['length'] != -1)
 			$ci->db->limit($_POST['length'], $_POST['start']);
 		$query = $ci->db->get();
 		return $query->result();
 	}
 
-	function count_filtered($tableName = '', $columnOrder = array(), $columnSearch = array(), $defaultOrder = array('fc_id' => 'asc'))
+	function _count_filtered($tableName = '', $columnOrder = array(), $columnSearch = array(), $defaultOrder = array('fc_id' => 'asc'))
 	{
 		$ci =& get_instance();
 		$ci->load->database();
-		get_datatables_custom_table_query( $tableName, $columnOrder, $columnSearch, $defaultOrder);
+		_get_datatables_custom_table_query( $tableName, $columnOrder, $columnSearch, $defaultOrder);
 		$query = $ci->db->get( $table_name ); 
 		return $query->num_rows();
 	}
@@ -846,7 +1159,7 @@
 	 *
 	 * @return void
 	 */
-	function count_all($table_name='')
+	function _count_all($table_name='')
 	{
 		$ci =& get_instance();
 		$ci->load->database();

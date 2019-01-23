@@ -107,8 +107,9 @@
 			        	},
 			        	'ajax':{
 			        		'url'	: "<?php echo site_url($this->uri->segment(1).'/data');?>",
-			        		"dataType": "json",
-			        		'type'	: 'POST' 
+			        		"dataType": "JSON",
+			        		'type'	: 'POST',
+							'data'	: {data:user} 
 			        	},//pasangkan hasil dari ajax ke datatablesnya
 			        	'columns'	:[			        		
 			        		{'data' : 'fv_menu',width:100},
@@ -171,15 +172,18 @@
 				}				
 				function hapus(kode){
 					if(confirm("Apakah anda Yakin? "+kode)){ 
-						$.get(link+"/Hapus/"+kode, $(this).serialize())
+						var user = $('#b0').val();
+						$.get(link+"/Hapus/"+kode+"/"+user, $(this).serialize())
 									.done(function(data) { 
 										display_message(data);
-										reload_table();
+										reload_table(user);
+										$('#b0').change();
 									});												
 					}
 				}
 				$(document).on('submit','#formAksi',function(e){
 					e.preventDefault();
+					var user = $('#b0').val();
 					$.ajax({
 						url: link+"/Simpan",
 						type: "POST",
@@ -191,7 +195,8 @@
 							if (data.includes("Berhasil") == true ) {
 								document.getElementById('formAksi').reset();											 
 								display_message(data);
-								reload_table();
+								reload_table(user);
+								$('#b0').val(user).change();
 							}
 						}           
 					});

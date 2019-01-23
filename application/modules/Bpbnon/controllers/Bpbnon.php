@@ -29,7 +29,7 @@ class Bpbnon extends CI_Controller
 			'delete'		=> $this->hakakses_user[2],
 			'view'			=> $this->hakakses_user[3]
 		);
-		loadView('v_view', $data, 0);
+		loadView('v_view', $data);
 	}
 
 	public function getTableData()

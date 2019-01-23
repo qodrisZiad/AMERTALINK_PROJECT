@@ -31,8 +31,9 @@
       <div class="login_wrapper">
         <div class="animate form login_form">
           <section class="login_content">
+            <img src="<?= site_url(); ?>/assets/images/logo_amertalink.png" alt="logo amertalink">
             <form id="formAksi" method="post" action="#">
-              <h1>Login Form</h1> 
+              <h1><?= SITE_TITLE; ?></h1>
               <div style="display: none;" id="hasil_login" class="alert alert-success alert-dismissible fade in" rele="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="close">x</button>
                 <strong>Login Sukses.</strong>Silahkan anda tunggu beberapa saat! 
@@ -50,8 +51,7 @@
               <div class="clearfix"></div>
 
               <div class="separator"> 
-                <div>
-                  <h1><?= SITE_TITLE; ?></h1>
+                <div>                  
                   <p><?= SITE_FOOTER; ?></p>
                 </div>
               </div>

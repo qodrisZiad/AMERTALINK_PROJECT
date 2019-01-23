@@ -5,7 +5,7 @@ class Akses extends CI_Controller
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->model('M_model');
+		$this->load->model('M_model','model');
 	}
 	private $table = "t_hakakses";
 	private $primary_key = "fc_idmenu";
@@ -26,7 +26,7 @@ class Akses extends CI_Controller
 			'delete'	=> $hakakses_user[2],
 			'view'		=> $hakakses_user[3] 
 		);
-		loadView('v_view', $data, 0);
+		loadView('v_view', $data);
 	}
 	public function Simpan(){
 		$aksi = $this->input->post('aksi');
@@ -44,7 +44,7 @@ class Akses extends CI_Controller
 					'fc_userinput'	=> $this->session->userdata('userid'),
 					'fd_input'	=> date("Y-m-d")
 				);
-				$proses = $this->M_model->tambah($data_input);
+				$proses = $this->model->tambah($data_input);
 			}
 		}
 			if ($proses > 0) {
@@ -54,12 +54,12 @@ class Akses extends CI_Controller
 				$message = 'Gagal menyimpan data'; 
 			} 
 		echo json_encode($message);
-	}
-	
+	}	
 	public function Hapus(){
 		$kode = $this->uri->segment(3);
-		$data = array('fc_idmenu' => $kode, 'fc_userid' => $this->session->userdata('userid'));
-		$hapus = $this->M_model->hapus($data);
+		$user = $this->uri->segment(4);
+		$data = array('fc_idmenu' => $kode, 'fc_userid' => $user);
+		$hapus = $this->model->hapus($data);
 		if ($hapus > 0) {
 			echo "Berhasil menghapus data ".$kode;
 			resetMenuSession();
@@ -67,23 +67,23 @@ class Akses extends CI_Controller
 			echo "Gagal menghapus data ".$kode;
 		}
 	}
-
 	public function data(){ 
 		$tabel = $this->table; 		
-        $totalData = $this->M_model->getDataMenu(1); 
+		$user = $this->input->post('data');
+        $totalData = $this->model->getDataMenu($user,1); 
 		$totalFiltered = $totalData;  
-		$data = $this->M_model->getDataMenu(2);        
+		$data = $this->model->getDataMenu($user,2);        
         $json_data = array(
+					"user"			  => $user,
                     "draw"            => intval($this->input->post('draw')),  
                     "recordsTotal"    => intval($totalData),  
                     "recordsFiltered" => intval($totalFiltered), 
                     "data"            => $data   
                     ); 
 		echo json_encode($json_data); 
-		//echo json_encode($data);
-	} 
+	}	
 	private function getListUser(){                    
-		$users = $this->M_model->getDataUser();
+		$users = $this->model->getDataUser();
 		$list = '';                   
 		foreach ($users as $user) {                    
 			$list .= '<option value="'.$user->fc_userid.'">'.$user->fc_userid.'</option>';
@@ -93,7 +93,7 @@ class Akses extends CI_Controller
 	public function listmenu(){
 		$hasil = '';
 		$user = $this->input->get('b0');
-		$list = $this->M_model->getListMenu($user);
+		$list = $this->model->getListMenu($user);
 		foreach ($list as $value) {
 			$hasil .= "<option value='".$value->fc_id."'>$value->fv_menu</option> \n";
 		}

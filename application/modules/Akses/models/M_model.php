@@ -26,12 +26,12 @@ class M_model extends CI_Model
         { return $query->result();}
         else{return null;}
 	} 
-	function getDataMenu($opt=0){
+	function getDataMenu($userid,$opt=0){
 		$query = $this->db->select('a.fc_userid,b.fv_menu,a.fc_idmenu,a.fc_input,a.fc_update,a.fc_delete,a.fc_view')
        			->from('t_hakakses a')
 				   ->join("t_menu b","b.fc_id=a.fc_idmenu")
 				   ->where('ifnull(b.fc_parent,"")!=', '')
-				   ->where('a.fc_userid', $this->session->userdata('userid'))       			
+				   ->where('a.fc_userid', $userid)       			
 				   ->get();
         if($query->num_rows()>0)
         { 
